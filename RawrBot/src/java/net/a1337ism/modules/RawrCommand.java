@@ -21,28 +21,29 @@ public class RawrCommand extends ListenerAdapter {
     // Set up the logger stuff
     private static Logger logger    = LogManager.getFormatterLogger(RawrBot.class);
     private static Marker LOG_EVENT = MarkerManager.getMarker("LOG_EVENT");
-    public String         filename  = "data/rawr.txt";                            // Set the rawr.txt location
-    public String[]       rawrList  = readLines(filename);                        // Throw the lines into a list
+    public String         filename  = "data/rawr.txt";                             // Set the rawr.txt location
+    public String[]       rawrList  = readLines(filename);                         // Throw the lines into a list
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
         // Check if message starts with !rawr
         if (event.getMessage().trim().toLowerCase().startsWith("!rawr")) {
-        	
-        	// If they are rate limited, then return. 
-            if (RateLimiter.isRateLimited(event.getUser().getNick()))
+
+            // If they are rate limited, then return.
+            if (RateLimiter.isRateLimited(event.getUser().getNick())) {
                 return;
-            // If command ends with -help
+            }
+
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 String rawrHelp = "!rawr: Rawr. :3";
                 ircUtil.sendMessage(event, rawrHelp);
             } else if (event.getMessage().trim().startsWith("!RAWR")) {
-            	// If command starts with !RAWR, in caps. 
+                // If command starts with !RAWR, in caps.
                 String rawr = getRawr().toUpperCase();
                 ircUtil.sendMessage(event, rawr);
             } else {
-            	// Otherwise, we know they just want regular !rawr
+                // Otherwise, we know they just want regular !rawr
                 String rawr = getRawr();
                 ircUtil.sendMessage(event, rawr);
             }
@@ -58,17 +59,19 @@ public class RawrCommand extends ListenerAdapter {
                 String rawrHelp = "!rawr: Rawr. :3";
                 ircUtil.sendMessage(event, rawrHelp);
             } else if (event.getMessage().trim().startsWith("!RAWR")) {
+                // If command starts with !RAWR, in caps.
                 String rawr = getRawr().toUpperCase();
                 ircUtil.sendMessage(event, rawr);
             } else {
+                // Otherwise, we know they just want regular !rawr
                 String rawr = getRawr();
                 ircUtil.sendMessage(event, rawr);
             }
         }
     }
 
-    // Reads the lines from the text file and returns a list
     private String[] readLines(String filename) {
+        // Reads the lines from the text file and returns a list
         try {
             FileReader fileReader = new FileReader(filename);
             BufferedReader bufferedReader = new BufferedReader(fileReader);

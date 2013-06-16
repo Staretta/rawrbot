@@ -167,6 +167,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         // bot.getListenerManager().addListener(new RawrBot());
         // bot.getListenerManager().addListener(new TimeCommand());
         manager.addListener(new LogBot());
+        manager.addListener(new RateLimiter());
         manager.addListener(new RawrBot());
         manager.addListener(new TimeCommand());
         manager.addListener(new JokeCommand());
@@ -177,7 +178,6 @@ public class RawrBot extends ListenerAdapter implements Listener {
         manager.addListener(new LastSeenCommand());
         manager.addListener(new ReportCommand());
         manager.addListener(new RulesCommand());
-        manager.addListener(new RateLimiter());
 
         // Set our own ListenerManager
         bot.setListenerManager(manager);
