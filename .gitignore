@@ -1,0 +1,6 @@
+*.metadata
+RawrBot/target/*
+*.classpath
+RawrBot/.classpath
+RawrBot/logs/*
+RemoteSystemsTempFiles
