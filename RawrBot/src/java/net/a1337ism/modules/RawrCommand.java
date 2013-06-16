@@ -32,15 +32,17 @@ public class RawrCommand extends ListenerAdapter {
         	// If they are rate limited, then return. 
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
-            
+            // If command ends with -help
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 String rawrHelp = "!rawr: Rawr. :3";
                 ircUtil.sendMessage(event, rawrHelp);
             } else if (event.getMessage().trim().startsWith("!RAWR")) {
+            	// If command starts with !RAWR, in caps. 
                 String rawr = getRawr().toUpperCase();
                 ircUtil.sendMessage(event, rawr);
             } else {
+            	// Otherwise, we know they just want regular !rawr
                 String rawr = getRawr();
                 ircUtil.sendMessage(event, rawr);
             }
