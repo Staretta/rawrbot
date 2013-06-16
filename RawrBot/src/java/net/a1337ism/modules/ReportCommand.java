@@ -33,6 +33,10 @@ public class ReportCommand extends ListenerAdapter {
     public void onMessage(MessageEvent event) throws Exception {
         // If the message starts with !report
         if (event.getMessage().trim().toLowerCase().startsWith("!report")) {
+        	
+        	// If they are rate limited, then return. 
+            if (RateLimiter.isRateLimited(event.getUser().getNick()))
+                return;
 
             // Split the message into parameters.
             String[] param = event.getMessage().trim().split("\\s", 3);

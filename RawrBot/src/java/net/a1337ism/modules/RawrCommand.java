@@ -26,8 +26,13 @@ public class RawrCommand extends ListenerAdapter {
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
-        // Check if message starts with !RAWR
+        // Check if message starts with !rawr
         if (event.getMessage().trim().toLowerCase().startsWith("!rawr")) {
+        	
+        	// If they are rate limited, then return. 
+            if (RateLimiter.isRateLimited(event.getUser().getNick()))
+                return;
+            
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 String rawrHelp = "!rawr: Rawr. :3";

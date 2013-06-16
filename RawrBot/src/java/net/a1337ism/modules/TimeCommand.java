@@ -23,6 +23,11 @@ public class TimeCommand extends ListenerAdapter {
     public void onMessage(MessageEvent event) throws Exception {
         // Check if message starts with !time
         if (event.getMessage().trim().toLowerCase().startsWith("!time")) {
+        	
+        	// If they are rate limited, then return. 
+            if (RateLimiter.isRateLimited(event.getUser().getNick()))
+                return;
+            
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 String timeHelp = "!time : Displays the current time.";

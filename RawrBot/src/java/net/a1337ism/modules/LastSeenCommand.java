@@ -35,6 +35,11 @@ public class LastSeenCommand extends ListenerAdapter {
         try {
             // Check if message starts with !lastseen
             if (event.getMessage().trim().toLowerCase().startsWith("!lastseen")) {
+            	
+            	// If they are rate limited, then return. 
+                if (RateLimiter.isRateLimited(event.getUser().getNick()))
+                    return;
+                
                 // Spilt the message, so we can get the different parameters
                 String[] param = event.getMessage().trim().split("\\s", 3);
                 if (param.length == 1) {

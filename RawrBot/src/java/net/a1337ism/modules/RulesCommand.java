@@ -17,6 +17,7 @@ public class RulesCommand extends ListenerAdapter {
 
     public void onMessage(MessageEvent event) throws Exception {
         if (event.getMessage().toLowerCase().trim().startsWith("!rules")) {
+        	// If they are rate limited, then return. 
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
             // ircUtil.sendNotice(event, "someMessage");

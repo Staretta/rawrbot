@@ -166,9 +166,9 @@ public class RawrBot extends ListenerAdapter implements Listener {
         // This class is a listener, so add it to the bots known listeners
         // bot.getListenerManager().addListener(new RawrBot());
         // bot.getListenerManager().addListener(new TimeCommand());
+        manager.addListener(new LogBot());
         manager.addListener(new RawrBot());
         manager.addListener(new TimeCommand());
-        manager.addListener(new LogBot());
         manager.addListener(new JokeCommand());
         manager.addListener(new QuoteCommand());
         manager.addListener(new UptimeCommand());
