@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import net.a1337ism.RawrBot;
 import net.a1337ism.util.MiscUtil;
@@ -29,6 +30,10 @@ public class LastSeenCommand extends ListenerAdapter {
     // Set up the database stuff
     String                sUrlString = "jdbc:sqlite:data/lastseen.db";
     SqliteDb              sqlitedb   = new SqliteDb("org.sqlite.JDBC", sUrlString);
+
+    // URL Regex matching
+    String                regex      = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
+    Pattern               URL_REGEX  = Pattern.compile(regex);
 
     public void onMessage(MessageEvent event) throws Exception {
         // Get the last message to the channel and update the database
@@ -285,6 +290,7 @@ public class LastSeenCommand extends ListenerAdapter {
             String nickname = event.getUser().getNick();
             String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
             String message = event.getMessage();
+            message = redactURL(message);
             int timeNow = (int) (System.currentTimeMillis() / 1000);
             boolean action = false;
             // Throw some values to lastseen function so that we save space probably!
@@ -301,6 +307,7 @@ public class LastSeenCommand extends ListenerAdapter {
             String nickname = event.getUser().getNick();
             String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
             String message = event.getMessage();
+            message = redactURL(message);
             int timeNow = (int) (System.currentTimeMillis() / 1000);
             boolean action = true;
             // Throw some values to lastseen function so that we save space probably!
@@ -407,5 +414,18 @@ public class LastSeenCommand extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    private String redactURL(String line) {
+        String[] words = null;
+        String message = "";
+        words = line.split("\\s");
+        for (String word : words) {
+            if (URL_REGEX.matcher(word).matches()) {
+                word = "URL_REDACTED";
+            }
+            message += word + " ";
+        }
+        return message.trim();
     }
 }
