@@ -23,6 +23,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
+import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -53,6 +54,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
     static String               irc_nickname = cfg.getProperty("irc_nickname");
     static String               irc_username = cfg.getProperty("irc_username");
     static String               bot_version  = cfg.getProperty("bot_version");
+    private static String       bot_password = cfg.getProperty("bot_password");
 
     @Override
     public void onMessage(final MessageEvent event) throws Exception {
@@ -82,6 +84,12 @@ public class RawrBot extends ListenerAdapter implements Listener {
                 return;
             }
         }
+    }
+
+    @Override
+    public void onConnect(ConnectEvent event) throws Exception {
+        logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
+        event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
     }
 
     /**
@@ -157,6 +165,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         bot.setVersion(bot_version); // Set the bot's version
         bot.setName(irc_nickname); // Set the nick of the bot. CHANGE IN YOUR CODE
         bot.setLogin(irc_username); // login part of hostmask, eg name:login@host
+        // bot.identify(bot_password); // Password the bot uses to identify with nick / auth services.
         bot.setVerbose(false); // Print everything, which is what you want to do 90% of the time
         bot.setAutoNickChange(true); // Automatically change nick when the current one is in use
         bot.setCapEnabled(true); // Enable CAP features
