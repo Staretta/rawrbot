@@ -212,10 +212,9 @@ public class LastSeenCommand extends ListenerAdapter {
                         "SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
                 selectNickname.setString(1, nickSearch);
                 selectNickname.setInt(2, limit);
-                selectNickname.execute();
-                resultSet = selectNickname.getResultSet();
-                selectNickname.close();
+                resultSet = selectNickname.executeQuery();
                 message = getLastSeen(resultSet, limit);
+                selectNickname.close();
             } catch (SQLException ex) {
                 logger.error(ex);
             }
@@ -267,10 +266,9 @@ public class LastSeenCommand extends ListenerAdapter {
                         "SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
                 selectHostname.setString(1, hostSearch);
                 selectHostname.setInt(2, limit);
-                selectHostname.execute();
-                resultSet = selectHostname.getResultSet();
-                selectHostname.close();
+                resultSet = selectHostname.executeQuery();
                 message = getLastSeen(resultSet, limit);
+                selectHostname.close();
             } catch (SQLException ex) {
                 logger.error(ex);
             }
