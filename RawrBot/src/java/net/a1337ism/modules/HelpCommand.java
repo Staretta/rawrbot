@@ -19,12 +19,12 @@ public class HelpCommand extends ListenerAdapter {
     public void onMessage(MessageEvent event) throws Exception {
         // Check if message starts with !commands
         if (event.getMessage().trim().toLowerCase().startsWith("!commands")) {
-        	
-        	// If they are rate limited, then return. 
+
+            // If they are rate limited, then return.
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
-            
-            String[] commandHelp = { "Commands: !joke !quote !rawr !lastseen !report !uptime !time !commands",
+
+            String[] commandHelp = { "Commands: !joke !quote !rawr !8ball !lastseen !report !uptime !time !commands",
                     "For command specific help, type \"-help\" after a command." };
             for (String line : commandHelp) {
                 ircUtil.sendMessage(event, line);
@@ -35,7 +35,7 @@ public class HelpCommand extends ListenerAdapter {
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
         // Check if message starts with !commands
         if (event.getMessage().trim().toLowerCase().startsWith("!commands")) {
-            String[] commandHelp = { "Commands: !joke !quote !rawr !lastseen !report !uptime !time !commands",
+            String[] commandHelp = { "Commands: !joke !quote !rawr !8ball !lastseen !report !uptime !time !commands",
                     "For command specific help, type \"-help\" after a command." };
             for (String line : commandHelp) {
                 ircUtil.sendMessage(event, line);
