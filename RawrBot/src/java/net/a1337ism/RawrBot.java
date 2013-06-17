@@ -1,5 +1,6 @@
 package net.a1337ism;
 
+import net.a1337ism.modules.EightballCommand;
 import net.a1337ism.modules.HelpCommand;
 import net.a1337ism.modules.JokeCommand;
 import net.a1337ism.modules.LastSeenCommand;
@@ -137,15 +138,15 @@ public class RawrBot extends ListenerAdapter implements Listener {
         // Create a new bot
         PircBotX bot = new PircBotX();
         // Configuration stuff
-        
+
         ListenerManager manager = new ThreadedListenerManager();
         // load the sqlite-JDBC driver using the current class loader
         Class.forName("org.sqlite.JDBC");
 
         // Log4j setup
 
-        /* String log4JPropertyFile = "C:/Users/Strong Bad/RawrBot/RawrBot/src/resources/log4j.properties"; Properties p =
-         * new Properties();
+        /* String log4JPropertyFile = "C:/Users/Strong Bad/RawrBot/RawrBot/src/resources/log4j.properties"; Properties p
+         * = new Properties();
          * 
          * try { p.load(new FileInputStream(log4JPropertyFile)); PropertyConfigurator.configure(p);
          * logger.info("Wow! I'm configured!"); } catch (IOException e) { // DAMN! I'm not....
@@ -178,6 +179,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         manager.addListener(new LastSeenCommand());
         manager.addListener(new ReportCommand());
         manager.addListener(new RulesCommand());
+        manager.addListener(new EightballCommand());
 
         // Set our own ListenerManager
         bot.setListenerManager(manager);

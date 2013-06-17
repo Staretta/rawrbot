@@ -5,6 +5,18 @@ import java.util.Date;
 
 public class MiscUtil {
 
+    public static int randomNumber(int fileLength) {
+        // Chooses a random number based on the length of a list.
+        int randomNumber = (int) (Math.random() * fileLength);
+        return randomNumber;
+    }
+
+    public static String randomSelection(String[] fileList) {
+        // Chooses a random selection from a list of lines.
+        String randomLine = fileList[randomNumber(fileList.length)];
+        return randomLine;
+    }
+
     public static String timeFormat(int oldTime) {
         // Make a pretty string (like this: "N days" or "N minutes" or "N hours", etc.)
         int seconds = (int) (System.currentTimeMillis() / 1000) - oldTime;

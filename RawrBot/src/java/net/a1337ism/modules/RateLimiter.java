@@ -18,8 +18,7 @@ public class RateLimiter extends ListenerAdapter {
     private static Logger                     logger       = LogManager.getFormatterLogger(RawrBot.class);
     private static Marker                     LOG_EVENT    = MarkerManager.getMarker("LOG_EVENT");
 
-    private static int                        timeout      = 60000;                                       // Milliseconds
-                                                                                                           // 600000
+    private static int                        timeout      = 600000;                                      // Milliseconds
     private static int                        maxRequests  = 5;
     private static volatile Map<String, List> userRequests = new HashMap<String, List>();
 

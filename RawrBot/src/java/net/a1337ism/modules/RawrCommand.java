@@ -1,12 +1,8 @@
 package net.a1337ism.modules;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.FileUtil;
+import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.ircUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,8 +17,8 @@ public class RawrCommand extends ListenerAdapter {
     // Set up the logger stuff
     private static Logger logger    = LogManager.getFormatterLogger(RawrBot.class);
     private static Marker LOG_EVENT = MarkerManager.getMarker("LOG_EVENT");
-    public String         filename  = "data/rawr.txt";                             // Set the rawr.txt location
-    public String[]       rawrList  = readLines(filename);                         // Throw the lines into a list
+    private String        filename  = "data/rawr.txt";                             // Set the rawr.txt location
+    private String[]      rawrList  = FileUtil.readLines(filename);                // Throw the lines into a list
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
@@ -40,11 +36,11 @@ public class RawrCommand extends ListenerAdapter {
                 ircUtil.sendMessage(event, rawrHelp);
             } else if (event.getMessage().trim().startsWith("!RAWR")) {
                 // If command starts with !RAWR, in caps.
-                String rawr = getRawr().toUpperCase();
+                String rawr = MiscUtil.randomSelection(rawrList).toUpperCase();
                 ircUtil.sendMessage(event, rawr);
             } else {
                 // Otherwise, we know they just want regular !rawr
-                String rawr = getRawr();
+                String rawr = MiscUtil.randomSelection(rawrList);
                 ircUtil.sendMessage(event, rawr);
             }
         }
@@ -60,44 +56,13 @@ public class RawrCommand extends ListenerAdapter {
                 ircUtil.sendMessage(event, rawrHelp);
             } else if (event.getMessage().trim().startsWith("!RAWR")) {
                 // If command starts with !RAWR, in caps.
-                String rawr = getRawr().toUpperCase();
+                String rawr = MiscUtil.randomSelection(rawrList).toUpperCase();
                 ircUtil.sendMessage(event, rawr);
             } else {
                 // Otherwise, we know they just want regular !rawr
-                String rawr = getRawr();
+                String rawr = MiscUtil.randomSelection(rawrList);
                 ircUtil.sendMessage(event, rawr);
             }
         }
-    }
-
-    private String[] readLines(String filename) {
-        // Reads the lines from the text file and returns a list
-        try {
-            FileReader fileReader = new FileReader(filename);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            List<String> lines = new ArrayList<String>();
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                lines.add(line);
-            }
-            bufferedReader.close();
-            return lines.toArray(new String[lines.size()]);
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-        return null;
-    }
-
-    private int randomSelection() throws Exception {
-        // Randomly select a number based on the length of the list.
-        // Do not want out of index errors.
-        int randomNumber = (int) (Math.random() * rawrList.length);
-        return randomNumber;
-    }
-
-    private String getRawr() throws Exception {
-        // Choose a random rawr based on the random number selected.
-        String randomRawr = rawrList[randomSelection()];
-        return randomRawr;
     }
 }

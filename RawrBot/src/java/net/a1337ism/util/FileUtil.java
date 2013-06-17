@@ -14,12 +14,12 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 public class FileUtil {
-	// Set up the logging stuff
+    // Set up the logging stuff
     private static Logger logger    = LogManager.getFormatterLogger(RawrBot.class);
     private static Marker LOG_EVENT = MarkerManager.getMarker("LOG_EVENT");
-	
-    private String[] readLines(String filename) {
-    	// Reads the lines from the text file and returns a list
+
+    public static String[] readLines(String filename) {
+        // Reads the lines from the text file and returns a list
         try {
             FileReader fileReader = new FileReader(filename);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -36,5 +36,4 @@ public class FileUtil {
         return null;
     }
 
-	
 }
