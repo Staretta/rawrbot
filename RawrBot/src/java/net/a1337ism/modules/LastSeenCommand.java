@@ -1,5 +1,6 @@
 package net.a1337ism.modules;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ public class LastSeenCommand extends ListenerAdapter {
         try {
             // Check if message starts with !lastseen
             if (event.getMessage().trim().toLowerCase().startsWith("!lastseen")) {
-            	
-            	// If they are rate limited, then return. 
+
+                // If they are rate limited, then return.
                 if (RateLimiter.isRateLimited(event.getUser().getNick()))
                     return;
-                
-                // Spilt the message, so we can get the different parameters
+
+                // Split the message, so we can get the different parameters
                 String[] param = event.getMessage().trim().split("\\s", 3);
                 if (param.length == 1) {
                     // If message contains only 1 string, then send them the correct syntax
@@ -204,10 +205,16 @@ public class LastSeenCommand extends ListenerAdapter {
         ResultSet resultSet;
         String nickSearch = "%" + nick + "%";
         List<String> message = new ArrayList<>();
+
         if (nick != null) {
             try {
-                resultSet = sqlitedb.executeQry("SELECT * FROM lastseen_nick WHERE Nickname LIKE "
-                        + sqlitedb.sqlQuote(nickSearch) + " ORDER BY Time DESC LIMIT " + limit);
+                PreparedStatement selectNickname = sqlitedb.getConnection().prepareStatement(
+                        "SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
+                selectNickname.setString(1, nickSearch);
+                selectNickname.setInt(2, limit);
+                selectNickname.execute();
+                resultSet = selectNickname.getResultSet();
+                selectNickname.close();
                 message = getLastSeen(resultSet, limit);
             } catch (SQLException ex) {
                 logger.error(ex);
@@ -253,10 +260,16 @@ public class LastSeenCommand extends ListenerAdapter {
         ResultSet resultSet;
         String hostSearch = "%" + host + "%";
         List<String> message = new ArrayList<>();
+
         if (host != null) {
             try {
-                resultSet = sqlitedb.executeQry("SELECT * FROM lastseen_nick WHERE Hostname LIKE "
-                        + sqlitedb.sqlQuote(hostSearch) + " ORDER BY Time DESC LIMIT " + limit);
+                PreparedStatement selectHostname = sqlitedb.getConnection().prepareStatement(
+                        "SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
+                selectHostname.setString(1, hostSearch);
+                selectHostname.setInt(2, limit);
+                selectHostname.execute();
+                resultSet = selectHostname.getResultSet();
+                selectHostname.close();
                 message = getLastSeen(resultSet, limit);
             } catch (SQLException ex) {
                 logger.error(ex);
@@ -299,60 +312,102 @@ public class LastSeenCommand extends ListenerAdapter {
 
     private void setLastSeen(String nickname, String hostname, String message, int timeNow, boolean action) {
         ResultSet resultSet = null;
+        String sUpdateNickname = "UPDATE lastseen_nick SET Hostname = ? , Time = ? , Line = ? , Action = ? WHERE Nickname = ?";
+        String sUpdateHostname = "UPDATE lastseen_host SET Nickname = ? , Time = ? , Line = ? , Action = ? WHERE Hostname = ?";
+        String sInsertNickname = "INSERT INTO lastseen_nick VALUES (?,?,?,?,?)";
+        String sInsertHostname = "INSERT INTO lastseen_host VALUES (?,?,?,?,?)";
+
         try {
-            // Insert data by nickname
+            sqlitedb.conn.setAutoCommit(false);
+            PreparedStatement updateHostname = sqlitedb.getConnection().prepareStatement(sUpdateHostname);
+            PreparedStatement updateNickname = sqlitedb.getConnection().prepareStatement(sUpdateNickname);
+            PreparedStatement insertHostname = sqlitedb.getConnection().prepareStatement(sInsertHostname);
+            PreparedStatement insertNickname = sqlitedb.getConnection().prepareStatement(sInsertNickname);
+
+            // Insert by nickname
             resultSet = sqlitedb.executeQry("SELECT * FROM lastseen_nick WHERE Nickname = "
                     + sqlitedb.sqlQuote(nickname));
+            // If the set is empty, then the nickname doesn't exist in the database.
             if (!resultSet.isBeforeFirst()) {
-                // If the result set is empty, then the nickname doesn't exist in the database.
-                // Insert the new nickname into the database, along with some additional information.
-                if (action == true) {
-                    sqlitedb.executeStmt("INSERT INTO lastseen_nick VALUES(" + sqlitedb.sqlQuote(nickname) + ", "
-                            + sqlitedb.sqlQuote(hostname) + ", " + sqlitedb.sqlQuote(message) + ", " + timeNow + ", 1)");
-                } else {
-                    sqlitedb.executeStmt("INSERT INTO lastseen_nick VALUES(" + sqlitedb.sqlQuote(nickname) + ", "
-                            + sqlitedb.sqlQuote(hostname) + ", " + sqlitedb.sqlQuote(message) + ", " + timeNow + ", 0)");
-                }
+                insertNickname.setString(1, nickname);
+                insertNickname.setString(2, hostname);
+                insertNickname.setString(3, message);
+                insertNickname.setInt(4, timeNow);
+                // If it's an action message, then insert as an action.
+                if (action == true)
+                    insertNickname.setBoolean(5, true);
+                else
+                    insertNickname.setBoolean(5, false);
+                insertNickname.executeUpdate();
             } else {
-                // If the result set contains a nickname, then update the information instead.
-                if (action == true) {
-                    sqlitedb.executeStmt("UPDATE lastseen_nick SET Hostname = " + sqlitedb.sqlQuote(hostname)
-                            + ", Time = " + timeNow + ", Line = " + sqlitedb.sqlQuote(message)
-                            + ", Action = 1 WHERE Nickname = " + sqlitedb.sqlQuote(nickname));
-                } else {
-                    sqlitedb.executeStmt("UPDATE lastseen_nick SET Hostname = " + sqlitedb.sqlQuote(hostname)
-                            + ", Time = " + timeNow + ", Line = " + sqlitedb.sqlQuote(message)
-                            + ", Action = 0 WHERE Nickname = " + sqlitedb.sqlQuote(nickname));
-                }
+                updateNickname.setString(1, hostname);
+                updateNickname.setInt(2, timeNow);
+                updateNickname.setString(3, message);
+                updateNickname.setString(5, nickname);
+                // If it's an action message, then insert as an action.
+                if (action == true)
+                    updateNickname.setBoolean(4, true);
+                else
+                    updateNickname.setBoolean(4, false);
+                updateNickname.executeUpdate();
             }
 
-            // Insert data by hostname
+            // Insert by hostname
             resultSet = sqlitedb.executeQry("SELECT * FROM lastseen_host WHERE Hostname = "
                     + sqlitedb.sqlQuote(hostname));
+            // If the set is emtpy, then the hostname doesn't exist in the database.
             if (!resultSet.isBeforeFirst()) {
-                // If the result set is empty, then the hostname doesn't exist in the database.
-                // Insert the new hostname into the database, along with some additional information.
-                if (action == true) {
-                    sqlitedb.executeStmt("INSERT INTO lastseen_host VALUES(" + sqlitedb.sqlQuote(nickname) + ", "
-                            + sqlitedb.sqlQuote(hostname) + ", " + sqlitedb.sqlQuote(message) + ", " + timeNow + ", 1)");
-                } else {
-                    sqlitedb.executeStmt("INSERT INTO lastseen_host VALUES(" + sqlitedb.sqlQuote(nickname) + ", "
-                            + sqlitedb.sqlQuote(hostname) + ", " + sqlitedb.sqlQuote(message) + ", " + timeNow + ", 0)");
-                }
+                insertHostname.setString(1, nickname);
+                insertHostname.setString(2, hostname);
+                insertHostname.setString(3, message);
+                insertHostname.setInt(4, timeNow);
+                // If it's an action message, then insert as an action.
+                if (action == true)
+                    insertHostname.setBoolean(5, true);
+                else
+                    insertHostname.setBoolean(5, false);
+                insertHostname.executeUpdate();
             } else {
-                // If the result set contains a nickname, then update the information instead.
-                if (action == true) {
-                    sqlitedb.executeStmt("UPDATE lastseen_host SET Nickname = " + sqlitedb.sqlQuote(nickname)
-                            + ", Time = " + timeNow + ", Line = " + sqlitedb.sqlQuote(message)
-                            + ", Action = 1 WHERE Hostname = " + sqlitedb.sqlQuote(hostname));
-                } else {
-                    sqlitedb.executeStmt("UPDATE lastseen_host SET Nickname = " + sqlitedb.sqlQuote(nickname)
-                            + ", Time = " + timeNow + ", Line = " + sqlitedb.sqlQuote(message)
-                            + ", Action = 0 WHERE Hostname = " + sqlitedb.sqlQuote(hostname));
+                updateHostname.setString(1, nickname);
+                updateHostname.setInt(2, timeNow);
+                updateHostname.setString(3, message);
+                updateHostname.setString(5, hostname);
+                // If it's an action message, then insert as an action.
+                if (action == true)
+                    updateHostname.setBoolean(4, true);
+                else
+                    updateHostname.setBoolean(4, false);
+                updateHostname.executeUpdate();
+            }
+
+            // After it's all said and done, we need to commit it to the database.
+            sqlitedb.getConnection().commit();
+            if (insertNickname != null)
+                insertNickname.close();
+            if (updateNickname != null)
+                updateNickname.close();
+            if (insertHostname != null)
+                insertHostname.close();
+            if (updateHostname != null)
+                updateHostname.close();
+        } catch (SQLException ex) {
+            if (sqlitedb.getConnection() != null) {
+                try {
+                    logger.error("Lastseen DB Update is being rolled back.");
+                    sqlitedb.getConnection().rollback();
+                } catch (SQLException ex1) {
+                    logger.error("Lastseen DB rollback failed.");
                 }
             }
-        } catch (SQLException ex) {
-            logger.error(ex);
+        } finally {
+            if (sqlitedb.getConnection() != null) {
+                try {
+                    sqlitedb.getConnection().setAutoCommit(true);
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

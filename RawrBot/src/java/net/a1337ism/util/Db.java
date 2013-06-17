@@ -2,6 +2,7 @@ package net.a1337ism.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -60,6 +61,11 @@ abstract class Db {
 
     public Statement getStatement() {
         return statement;
+    }
+
+    public PreparedStatement prepareStmt(String statement) throws SQLException {
+        PreparedStatement prepstmt = conn.prepareStatement(statement);
+        return prepstmt;
     }
 
     public void executeStmt(String instruction) throws SQLException {
