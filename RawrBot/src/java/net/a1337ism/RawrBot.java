@@ -88,8 +88,10 @@ public class RawrBot extends ListenerAdapter implements Listener {
 
     @Override
     public void onConnect(ConnectEvent event) throws Exception {
-        logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-        event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
+        if (!bot_password.isEmpty()) {
+            logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
+            event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
+        }
     }
 
     /**
