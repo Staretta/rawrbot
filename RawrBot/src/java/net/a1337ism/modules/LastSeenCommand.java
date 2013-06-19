@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.modules.RateLimiter;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.SqliteDb;
 import net.a1337ism.util.ircUtil;

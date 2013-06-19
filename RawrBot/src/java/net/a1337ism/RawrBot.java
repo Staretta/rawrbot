@@ -174,7 +174,6 @@ public class RawrBot extends ListenerAdapter implements Listener {
 
         // TODO: Spring framework
         // TODO: Add while loop, and make it grab this stuff from a config file maybe?
-        // TODO: CHANGE HOW CONFIG FILE IS LOADED. WANT TO MAKE IT OUTSIDE OF JAR FILE, NOT INSIDE OF IT.
         // This class is a listener, so add it to the bots known listeners
         // bot.getListenerManager().addListener(new RawrBot());
         // bot.getListenerManager().addListener(new TimeCommand());

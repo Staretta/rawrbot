@@ -24,18 +24,18 @@ public class UptimeCommand extends ListenerAdapter {
     // Set up the logger stuff
     private static Logger logger         = LogManager.getFormatterLogger(RawrBot.class);
     private static Marker LOG_EVENT      = MarkerManager.getMarker("LOG_EVENT");
-    private long          bot_start_time = System.currentTimeMillis();                 // Set time when the bot
-                                                                                        // starts.
+    private long          bot_start_time = System.currentTimeMillis();                  // Set time when the bot
+                                                                                         // starts.
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
         // Check if message starts with !uptime
         if (event.getMessage().trim().toLowerCase().startsWith("!uptime")) {
-        	
-        	// If they are rate limited, then return. 
+
+            // If they are rate limited, then return.
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
-        	
+
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
@@ -96,8 +96,6 @@ public class UptimeCommand extends ListenerAdapter {
                     String _days = matcher.group(2);
                     String _hours = matcher.group(3);
                     String _minutes = matcher.group(4);
-                    logger.info(_days + " " + _hours + " " + _minutes + " " + matcher.groupCount() + " "
-                            + matcher.group(1));
                     int days = _days != null ? Integer.parseInt(_days) : 0;
                     int hours = _hours != null ? Integer.parseInt(_hours) : 0;
                     int minutes = _minutes != null ? Integer.parseInt(_minutes) : 0;
