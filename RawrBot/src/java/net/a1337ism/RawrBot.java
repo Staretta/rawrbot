@@ -12,7 +12,6 @@ import net.a1337ism.modules.ReportCommand;
 import net.a1337ism.modules.RulesCommand;
 import net.a1337ism.modules.TimeCommand;
 import net.a1337ism.modules.UptimeCommand;
-import net.a1337ism.util.ircUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,9 +112,9 @@ public class RawrBot extends ListenerAdapter implements Listener {
             // logger.info(CHAN_MSG, "<" + event.getUser().getNick() + "> " + event.getMessage());
 
             // Basic hello
-            if (event.getMessage().startsWith("?hi")) {
-                ircUtil.sendMessageChannel(event, "Hello");
-            }
+            // if (event.getMessage().startsWith("?hi")) {
+            // ircUtil.sendMessageChannel(event, "Hello");
+            // }
         }
     }
 
