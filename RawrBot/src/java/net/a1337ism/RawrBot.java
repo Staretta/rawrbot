@@ -22,7 +22,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -59,31 +58,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
     @Override
     public void onMessage(final MessageEvent event) throws Exception {
         PircBotX bot = event.getBot();
-        // If this isn't a wait test, ignore.
-        // This way to handle commands is useful for listers that only listen for one command
-        if (!event.getMessage().startsWith("?waitTest start"))
-            return;
 
-        // WaitTest has started
-        event.respond("Started...");
-        WaitForQueue queue = new WaitForQueue(event.getBot());
-        // Infinite loop since we might receive messages that aren't WaitTest's.
-        while (true) {
-            // Use the waitFor() method to wait for a MessageEvent. This will block (wait) until a message event comes
-            // in, ignoring everything else
-            MessageEvent currentEvent = queue.waitFor(MessageEvent.class);
-            // Check if this message is the "ping" command
-            if (currentEvent.getMessage().startsWith("?waitTest ping"))
-                event.respond("pong");
-            // Check if this message is the "end" command
-            else if (currentEvent.getMessage().startsWith("?waitTest end")) {
-                event.respond("Stopping");
-
-                queue.close();
-                // Very important that we end the infinite loop or else the test will continue forever!
-                return;
-            }
-        }
     }
 
     @Override
