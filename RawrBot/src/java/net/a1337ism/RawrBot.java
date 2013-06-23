@@ -1,5 +1,7 @@
 package net.a1337ism;
 
+import java.io.IOException;
+
 import net.a1337ism.modules.EightballCommand;
 import net.a1337ism.modules.HelpCommand;
 import net.a1337ism.modules.JokeCommand;
@@ -18,12 +20,16 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
@@ -65,6 +71,49 @@ public class RawrBot extends ListenerAdapter implements Listener {
         if (!bot_password.isEmpty()) {
             logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
             event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
+        }
+    }
+
+    @Override
+    public void onDisconnect(DisconnectEvent event) throws Exception {
+        // come up with a less shitty way of doing this shit. shitty shit shit.
+        while (!event.getBot().isConnected()) {
+            try {
+                event.getBot().reconnect();
+                event.getBot().joinChannel(irc_channel);
+            } catch (NickAlreadyInUseException ex) {
+                try {
+                    event.getBot().changeNick(alterCollidedNick(irc_nickname));
+                    event.getBot().reconnect();
+                    event.getBot().joinChannel(irc_channel);
+                } catch (NickAlreadyInUseException nex) {
+                    event.getBot().changeNick(alterCollidedNick(irc_nickname));
+                    event.getBot().reconnect();
+                    event.getBot().joinChannel(irc_channel);
+                }
+            } catch (IOException ioex) {
+                logger.error(LOG_EVENT, "Could not connect to the server: " + ioex);
+            } catch (IrcException ircex) {
+                logger.error(LOG_EVENT, "Server wouldn't let us join: " + ircex);
+            }
+        }
+    }
+
+    @Override
+    public void onQuit(QuitEvent event) throws Exception {
+        // If we see our default nickname quit, then rename our name to it.
+        if (event.getUser().getNick().equalsIgnoreCase(irc_nickname)) {
+            event.getBot().changeNick(irc_nickname);
+        }
+    }
+
+    private String alterCollidedNick(String nickname) {
+        // If there is already a nickname with our name on the server, then we need to change our name so it'll work.
+        if (nickname.contains("Rawr")) {
+            nickname.replace("Rawr", "Rawrr");
+            return nickname;
+        } else {
+            return nickname + "_";
         }
     }
 
@@ -145,9 +194,10 @@ public class RawrBot extends ListenerAdapter implements Listener {
         bot.setVerbose(false); // Print everything, which is what you want to do 90% of the time
         bot.setAutoNickChange(true); // Automatically change nick when the current one is in use
         bot.setCapEnabled(true); // Enable CAP features
+        bot.setAutoReconnect(true);
+        bot.setAutoReconnectChannels(true);
 
         // TODO: Spring framework
-        // TODO: Add while loop, and make it grab this stuff from a config file maybe?
         // This class is a listener, so add it to the bots known listeners
         // bot.getListenerManager().addListener(new RawrBot());
         // bot.getListenerManager().addListener(new TimeCommand());

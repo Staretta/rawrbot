@@ -9,6 +9,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -18,11 +19,24 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.ReconnectEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 
 public class LogBot extends ListenerAdapter {
-    private static Logger       logger    = LogManager.getFormatterLogger(RawrBot.class);
-    private static final Marker LOG_EVENT = MarkerManager.getMarker("LOG_EVENT");
+    public static Logger       logger    = LogManager.getFormatterLogger(RawrBot.class);
+    public static final Marker LOG_EVENT = MarkerManager.getMarker("LOG_EVENT");
+
+    @Override
+    public void onDisconnect(DisconnectEvent event) throws Exception {
+        // Log the bot disconnecting from the server.
+        logger.info(LOG_EVENT, "Disconnected from server");
+    }
+
+    @Override
+    public void onReconnect(ReconnectEvent event) throws Exception {
+        // Log the bot reconnecting to the server
+        logger.info(LOG_EVENT, "Reconnecting to server");
+    }
 
     @Override
     public void onConnect(ConnectEvent event) throws Exception {
