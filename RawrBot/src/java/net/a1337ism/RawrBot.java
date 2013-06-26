@@ -4,16 +4,9 @@ import java.io.IOException;
 
 import net.a1337ism.modules.EightballCommand;
 import net.a1337ism.modules.HelpCommand;
-import net.a1337ism.modules.JokeCommand;
-import net.a1337ism.modules.LastSeenCommand;
 import net.a1337ism.modules.LogBot;
-import net.a1337ism.modules.QuoteCommand;
 import net.a1337ism.modules.RateLimiter;
 import net.a1337ism.modules.RawrCommand;
-import net.a1337ism.modules.ReportCommand;
-import net.a1337ism.modules.RulesCommand;
-import net.a1337ism.modules.TimeCommand;
-import net.a1337ism.modules.UptimeCommand;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +23,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.UnknownEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
@@ -79,7 +73,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         // come up with a less shitty way of doing this shit. shitty shit shit.
         while (!event.getBot().isConnected()) {
             try {
-                event.getBot().reconnect();
+                event.getBot().connect(irc_server, irc_port);
                 event.getBot().joinChannel(irc_channel);
             } catch (NickAlreadyInUseException ex) {
                 try {
@@ -114,6 +108,13 @@ public class RawrBot extends ListenerAdapter implements Listener {
             return nickname;
         } else {
             return nickname + "_";
+        }
+    }
+
+    @Override
+    public void onUnknown(UnknownEvent event) throws Exception {
+        if (event.getLine().startsWith("NETSPLIT")) {
+            event.getBot().disconnect();
         }
     }
 
@@ -175,6 +176,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         ListenerManager manager = new ThreadedListenerManager();
         // load the sqlite-JDBC driver using the current class loader
         Class.forName("org.sqlite.JDBC");
+        Class.forName("com.mysql.jdbc.Driver");
 
         // Log4j setup
 
@@ -204,15 +206,15 @@ public class RawrBot extends ListenerAdapter implements Listener {
         manager.addListener(new LogBot());
         manager.addListener(new RateLimiter());
         manager.addListener(new RawrBot());
-        manager.addListener(new TimeCommand());
-        manager.addListener(new JokeCommand());
-        manager.addListener(new QuoteCommand());
-        manager.addListener(new UptimeCommand());
+        // manager.addListener(new TimeCommand());
+        // manager.addListener(new JokeCommand());
+        // manager.addListener(new QuoteCommand());
+        // manager.addListener(new UptimeCommand());
         manager.addListener(new RawrCommand());
         manager.addListener(new HelpCommand());
-        manager.addListener(new LastSeenCommand());
-        manager.addListener(new ReportCommand());
-        manager.addListener(new RulesCommand());
+        // manager.addListener(new LastSeenCommand());
+        // manager.addListener(new ReportCommand());
+        // manager.addListener(new RulesCommand());
         manager.addListener(new EightballCommand());
 
         // Set our own ListenerManager
