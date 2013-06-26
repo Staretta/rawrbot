@@ -4,9 +4,16 @@ import java.io.IOException;
 
 import net.a1337ism.modules.EightballCommand;
 import net.a1337ism.modules.HelpCommand;
+import net.a1337ism.modules.JokeCommand;
+import net.a1337ism.modules.LastSeenCommand;
 import net.a1337ism.modules.LogBot;
+import net.a1337ism.modules.QuoteCommand;
 import net.a1337ism.modules.RateLimiter;
 import net.a1337ism.modules.RawrCommand;
+import net.a1337ism.modules.ReportCommand;
+import net.a1337ism.modules.RulesCommand;
+import net.a1337ism.modules.TimeCommand;
+import net.a1337ism.modules.UptimeCommand;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -206,15 +213,15 @@ public class RawrBot extends ListenerAdapter implements Listener {
         manager.addListener(new LogBot());
         manager.addListener(new RateLimiter());
         manager.addListener(new RawrBot());
-        // manager.addListener(new TimeCommand());
-        // manager.addListener(new JokeCommand());
-        // manager.addListener(new QuoteCommand());
-        // manager.addListener(new UptimeCommand());
+        manager.addListener(new TimeCommand());
+        manager.addListener(new JokeCommand());
+        manager.addListener(new QuoteCommand());
+        manager.addListener(new UptimeCommand());
         manager.addListener(new RawrCommand());
         manager.addListener(new HelpCommand());
-        // manager.addListener(new LastSeenCommand());
-        // manager.addListener(new ReportCommand());
-        // manager.addListener(new RulesCommand());
+        manager.addListener(new LastSeenCommand());
+        manager.addListener(new ReportCommand());
+        manager.addListener(new RulesCommand());
         manager.addListener(new EightballCommand());
 
         // Set our own ListenerManager
