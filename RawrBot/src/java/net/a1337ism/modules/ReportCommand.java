@@ -13,6 +13,7 @@ import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.SqliteDb;
 import net.a1337ism.util.ircUtil;
 
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -24,12 +25,14 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 public class ReportCommand extends ListenerAdapter {
     // Set up the logger stuff
-    private static Logger logger     = LogManager.getFormatterLogger(RawrBot.class);
-    private static Marker LOG_EVENT  = MarkerManager.getMarker("LOG_EVENT");
+    private static Logger logger        = LogManager.getFormatterLogger(RawrBot.class);
+    private static Marker LOG_EVENT     = MarkerManager.getMarker("LOG_EVENT");
 
     // Set up the database stuff
-    String                sUrlString = "jdbc:sqlite:data/report.db";
-    SqliteDb              sqlitedb   = new SqliteDb("org.sqlite.JDBC", sUrlString);
+    String                sUrlString    = "jdbc:sqlite:data/report.db";
+    String                sDriverString = "org.sqlite.JDBC";
+
+    // SqliteDb sqlitedb = new SqliteDb("org.sqlite.JDBC", sUrlString);
 
     public void onMessage(MessageEvent event) throws Exception {
         // If the message starts with !report
@@ -108,29 +111,16 @@ public class ReportCommand extends ListenerAdapter {
                 if (param.length == 1) {
                     // If the command is just !reports, then give them 5 newest reports.
                     int limit = 5;
-                    try {
-                        // If there is a connection to the database, then do stuff.
-                        if (sqlitedb.getConnection() != null) {
-                            List<String> reportResult = getReportAll(limit);
-                            // If reportResult == null, then we know there aren't any new reports.
-                            if (reportResult == null) {
-                                String reportNone = "No new reports.";
-                                ircUtil.sendMessage(event, reportNone);
-                            } else {
-                                // Send them the list of new reports.
-                                Iterator itr = reportResult.iterator();
-                                while (itr.hasNext())
-                                    ircUtil.sendMessage(event, itr.next().toString());
-                            }
-                        } else {
-                            // If there is no connection to the database, tell them.
-                            String reportFailure = "Error 3: No connection to the database.";
-                            ircUtil.sendMessage(event, reportFailure);
-                        }
-                    } catch (SQLException ex) {
-                        // If there was sql exception, then tell them.
-                        String reportFailure = "Error 4: General Error.";
-                        ircUtil.sendMessage(event, reportFailure);
+                    List<String> reportResult = getReportAll(limit);
+                    // If reportResult == null, then we know there aren't any new reports.
+                    if (reportResult == null) {
+                        String reportNone = "No new reports.";
+                        ircUtil.sendMessage(event, reportNone);
+                    } else {
+                        // Send them the list of new reports.
+                        Iterator itr = reportResult.iterator();
+                        while (itr.hasNext())
+                            ircUtil.sendMessage(event, itr.next().toString());
                     }
                 } else if (param[1].equalsIgnoreCase("-help") || param[1].equalsIgnoreCase("-h")) {
                     // If the second parameter is -help or -h, send them the help information.
@@ -218,59 +208,37 @@ public class ReportCommand extends ListenerAdapter {
                         ircUtil.sendMessage(event, reportSyntax);
                     } else {
                         String nickname = param[2].toString();
-                        try {
-                            // If there is a connection to the database, then do stuff.
-                            if (sqlitedb.getConnection() != null) {
-                                List<String> reportResult = getReportNick(nickname);
-                                // If reportResult is null, then there are no reports for that nickname.
-                                if (reportResult == null) {
-                                    String reportNone = "No reports for nickname: " + nickname;
-                                    ircUtil.sendMessage(event, reportNone);
-                                } else {
-                                    // Send them the information they searched for.
-                                    Iterator itr = reportResult.iterator();
-                                    while (itr.hasNext())
-                                        ircUtil.sendMessage(event, itr.next().toString());
-                                }
-                            } else {
-                                // If there isn't a connection to the database, tell them.
-                                String reportFailure = "Error 3: No connection to the database.";
-                                ircUtil.sendMessage(event, reportFailure);
-                            }
-                        } catch (SQLException ex) {
-                            // If there was an exception, tell them there was an exception.
-                            String reportFailure = "Error 4: General Error.";
-                            ircUtil.sendMessage(event, reportFailure);
+                        // If there is a connection to the database, then do stuff.
+                        List<String> reportResult = getReportNick(nickname);
+                        // If reportResult is null, then there are no reports for that nickname.
+                        if (reportResult == null) {
+                            String reportNone = "No reports for nickname: " + nickname;
+                            ircUtil.sendMessage(event, reportNone);
+                        } else {
+                            // Send them the information they searched for.
+                            Iterator itr = reportResult.iterator();
+                            while (itr.hasNext())
+                                ircUtil.sendMessage(event, itr.next().toString());
                         }
                     }
                 } else {
                     // Otherwise, they just want "x" amount of the newest available reports.
                     String limit = param[1].toString();
                     try {
-                        if (sqlitedb.getConnection() != null) {
-                            // Check to see if the limit they input is a valid number
-                            int inputNumber = Integer.parseInt(limit);
-                            List<String> reportResult = getReportAll(inputNumber);
-                            // If reportResult is null, then we know there are no new reports.
-                            if (reportResult == null) {
-                                String reportNone = "No new reports.";
-                                ircUtil.sendMessage(event, reportNone);
-                            } else {
-                                // Send them the reports.
-                                Iterator itr = reportResult.iterator();
-                                while (itr.hasNext()) {
-                                    ircUtil.sendMessage(event, itr.next().toString());
-                                }
-                            }
+                        // Check to see if the limit they input is a valid number
+                        int inputNumber = Integer.parseInt(limit);
+                        List<String> reportResult = getReportAll(inputNumber);
+                        // If reportResult is null, then we know there are no new reports.
+                        if (reportResult == null) {
+                            String reportNone = "No new reports.";
+                            ircUtil.sendMessage(event, reportNone);
                         } else {
-                            // If there is no connection to the database, let them know.
-                            String reportFailure = "Error 3: No connection to the database.";
-                            ircUtil.sendMessage(event, reportFailure);
+                            // Send them the reports.
+                            Iterator itr = reportResult.iterator();
+                            while (itr.hasNext()) {
+                                ircUtil.sendMessage(event, itr.next().toString());
+                            }
                         }
-                    } catch (SQLException ex) {
-                        // If there was an SQL exception, let them know.
-                        String reportFailure = "Error 4: General Error.";
-                        ircUtil.sendMessage(event, reportFailure);
                     } catch (NumberFormatException nfe) {
                         // If the number they input wasn't a number, let them know.
                         String reportFailure = "Error 5: " + limit + " is not a valid number";
@@ -340,23 +308,27 @@ public class ReportCommand extends ListenerAdapter {
     }
 
     private byte addReport(String reason, String reportedNick, String fromNick) {
+        // Set up the connection, and the statement
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        PreparedStatement insertReport = null;
+
         // If there is no connection, return 2.
-        if (sqlitedb.getConnection() != null) {
+        if (db.getConnection() != null) {
             String dateNow = MiscUtil.dateFormat();
             try {
-                PreparedStatement insertReport = sqlitedb.getConnection().prepareStatement(
+                insertReport = db.getConnection().prepareStatement(
                         "INSERT INTO reports ( 'Reported_Nick', 'From_Nick', 'Reason', 'Time' ) VALUES (?,?,?,?)");
                 insertReport.setString(1, reportedNick);
                 insertReport.setString(2, fromNick);
                 insertReport.setString(3, reason);
                 insertReport.setString(4, dateNow);
                 insertReport.execute();
-                insertReport.close();
                 return 1;
             } catch (SQLException ex) {
-                // If there was an exception, set the result to 2, and log it.
-                // logger.error("SQLException: Could not add report to database. " + ex.getMessage());
                 return 3;
+            } finally {
+                DbUtils.closeQuietly(insertReport);
+                DbUtils.closeQuietly(db.getConnection());
             }
         }
         // No connection to the database.
@@ -364,24 +336,26 @@ public class ReportCommand extends ListenerAdapter {
     }
 
     private byte delReport(String ID) {
+        // Set up the connection, and the statement
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        PreparedStatement selectReport = null;
+        PreparedStatement deleteReport = null;
+
         // If there is no connection, return false.
-        if (sqlitedb.getConnection() != null) {
+        if (db.getConnection() != null) {
             try {
                 // Try and parse their input to see if it's a valid integer.
                 int inputNumber = Integer.parseInt(ID);
-                PreparedStatement selectReport = sqlitedb.getConnection().prepareStatement(
-                        "SELECT * FROM reports WHERE ID = ?");
+                selectReport = db.getConnection().prepareStatement("SELECT * FROM reports WHERE ID = ?");
                 selectReport.setInt(1, inputNumber);
                 ResultSet resultSet = selectReport.executeQuery();
                 if (!resultSet.isBeforeFirst()) {
                     selectReport.close();
                     return 2;
                 } else {
-                    PreparedStatement deleteReport = sqlitedb.getConnection().prepareStatement(
-                            "DELETE FROM reports WHERE ID = ?");
+                    deleteReport = db.getConnection().prepareStatement("DELETE FROM reports WHERE ID = ?");
                     deleteReport.setInt(1, inputNumber);
                     deleteReport.execute();
-                    deleteReport.close();
                     return 1;
                 }
             } catch (SQLException ex) {
@@ -390,20 +364,27 @@ public class ReportCommand extends ListenerAdapter {
             } catch (NumberFormatException nfe) {
                 // logger.error("NumberFormatException: Not a valid integer.");
                 return 5;
+            } finally {
+                DbUtils.closeQuietly(selectReport);
+                DbUtils.closeQuietly(deleteReport);
+                DbUtils.closeQuietly(db.getConnection());
             }
         }
         return 3;
     }
 
     private String getReportID(String ID) {
-        ResultSet resultSet;
-        if (sqlitedb.getConnection() != null) {
+        // Set up the connection, and the result set
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        ResultSet resultSet = null;
+        PreparedStatement selectReport = null;
+
+        if (db.getConnection() != null) {
             try {
                 // Try and parse their input to see if it's a valid integer.
                 int inputNumber = Integer.parseInt(ID);
 
-                PreparedStatement selectReport = sqlitedb.getConnection().prepareStatement(
-                        "SELECT * FROM reports WHERE ID = ?");
+                selectReport = db.getConnection().prepareStatement("SELECT * FROM reports WHERE ID = ?");
                 selectReport.setInt(1, inputNumber);
                 resultSet = selectReport.executeQuery();
                 if (!resultSet.isBeforeFirst()) {
@@ -419,43 +400,61 @@ public class ReportCommand extends ListenerAdapter {
                 return "4";
             } catch (NumberFormatException nfe) {
                 return "5";
+            } finally {
+                DbUtils.closeQuietly(db.getConnection(), selectReport, resultSet);
             }
         }
         return "3";
     }
 
-    private List<String> getReportNick(String nickname) throws SQLException {
-        String nickSearch = "%" + nickname + "%";
+    private List<String> getReportNick(String nickname) {
+        // Set up the connection, and the result set
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        ResultSet resultSet = null;
+        PreparedStatement selectReport = null;
+        List<String> message = null;
+
         // TODO: Add a default limit, and be able to pass limit to reports.
-        int limit = 5;
-        PreparedStatement selectReport = sqlitedb.getConnection().prepareStatement(
-                "SELECT * FROM reports WHERE Reported_Nick LIKE ? LIMIT ?");
-        selectReport.setString(1, nickSearch);
-        selectReport.setInt(2, limit);
-        ResultSet resultSet = selectReport.executeQuery();
-        if (!resultSet.isBeforeFirst()) {
-            selectReport.close();
-            return null;
-        } else {
-            List<String> message = resultSetParser(resultSet);
-            selectReport.close();
-            return message;
+        try {
+            int limit = 5;
+            selectReport = db.getConnection().prepareStatement(
+                    "SELECT * FROM reports WHERE Reported_Nick LIKE ? LIMIT ?");
+            selectReport.setString(1, "%" + nickname + "%");
+            selectReport.setInt(2, limit);
+            resultSet = selectReport.executeQuery();
+
+            if (resultSet.isBeforeFirst())
+                message = resultSetParser(resultSet);
+
+        } catch (SQLException ignore) {
+        } finally {
+            DbUtils.closeQuietly(db.getConnection(), selectReport, resultSet);
         }
+
+        return message;
     }
 
-    private List<String> getReportAll(int inputNumber) throws SQLException {
-        PreparedStatement selectReports = sqlitedb.getConnection().prepareStatement(
-                "SELECT * FROM reports ORDER BY ID DESC LIMIT ?");
-        selectReports.setInt(1, inputNumber);
-        ResultSet resultSet = selectReports.executeQuery();
-        if (!resultSet.isBeforeFirst()) {
-            selectReports.close();
-            return null;
-        } else {
-            List<String> message = resultSetParser(resultSet);
-            selectReports.close();
-            return message;
+    private List<String> getReportAll(int inputNumber) {
+        // Set up the connection, and the result set
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        ResultSet resultSet = null;
+        PreparedStatement selectReports = null;
+        List<String> message = null;
+
+        try {
+            selectReports = db.getConnection().prepareStatement("SELECT * FROM reports ORDER BY ID DESC LIMIT ?");
+            selectReports.setInt(1, inputNumber);
+            resultSet = selectReports.executeQuery();
+
+            if (resultSet.isBeforeFirst())
+                message = resultSetParser(resultSet);
+
+        } catch (SQLException ignore) {
+        } finally {
+            DbUtils.closeQuietly(db.getConnection(), selectReports, resultSet);
         }
+
+        return message;
     }
 
     private List<String> resultSetParser(ResultSet resultSet) throws SQLException {

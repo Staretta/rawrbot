@@ -3,8 +3,13 @@ package net.a1337ism.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class MiscUtil {
+
+    // URL Regex matching
+    static String  regex     = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
+    static Pattern URL_REGEX = Pattern.compile(regex);
 
     public static int randomNumber(int fileLength) {
         // Chooses a random number based on the length of a list.
@@ -18,6 +23,19 @@ public class MiscUtil {
         // Chooses a random selection from a list of lines.
         String randomLine = fileList[randomNumber(fileList.length)];
         return randomLine;
+    }
+
+    public static String redactURL(String line) {
+        String[] words = null;
+        String message = "";
+        words = line.split("\\s");
+        for (String word : words) {
+            if (URL_REGEX.matcher(word).matches()) {
+                word = "URL_REDACTED";
+            }
+            message += word + " ";
+        }
+        return message.trim();
     }
 
     public static String timeFormat(int oldTime) {

@@ -6,14 +6,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import net.a1337ism.RawrBot;
-import net.a1337ism.modules.RateLimiter;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.SqliteDb;
 import net.a1337ism.util.ircUtil;
 
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -25,16 +24,14 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 public class LastSeenCommand extends ListenerAdapter {
     // Set up the logger stuff
-    private static Logger logger     = LogManager.getFormatterLogger(RawrBot.class);
-    private static Marker LOG_EVENT  = MarkerManager.getMarker("LOG_EVENT");
+    private static Logger logger        = LogManager.getFormatterLogger(RawrBot.class);
+    private static Marker LOG_EVENT     = MarkerManager.getMarker("LOG_EVENT");
 
     // Set up the database stuff
-    String                sUrlString = "jdbc:sqlite:data/lastseen.db";
-    SqliteDb              sqlitedb   = new SqliteDb("org.sqlite.JDBC", sUrlString);
+    String                sUrlString    = "jdbc:sqlite:data/lastseen.db";
+    String                sDriverString = "org.sqlite.JDBC";
 
-    // URL Regex matching
-    String                regex      = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
-    Pattern               URL_REGEX  = Pattern.compile(regex);
+    // SqliteDb db = new SqliteDb("org.sqlite.JDBC", sUrlString);
 
     public void onMessage(MessageEvent event) throws Exception {
         // Get the last message to the channel and update the database
@@ -202,29 +199,37 @@ public class LastSeenCommand extends ListenerAdapter {
         setLastSeenAction(event);
     }
 
+    private SqliteDb dbConnect() {
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        return db;
+    }
+
     private List<String> getLastSeenNick(String nick) {
         // Need to send a default for limit, if not specified.
         return getLastSeenNick(nick, 5);
     }
 
     private List<String> getLastSeenNick(String nick, int limit) {
-        ResultSet resultSet;
-        String nickSearch = "%" + nick + "%";
+        ResultSet resultSet = null; // If somehow the statement dies, it'll return null.
         List<String> message = new ArrayList<>();
+        SqliteDb db = dbConnect(); // Connect to the database.
+        PreparedStatement selectNickname = null;
 
-        if (nick != null) {
-            try {
-                PreparedStatement selectNickname = sqlitedb.getConnection().prepareStatement(
-                        "SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
-                selectNickname.setString(1, nickSearch);
-                selectNickname.setInt(2, limit);
-                resultSet = selectNickname.executeQuery();
-                message = getLastSeen(resultSet, limit);
-                selectNickname.close();
-            } catch (SQLException ex) {
-                logger.error(ex);
-            }
+        try {
+            selectNickname = db.getConnection().prepareStatement(
+                    "SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
+            selectNickname.setString(1, "%" + nick + "%");
+            selectNickname.setInt(2, limit);
+            resultSet = selectNickname.executeQuery();
+            message = getLastSeen(resultSet, limit);
+        } catch (SQLException ex) {
+            logger.error(ex);
+        } finally {
+            DbUtils.closeQuietly(resultSet); // Close the result set
+            DbUtils.closeQuietly(selectNickname); // close the prepared statement.
+            DbUtils.closeQuietly(db.getConnection()); // After everything is done, close the connection to the database.
         }
+
         return message;
     }
 
@@ -262,23 +267,26 @@ public class LastSeenCommand extends ListenerAdapter {
     }
 
     private List<String> getLastSeenHost(String host, int limit) {
-        ResultSet resultSet;
-        String hostSearch = "%" + host + "%";
+        ResultSet resultSet = null; // If somehow the statement dies, it'll return null.
         List<String> message = new ArrayList<>();
+        SqliteDb db = dbConnect(); // Connect to the database.
+        PreparedStatement selectHostname = null;
 
-        if (host != null) {
-            try {
-                PreparedStatement selectHostname = sqlitedb.getConnection().prepareStatement(
-                        "SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
-                selectHostname.setString(1, hostSearch);
-                selectHostname.setInt(2, limit);
-                resultSet = selectHostname.executeQuery();
-                message = getLastSeen(resultSet, limit);
-                selectHostname.close();
-            } catch (SQLException ex) {
-                logger.error(ex);
-            }
+        try {
+            selectHostname = db.getConnection().prepareStatement(
+                    "SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
+            selectHostname.setString(1, "%" + host + "%");
+            selectHostname.setInt(2, limit);
+            resultSet = selectHostname.executeQuery();
+            message = getLastSeen(resultSet, limit);
+        } catch (SQLException ex) {
+            logger.error(ex);
+        } finally {
+            DbUtils.closeQuietly(resultSet); // Close the result set
+            DbUtils.closeQuietly(selectHostname); // close the prepared statement.
+            DbUtils.closeQuietly(db.getConnection()); // After everything is done, close the connection to the database.
         }
+
         return message;
     }
 
@@ -287,16 +295,15 @@ public class LastSeenCommand extends ListenerAdapter {
         if (event.getMessage().startsWith("!"))
             return;
 
-        if (sqlitedb.getConnection() != null) {
-            String nickname = event.getUser().getNick();
-            String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
-            String message = event.getMessage();
-            message = redactURL(message);
-            int timeNow = (int) (System.currentTimeMillis() / 1000);
-            boolean action = false;
-            // Throw some values to lastseen function so that we save space probably!
-            setLastSeen(nickname, hostname, message, timeNow, action);
-        }
+        String nickname = event.getUser().getNick();
+        String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
+        String message = event.getMessage();
+        message = MiscUtil.redactURL(message);
+        int timeNow = (int) (System.currentTimeMillis() / 1000);
+        boolean action = false;
+        // Throw some values to lastseen function so that we save space probably!
+        setLastSeen(nickname, hostname, message, timeNow, action);
+
     }
 
     private void setLastSeenAction(ActionEvent event) {
@@ -304,35 +311,35 @@ public class LastSeenCommand extends ListenerAdapter {
         if (event.getMessage().startsWith("!"))
             return;
 
-        if (sqlitedb.getConnection() != null) {
-            String nickname = event.getUser().getNick();
-            String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
-            String message = event.getMessage();
-            message = redactURL(message);
-            int timeNow = (int) (System.currentTimeMillis() / 1000);
-            boolean action = true;
-            // Throw some values to lastseen function so that we save space probably!
-            setLastSeen(nickname, hostname, message, timeNow, action);
-        }
+        String nickname = event.getUser().getNick();
+        String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
+        String message = event.getMessage();
+        message = MiscUtil.redactURL(message);
+        int timeNow = (int) (System.currentTimeMillis() / 1000);
+        boolean action = true;
+        // Throw some values to lastseen function so that we save space probably!
+        setLastSeen(nickname, hostname, message, timeNow, action);
     }
 
     private void setLastSeen(String nickname, String hostname, String message, int timeNow, boolean action) {
         ResultSet resultSet = null;
-        String sUpdateNickname = "UPDATE lastseen_nick SET Hostname = ? , Time = ? , Line = ? , Action = ? WHERE Nickname = ?";
-        String sUpdateHostname = "UPDATE lastseen_host SET Nickname = ? , Time = ? , Line = ? , Action = ? WHERE Hostname = ?";
-        String sInsertNickname = "INSERT INTO lastseen_nick VALUES (?,?,?,?,?)";
-        String sInsertHostname = "INSERT INTO lastseen_host VALUES (?,?,?,?,?)";
+        SqliteDb db = dbConnect();
+        PreparedStatement updateHostname = null;
+        PreparedStatement updateNickname = null;
+        PreparedStatement insertHostname = null;
+        PreparedStatement insertNickname = null;
 
         try {
-            sqlitedb.conn.setAutoCommit(false);
-            PreparedStatement updateHostname = sqlitedb.getConnection().prepareStatement(sUpdateHostname);
-            PreparedStatement updateNickname = sqlitedb.getConnection().prepareStatement(sUpdateNickname);
-            PreparedStatement insertHostname = sqlitedb.getConnection().prepareStatement(sInsertHostname);
-            PreparedStatement insertNickname = sqlitedb.getConnection().prepareStatement(sInsertNickname);
+            db.getConnection().setAutoCommit(false);
+            updateHostname = db.getConnection().prepareStatement(
+                    "UPDATE lastseen_host SET Nickname = ? , Time = ? , Line = ? , Action = ? WHERE Hostname = ?");
+            updateNickname = db.getConnection().prepareStatement(
+                    "UPDATE lastseen_nick SET Hostname = ? , Time = ? , Line = ? , Action = ? WHERE Nickname = ?");
+            insertHostname = db.getConnection().prepareStatement("INSERT INTO lastseen_host VALUES (?,?,?,?,?)");
+            insertNickname = db.getConnection().prepareStatement("INSERT INTO lastseen_nick VALUES (?,?,?,?,?)");
 
             // Insert by nickname
-            resultSet = sqlitedb.executeQry("SELECT * FROM lastseen_nick WHERE Nickname = "
-                    + sqlitedb.sqlQuote(nickname));
+            resultSet = db.executeQry("SELECT * FROM lastseen_nick WHERE Nickname = " + db.sqlQuote(nickname));
             // If the set is empty, then the nickname doesn't exist in the database.
             if (!resultSet.isBeforeFirst()) {
                 insertNickname.setString(1, nickname);
@@ -359,8 +366,7 @@ public class LastSeenCommand extends ListenerAdapter {
             }
 
             // Insert by hostname
-            resultSet = sqlitedb.executeQry("SELECT * FROM lastseen_host WHERE Hostname = "
-                    + sqlitedb.sqlQuote(hostname));
+            resultSet = db.executeQry("SELECT * FROM lastseen_host WHERE Hostname = " + db.sqlQuote(hostname));
             // If the set is emtpy, then the hostname doesn't exist in the database.
             if (!resultSet.isBeforeFirst()) {
                 insertHostname.setString(1, nickname);
@@ -385,48 +391,28 @@ public class LastSeenCommand extends ListenerAdapter {
                     updateHostname.setBoolean(4, false);
                 updateHostname.executeUpdate();
             }
-
-            // After it's all said and done, we need to commit it to the database.
-            sqlitedb.getConnection().commit();
-            if (insertNickname != null)
-                insertNickname.close();
-            if (updateNickname != null)
-                updateNickname.close();
-            if (insertHostname != null)
-                insertHostname.close();
-            if (updateHostname != null)
-                updateHostname.close();
         } catch (SQLException ex) {
-            if (sqlitedb.getConnection() != null) {
+            if (db.getConnection() != null) {
                 try {
                     logger.error("Lastseen DB Update is being rolled back.");
-                    sqlitedb.getConnection().rollback();
+                    DbUtils.rollback(db.getConnection());
                 } catch (SQLException ex1) {
                     logger.error("Lastseen DB rollback failed.");
                 }
             }
         } finally {
-            if (sqlitedb.getConnection() != null) {
-                try {
-                    sqlitedb.getConnection().setAutoCommit(true);
-                } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+            try {
+                db.getConnection().setAutoCommit(true);
+            } catch (SQLException ingore) {
+            } finally {
+                // Need to close the statements and result sets since we are done with them.
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(insertNickname);
+                DbUtils.closeQuietly(updateNickname);
+                DbUtils.closeQuietly(insertHostname);
+                DbUtils.closeQuietly(updateHostname);
+                DbUtils.commitAndCloseQuietly(db.getConnection()); // then we close the connection to the db.
             }
         }
-    }
-
-    private String redactURL(String line) {
-        String[] words = null;
-        String message = "";
-        words = line.split("\\s");
-        for (String word : words) {
-            if (URL_REGEX.matcher(word).matches()) {
-                word = "URL_REDACTED";
-            }
-            message += word + " ";
-        }
-        return message.trim();
     }
 }

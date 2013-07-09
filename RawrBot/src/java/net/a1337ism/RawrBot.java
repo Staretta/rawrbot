@@ -1,7 +1,5 @@
 package net.a1337ism;
 
-import java.io.IOException;
-
 import net.a1337ism.modules.EightballCommand;
 import net.a1337ism.modules.HelpCommand;
 import net.a1337ism.modules.JokeCommand;
@@ -14,14 +12,13 @@ import net.a1337ism.modules.ReportCommand;
 import net.a1337ism.modules.RulesCommand;
 import net.a1337ism.modules.TimeCommand;
 import net.a1337ism.modules.UptimeCommand;
+import net.a1337ism.util.ircUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -49,22 +46,34 @@ public class RawrBot extends ListenerAdapter implements Listener {
      */
 
     // Log4j2 Stuff
-    private static Logger       logger       = LogManager.getFormatterLogger(RawrBot.class);
-    private static final Marker LOG_EVENT    = MarkerManager.getMarker("LOG_EVENT");
+    private static Logger       logger        = LogManager.getFormatterLogger(RawrBot.class);
+    private static final Marker LOG_EVENT     = MarkerManager.getMarker("LOG_EVENT");
 
-    static Config               cfg          = new Config();
-    static String               irc_server   = cfg.getProperty("irc_server");
-    static int                  irc_port     = Integer.parseInt(cfg.getProperty("irc_port"));
-    public static String        irc_channel  = cfg.getProperty("irc_channel");
-    static String               irc_nickname = cfg.getProperty("irc_nickname");
-    static String               irc_username = cfg.getProperty("irc_username");
-    static String               bot_version  = cfg.getProperty("bot_version");
-    private static String       bot_password = cfg.getProperty("bot_password");
+    static Config               cfg           = new Config();
+    static String               irc_server    = cfg.getProperty("irc_server");
+    static int                  irc_port      = Integer.parseInt(cfg.getProperty("irc_port"));
+    public static String        irc_channel   = cfg.getProperty("irc_channel");
+    static String               irc_nickname  = cfg.getProperty("irc_nickname");
+    static String               irc_username  = cfg.getProperty("irc_username");
+    static String               bot_owner     = cfg.getProperty("bot_owner");
+    static String               bot_version   = cfg.getProperty("bot_version");
+    private static String       bot_password  = cfg.getProperty("bot_password");
+
+    private boolean             bot_reconnect = true;
 
     @Override
     public void onMessage(final MessageEvent event) throws Exception {
         PircBotX bot = event.getBot();
 
+    }
+
+    @Override
+    public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+        if (event.getMessage().equalsIgnoreCase("!quit") && event.getUser().getNick().equalsIgnoreCase(bot_owner)) {
+            // bot_reconnect = false;
+            ircUtil.sendMessage(event, "Shutting Down.");
+            event.getBot().quitServer();
+        }
     }
 
     @Override
@@ -77,27 +86,10 @@ public class RawrBot extends ListenerAdapter implements Listener {
 
     @Override
     public void onDisconnect(DisconnectEvent event) throws Exception {
-        // come up with a less shitty way of doing this shit. shitty shit shit.
-        while (!event.getBot().isConnected()) {
-            try {
-                event.getBot().connect(irc_server, irc_port);
-                event.getBot().joinChannel(irc_channel);
-            } catch (NickAlreadyInUseException ex) {
-                try {
-                    event.getBot().changeNick(alterCollidedNick(irc_nickname));
-                    event.getBot().reconnect();
-                    event.getBot().joinChannel(irc_channel);
-                } catch (NickAlreadyInUseException nex) {
-                    event.getBot().changeNick(alterCollidedNick(irc_nickname));
-                    event.getBot().reconnect();
-                    event.getBot().joinChannel(irc_channel);
-                }
-            } catch (IOException ioex) {
-                logger.error(LOG_EVENT, "Could not connect to the server: " + ioex);
-            } catch (IrcException ircex) {
-                logger.error(LOG_EVENT, "Server wouldn't let us join: " + ircex);
-            }
-        }
+        Thread.currentThread();
+        Thread.sleep(60000);
+        logger.info("Reconnecting");
+        event.getBot().reconnect();
     }
 
     @Override
@@ -203,8 +195,8 @@ public class RawrBot extends ListenerAdapter implements Listener {
         bot.setVerbose(false); // Print everything, which is what you want to do 90% of the time
         bot.setAutoNickChange(true); // Automatically change nick when the current one is in use
         bot.setCapEnabled(true); // Enable CAP features
-        bot.setAutoReconnect(true);
-        bot.setAutoReconnectChannels(true);
+        // bot.setAutoReconnect(true); // Apparently doesn't work. Just throws exceptions. Yay.
+        // bot.setAutoReconnectChannels(true);
 
         // TODO: Spring framework
         // This class is a listener, so add it to the bots known listeners
