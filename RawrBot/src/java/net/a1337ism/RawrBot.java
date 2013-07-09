@@ -1,7 +1,5 @@
 package net.a1337ism;
 
-import java.io.IOException;
-
 import net.a1337ism.modules.EightballCommand;
 import net.a1337ism.modules.HelpCommand;
 import net.a1337ism.modules.JokeCommand;
@@ -14,19 +12,17 @@ import net.a1337ism.modules.ReportCommand;
 import net.a1337ism.modules.RulesCommand;
 import net.a1337ism.modules.TimeCommand;
 import net.a1337ism.modules.UptimeCommand;
+import net.a1337ism.util.ircUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
@@ -61,9 +57,14 @@ public class RawrBot extends ListenerAdapter implements Listener {
     private static String       bot_password = cfg.getProperty("bot_password");
 
     @Override
-    public void onMessage(final MessageEvent event) throws Exception {
-        PircBotX bot = event.getBot();
-
+    public void onPrivateMessage(final PrivateMessageEvent event) throws Exception {
+        if (event.getMessage().trim().equalsIgnoreCase("!disconnect")) {
+            if (ircUtil.isOP(event, RawrBot.irc_channel)) {
+                ircUtil.sendMessage(event, "Disconnecting.");
+                logger.info("Disconnecting bot, and quitting");
+                event.getBot().disconnect();
+            }
+        }
     }
 
     @Override
@@ -71,31 +72,6 @@ public class RawrBot extends ListenerAdapter implements Listener {
         if (!bot_password.isEmpty()) {
             logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
             event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
-        }
-    }
-
-    @Override
-    public void onDisconnect(DisconnectEvent event) throws Exception {
-        // come up with a less shitty way of doing this shit. shitty shit shit.
-        while (!event.getBot().isConnected()) {
-            try {
-                event.getBot().reconnect();
-                event.getBot().joinChannel(irc_channel);
-            } catch (NickAlreadyInUseException ex) {
-                try {
-                    event.getBot().changeNick(alterCollidedNick(irc_nickname));
-                    event.getBot().reconnect();
-                    event.getBot().joinChannel(irc_channel);
-                } catch (NickAlreadyInUseException nex) {
-                    event.getBot().changeNick(alterCollidedNick(irc_nickname));
-                    event.getBot().reconnect();
-                    event.getBot().joinChannel(irc_channel);
-                }
-            } catch (IOException ioex) {
-                logger.error(LOG_EVENT, "Could not connect to the server: " + ioex);
-            } catch (IrcException ircex) {
-                logger.error(LOG_EVENT, "Server wouldn't let us join: " + ircex);
-            }
         }
     }
 

@@ -2,12 +2,15 @@ package net.a1337ism.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class MiscUtil {
 
     public static int randomNumber(int fileLength) {
         // Chooses a random number based on the length of a list.
-        int randomNumber = (int) (Math.random() * fileLength);
+        Random number = new Random();
+        int randomNumber = number.nextInt(fileLength);
+        // int randomNumber = (int) (Math.random() * fileLength);
         return randomNumber;
     }
 
