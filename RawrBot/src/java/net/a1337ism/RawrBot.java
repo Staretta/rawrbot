@@ -23,7 +23,6 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
@@ -73,7 +72,12 @@ public class RawrBot extends ListenerAdapter implements Listener {
             // bot_reconnect = false;
             ircUtil.sendMessage(event, "Shutting Down.");
             event.getBot().quitServer();
+        } else if (event.getMessage().equalsIgnoreCase("!quit") && ircUtil.isOP(event, irc_channel)) {
+            // bot_reconnect = false;
+            ircUtil.sendMessage(event, "Shutting Down.");
+            event.getBot().quitServer();
         }
+
     }
 
     @Override
@@ -82,14 +86,6 @@ public class RawrBot extends ListenerAdapter implements Listener {
             logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
             event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
         }
-    }
-
-    @Override
-    public void onDisconnect(DisconnectEvent event) throws Exception {
-        Thread.currentThread();
-        Thread.sleep(60000);
-        logger.info("Reconnecting");
-        event.getBot().reconnect();
     }
 
     @Override
@@ -113,7 +109,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
     @Override
     public void onUnknown(UnknownEvent event) throws Exception {
         if (event.getLine().startsWith("NETSPLIT")) {
-            event.getBot().disconnect();
+            logger.info("NETSPLIT EVENT");
         }
     }
 

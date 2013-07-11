@@ -19,9 +19,9 @@ public class SqliteDb extends Db {
             logger.error(ex);
         }
         if (conn != null) {
-            logger.debug("Connected OK using " + sDriverKey + " to " + sUrlKey);
+            // logger.debug("Connected OK using " + sDriverKey + " to " + sUrlKey);
         } else {
-            logger.debug("Connection failed");
+            logger.debug("Connection failed for" + sDriverKey + " to " + sUrlKey);
         }
     }
 
