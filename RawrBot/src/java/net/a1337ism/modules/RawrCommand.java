@@ -43,6 +43,25 @@ public class RawrCommand extends ListenerAdapter {
                 String rawr = MiscUtil.randomSelection(rawrList);
                 ircUtil.sendMessage(event, rawr);
             }
+        } else if (event.getMessage().trim().toLowerCase().startsWith("!meow")) {
+            // If they are rate limited, then return.
+            if (RateLimiter.isRateLimited(event.getUser().getNick())) {
+                return;
+            }
+
+            if (event.getMessage().trim().toLowerCase().endsWith("-help")
+                    || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                String meowHelp = "!meow: Meow. :3";
+                ircUtil.sendMessage(event, meowHelp);
+            } else if (event.getMessage().trim().startsWith("!MEOW")) {
+                // If command starts with !MEOW, in caps.
+                String meow = meowReplace(MiscUtil.randomSelection(rawrList));
+                ircUtil.sendMessage(event, meow.toUpperCase());
+            } else {
+                // If command starts with !meow.
+                String meow = meowReplace(MiscUtil.randomSelection(rawrList));
+                ircUtil.sendMessage(event, meow);
+            }
         }
     }
 
@@ -63,6 +82,39 @@ public class RawrCommand extends ListenerAdapter {
                 String rawr = MiscUtil.randomSelection(rawrList);
                 ircUtil.sendMessage(event, rawr);
             }
+        } else if (event.getMessage().trim().toLowerCase().startsWith("!meow")) {
+            if (event.getMessage().trim().toLowerCase().endsWith("-help")
+                    || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                String meowHelp = "!meow: Meow. :3";
+                ircUtil.sendMessage(event, meowHelp);
+            } else if (event.getMessage().trim().startsWith("!MEOW")) {
+                // If command starts with !MEOW, in caps.
+                String meow = meowReplace(MiscUtil.randomSelection(rawrList));
+                ircUtil.sendMessage(event, meow.toUpperCase());
+            } else {
+                // If command starts with !meow.
+                String meow = meowReplace(MiscUtil.randomSelection(rawrList));
+                ircUtil.sendMessage(event, meow);
+            }
         }
+    }
+
+    private String meowReplace(String meow) {
+        String[] words = null;
+        String message = "";
+        words = meow.split("\\s");
+        for (String word : words) {
+            if (word.startsWith("R")) {
+                word = word.replaceFirst("R", "M");
+            } else {
+                word = word.replaceFirst("r", "m");
+            }
+            word = word.replace("A", "E").replace("a", "e");
+            word = word.replace("W", "O").replace("w", "o");
+            word = word.replace("R", "W").replace("r", "w");
+            message += word + " ";
+        }
+
+        return message;
     }
 }
