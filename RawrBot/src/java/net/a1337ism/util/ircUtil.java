@@ -5,62 +5,112 @@ import java.util.Set;
 
 import net.a1337ism.RawrBot;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
+import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ircUtil {
 
     // Set up the logger stuff
-    private static Logger logger    = LogManager.getFormatterLogger(RawrBot.class);
-    private static Marker LOG_EVENT = MarkerManager.getMarker("LOG_EVENT");
+    private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
+    /**
+     * Sends a message to a channel
+     * 
+     * @param event
+     *            MessageEvent
+     * @param message
+     *            we want to send
+     */
     public static void sendMessage(MessageEvent event, String message) {
         sendMessageChannel(event, message);
     }
 
+    /**
+     * Sends a Private Message to a user
+     * 
+     * @param event
+     *            PrivateMessageEvent
+     * @param message
+     *            we want to send
+     */
     public static void sendMessage(PrivateMessageEvent event, String message) {
         sendMessagePrivate(event, message);
     }
 
+    /**
+     * Sends a message to a channel
+     * 
+     * @param event
+     *            MessageEvent
+     * @param message
+     *            we want to send
+     */
     public static void sendMessageChannel(MessageEvent event, String message) {
         // This function is used by all the commands. DO NOT DELETE.
         // Log the sent message
-        logger.info(LOG_EVENT, "<" + event.getBot().getName() + "> " + message);
+        // logger.info("<" + event.getBot().getNick() + "> " + message);
 
         // Send a channel message
-        event.getBot().sendMessage(event.getChannel(), message);
+        event.getChannel().send().message(message);
     }
 
+    /**
+     * Sends a Private Message to a user
+     * 
+     * @param event
+     *            PrivateMessageEvent
+     * @param message
+     *            we want to send
+     */
     public static void sendMessagePrivate(PrivateMessageEvent event, String message) {
         // This function is used by all the commands. DO NOT DELETE.
         // Log the sent message
-        logger.info(LOG_EVENT, "(" + event.getBot().getName() + "->" + event.getUser().getNick() + ") " + message);
+        // logger.info("(" + event.getBot().getNick() + "->" + event.getUser().getNick() + ") " + message);
 
         // Send a private message
-        event.getBot().sendMessage(event.getUser(), message);
+        event.getUser().send().message(message);
     }
 
+    /**
+     * Sends a notice message to target user
+     * 
+     * @param event
+     *            MessageEvent
+     * @param target
+     *            who to send the message to
+     * @param message
+     *            we want to send
+     */
     public static void sendNotice(MessageEvent event, String message) {
         // This function is used by all the commands. DO NOT DELETE.
         // Log the sent message
-        logger.info(LOG_EVENT, "->" + event.getUser().getNick() + "<- " + message);
+        // logger.info("->" + event.getUser().getNick() + "<- " + message);
 
         // Send the notice
-        event.getBot().sendNotice(event.getUser().getNick(), message);
+        event.getUser().send().notice(message);
     }
 
+    /**
+     * Sends a notice message to target user
+     * 
+     * @param event
+     *            PrivateMessageEvent
+     * @param target
+     *            who to send the message to
+     * @param message
+     *            we want to send
+     */
     public static void sendNotice(PrivateMessageEvent event, String target, String message) {
         // This function is used by all the commands. DO NOT DELETE.
         // Log the sent message
-        logger.info(LOG_EVENT, "->" + target + "<- " + message);
+        // logger.info("->" + target + "<- " + message);
 
         // Send the notice
-        event.getBot().sendNotice(target, message);
+        event.getUser().send().notice(message);
     }
 
     public static Set<User> channelOPs(MessageEvent event, String channel) {
@@ -91,6 +141,16 @@ public class ircUtil {
         return null;
     }
 
+    /**
+     * Checks to see if user is an operator of the specified channel.
+     * 
+     * @param event
+     *            MessageEvent
+     * @param channel
+     *            Channel we want to check
+     * @return boolean
+     * 
+     */
     public static boolean isOP(MessageEvent event, String channel) {
         // See if user is an operator of the specified channel.
 
@@ -98,7 +158,7 @@ public class ircUtil {
         boolean isOP = false;
 
         // Get list of operators in a channel.
-        Set<User> operators = event.getBot().getChannel(channel).getOps();
+        Set<User> operators = event.getChannel().getOps();
         Iterator<User> itr = operators.iterator();
         // Step through the set, and see if the user is an operator.
         while (itr.hasNext()) {
@@ -109,19 +169,28 @@ public class ircUtil {
         return isOP;
     }
 
+    /**
+     * Checks to see if user is an operator of the specified channel.
+     * 
+     * @param event
+     *            PrivateMessageEvent
+     * @param channel
+     *            Channel we want to check
+     * @return boolean
+     * 
+     */
     public static boolean isOP(PrivateMessageEvent event, String channel) {
-        // See if user is an operator of the specified channel.
-
         // Initialize the variable.
         boolean isOP = false;
 
-        // Get list of operators in a channel.
-        Set<User> operators = event.getBot().getChannel(channel).getOps();
-        Iterator<User> itr = operators.iterator();
-        // Step through the set, and see if the user is an operator.
+        // Need to go about this a different way. By getting all channels that the user is an operator in.
+        Set<Channel> channels = event.getUser().getChannelsOpIn();
+        Iterator<Channel> itr = channels.iterator();
         while (itr.hasNext()) {
-            if (itr.next().getNick().equalsIgnoreCase(event.getUser().getNick()))
+            Channel chan = itr.next();
+            if (chan.getName().equalsIgnoreCase(RawrBot.irc_channel) && chan.isOp(event.getUser())) {
                 isOP = true;
+            }
         }
 
         return isOP;

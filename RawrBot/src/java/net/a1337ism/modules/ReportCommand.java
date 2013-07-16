@@ -14,19 +14,18 @@ import net.a1337ism.util.SqliteDb;
 import net.a1337ism.util.ircUtil;
 
 import org.apache.commons.dbutils.DbUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
+import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.UserLevel;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReportCommand extends ListenerAdapter {
     // Set up the logger stuff
-    private static Logger logger        = LogManager.getFormatterLogger(RawrBot.class);
-    private static Marker LOG_EVENT     = MarkerManager.getMarker("LOG_EVENT");
+    private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
 
     // Set up the database stuff
     String                sUrlString    = "jdbc:sqlite:data/report.db";
@@ -77,15 +76,13 @@ public class ReportCommand extends ListenerAdapter {
                             + reason;
 
                     // Get a list of operators for the channel, and throw it into an iterator.
-                    Set<User> operators = event.getBot().getChannel(RawrBot.irc_channel).getOps();
+                    Set<User> operators = event.getChannel().getOps();
                     Iterator<User> itr = operators.iterator();
                     // TODO: EMAIL OPERATORS. :O
                     while (itr.hasNext()) {
                         String operator = itr.next().getNick();
                         // Send a message to all the operators currently in channel about the report.
-                        event.getBot().sendMessage(operator, reportMessage);
-                        // Log the sent message
-                        logger.info(LOG_EVENT, "(" + event.getBot().getName() + "->" + operator + ") " + reportMessage);
+                        event.getBot().sendIRC().message(operator, reportMessage);
                     }
                 } else {
                     String reportFailure = "Error " + reportResult + ": Unable to add report.";
@@ -285,15 +282,14 @@ public class ReportCommand extends ListenerAdapter {
                             + reason;
 
                     // Get a list of operators for the channel, and throw it into an iterator.
-                    Set<User> operators = event.getBot().getChannel(RawrBot.irc_channel).getOps();
+                    Channel channel = event.getBot().getUserChannelDao().getChannel(RawrBot.irc_channel);
+                    Set<User> operators = event.getBot().getUserChannelDao().getUsers(channel, UserLevel.OP);
                     Iterator<User> itr = operators.iterator();
                     // TODO: EMAIL OPERATORS. :O
                     while (itr.hasNext()) {
                         String operator = itr.next().getNick();
                         // Send a message to all the operators currently in channel about the report.
-                        event.getBot().sendMessage(operator, reportMessage);
-                        // Log the sent message
-                        logger.info(LOG_EVENT, "(" + event.getBot().getName() + "->" + operator + ") " + reportMessage);
+                        event.getBot().sendIRC().message(operator, reportMessage);
                     }
                 } else {
                     // If adding the report failed for some reason, tell them it failed, with an error number.
@@ -307,6 +303,17 @@ public class ReportCommand extends ListenerAdapter {
         }
     }
 
+    /**
+     * Adds a report from a user to the database
+     * 
+     * @param reason
+     *            the reason for the report
+     * @param reportedNick
+     *            the nickname of the person who has been reported
+     * @param fromNick
+     *            the nickname of the person who reported the issue
+     * @return the error/success code of the added report
+     */
     private byte addReport(String reason, String reportedNick, String fromNick) {
         // Set up the connection, and the statement
         SqliteDb db = new SqliteDb(sDriverString, sUrlString);
@@ -335,6 +342,13 @@ public class ReportCommand extends ListenerAdapter {
         return 2;
     }
 
+    /**
+     * Deletes a report from the database based on the ID entered
+     * 
+     * @param ID
+     *            number of the report
+     * @return the error/success code of the deleted report
+     */
     private byte delReport(String ID) {
         // Set up the connection, and the statement
         SqliteDb db = new SqliteDb(sDriverString, sUrlString);
@@ -373,6 +387,13 @@ public class ReportCommand extends ListenerAdapter {
         return 3;
     }
 
+    /**
+     * Fetches a report based on the ID of the report entered
+     * 
+     * @param ID
+     *            number of the report
+     * @return a formatted report to be sent to the user
+     */
     private String getReportID(String ID) {
         // Set up the connection, and the result set
         SqliteDb db = new SqliteDb(sDriverString, sUrlString);
@@ -457,6 +478,16 @@ public class ReportCommand extends ListenerAdapter {
         return message;
     }
 
+    /**
+     * Parses a result set containing entries for reported nicknames.
+     * 
+     * @param resultSet
+     *            A result set containing Reported, Reporter, Reason, Time, and ID
+     * @throws SQLException
+     *             If any Exceptions might be thrown, throw them up and let MessageEvent handle it
+     * @return a list of lines to be sent to the user
+     * 
+     */
     private List<String> resultSetParser(ResultSet resultSet) throws SQLException {
         // Function to build a nice list from the results of the various searches.
         List<String> message = new ArrayList<>();
