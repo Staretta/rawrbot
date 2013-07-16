@@ -7,15 +7,18 @@ import java.util.Map;
 
 import net.a1337ism.RawrBot;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RateLimiter extends ListenerAdapter {
     // Set up the logger stuff
-    private static Logger                     logger       = LoggerFactory.getLogger(RawrBot.class);
+    private static Logger                     logger       = LogManager.getFormatterLogger(RawrBot.class);
+    private static Marker                     LOG_EVENT    = MarkerManager.getMarker("LOG_EVENT");
 
-    private static int                        timeout      = 600000;                                // Milliseconds
+    private static int                        timeout      = 600000;                                      // Milliseconds
     private static int                        maxRequests  = 5;
     private static volatile Map<String, List> userRequests = new HashMap<String, List>();
 

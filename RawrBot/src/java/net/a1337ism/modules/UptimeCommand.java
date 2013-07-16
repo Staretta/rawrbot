@@ -12,17 +12,20 @@ import net.a1337ism.RawrBot;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.ircUtil;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class UptimeCommand extends ListenerAdapter {
     // Set up the logger stuff
-    private static Logger logger         = LoggerFactory.getLogger(RawrBot.class);
-    private long          bot_start_time = System.currentTimeMillis();            // Set time when the bot
-                                                                                   // starts.
+    private static Logger logger         = LogManager.getFormatterLogger(RawrBot.class);
+    private static Marker LOG_EVENT      = MarkerManager.getMarker("LOG_EVENT");
+    private long          bot_start_time = System.currentTimeMillis();                  // Set time when the bot
+                                                                                         // starts.
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
@@ -38,8 +41,8 @@ public class UptimeCommand extends ListenerAdapter {
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
                 ircUtil.sendMessage(event, uptimeHelp);
             } else {
-                String currentUptime = "Bot Uptime: " + MiscUtil.uptimeFormat(getBotUptime() / 1000) + " | "
-                        + "System Uptime: " + MiscUtil.uptimeFormat(getSystemUptime() / 1000);
+                String currentUptime = "Bot Uptime: " + MiscUtil.formatTime(getBotUptime() / 1000) + " | "
+                        + "System Uptime: " + MiscUtil.formatTime(getSystemUptime() / 1000);
                 ircUtil.sendMessage(event, currentUptime);
             }
         }
@@ -54,8 +57,8 @@ public class UptimeCommand extends ListenerAdapter {
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
                 ircUtil.sendMessage(event, uptimeHelp);
             } else {
-                String currentUptime = "Bot Uptime: " + MiscUtil.uptimeFormat(getBotUptime() / 1000) + " | "
-                        + "System Uptime: " + MiscUtil.uptimeFormat(getSystemUptime() / 1000);
+                String currentUptime = "Bot Uptime: " + MiscUtil.formatTime(getBotUptime() / 1000) + " | "
+                        + "System Uptime: " + MiscUtil.formatTime(getSystemUptime() / 1000);
                 ircUtil.sendMessage(event, currentUptime);
             }
         }
