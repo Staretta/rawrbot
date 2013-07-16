@@ -11,28 +11,14 @@ public class MiscUtil {
     static String  regex     = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
     static Pattern URL_REGEX = Pattern.compile(regex);
 
-    /**
-     * Chooses a random number based on the length of a list.
-     * 
-     * @param fileLength
-     *            number of elements within a file list
-     * @return a random number between 0 and file length
-     */
     public static int randomNumber(int fileLength) {
+        // Chooses a random number based on the length of a list.
         // int randomNumber = (int) (Math.random() * fileLength);
         Random random = new Random();
         int randomNumber = random.nextInt(fileLength);
         return randomNumber;
     }
 
-    /**
-     * Chooses a random selection using the {@link randomNumber} function, and returns the line for that index from a
-     * list.
-     * 
-     * @param fileList
-     *            List of lines
-     * @return a random line from a list
-     */
     public static String randomSelection(String[] fileList) {
         // Chooses a random selection from a list of lines.
         String randomLine = fileList[randomNumber(fileList.length)];
@@ -40,16 +26,13 @@ public class MiscUtil {
     }
 
     public static String redactURL(String line) {
-        // Initialize variables
         String[] words = null;
         String message = "";
-        // Split line into individual words at the spaces.
         words = line.split("\\s");
         for (String word : words) {
             if (URL_REGEX.matcher(word).matches()) {
                 word = "URL_REDACTED";
             }
-            // piece the words back together into a nice string
             message += word + " ";
         }
         return message.trim();
@@ -81,7 +64,10 @@ public class MiscUtil {
         return formatTime;
     }
 
-    public static String uptimeFormat(long total_seconds) throws Exception {
+    public static String formatTime(long total_seconds) throws Exception {
+        // Store the total seconds
+        // long total_seconds = getSystemUptime() / 1000;
+
         // Helper variables.
         int MINUTE = 60;
         int HOUR = MINUTE * 60;
