@@ -4,3 +4,5 @@ RawrBot/target/*
 RawrBot/.classpath
 RawrBot/logs/*
 RemoteSystemsTempFiles
+RawrBot/data/*.db
+RawrBot/.settings/*
