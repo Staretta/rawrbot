@@ -26,6 +26,7 @@ public class UptimeCommand extends ListenerAdapter {
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
+
         // Check if message starts with !uptime
         if (event.getMessage().trim().toLowerCase().startsWith("!uptime")) {
 
@@ -35,8 +36,10 @@ public class UptimeCommand extends ListenerAdapter {
 
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them help information
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
                 ircUtil.sendMessage(event, uptimeHelp);
+
             } else {
                 String currentUptime = "Bot Uptime: " + MiscUtil.uptimeFormat(getBotUptime() / 1000) + " | "
                         + "System Uptime: " + MiscUtil.uptimeFormat(getSystemUptime() / 1000);
@@ -47,12 +50,15 @@ public class UptimeCommand extends ListenerAdapter {
 
     // Check for private messages
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+
         // Check if message starts with !uptime
         if (event.getMessage().trim().toLowerCase().startsWith("!uptime")) {
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them help information
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
                 ircUtil.sendMessage(event, uptimeHelp);
+
             } else {
                 String currentUptime = "Bot Uptime: " + MiscUtil.uptimeFormat(getBotUptime() / 1000) + " | "
                         + "System Uptime: " + MiscUtil.uptimeFormat(getSystemUptime() / 1000);

@@ -20,17 +20,20 @@ public class JokeCommand extends ListenerAdapter {
 
     // Check for channel messages.
     public void onMessage(MessageEvent event) throws Exception {
-        // Check if message starts with !joke
+
+        // Check if message starts with !joke and if they are rate limited
         if (event.getMessage().trim().toLowerCase().startsWith("!joke")) {
 
-            // If they are rate limited, then return.
+            // Return if they are rate limited
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
 
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them the help information
                 String jokeHelp = "!joke : Says a random joke from the Internet Chuck Norris Database.";
                 ircUtil.sendMessage(event, jokeHelp);
+
             } else {
                 // It's currently in an array because I wanted to know what ID number the joke was using in the event
                 // that I needed to debug escape characters.
@@ -45,16 +48,19 @@ public class JokeCommand extends ListenerAdapter {
 
     // Check for private messages.
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+
         // Check if message starts with !joke
         if (event.getMessage().trim().toLowerCase().startsWith("!joke")) {
+
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them the help information
                 String jokeHelp = "!joke : Says a random joke from the Internet Chuck Norris Database.";
                 ircUtil.sendMessage(event, jokeHelp);
+
             } else {
                 // It's currently in an array because I wanted to know what ID number the joke was using in the event
-                // that I
-                // needed to debug escape characters.
+                // that I needed to debug escape characters.
                 Object[] joke = getJoke();
                 // If joke isn't null, meaning it didn't crash, then do the good stuff!
                 if (joke != null) {

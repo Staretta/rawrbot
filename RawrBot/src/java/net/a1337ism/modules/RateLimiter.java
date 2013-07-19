@@ -16,33 +16,49 @@ public class RateLimiter extends ListenerAdapter {
     private static Logger                     logger       = LoggerFactory.getLogger(RawrBot.class);
 
     private static int                        timeout      = 600000;                                // Milliseconds
-    private static int                        maxRequests  = 5;
+    // private static int maxRequests = 5;
     private static volatile Map<String, List> userRequests = new HashMap<String, List>();
 
     // userRequests is our hashmap of users and how many times they do a command.
     // Basically something like { username : [ millisec1, millisec2 ] } Where username is the key, and the list is the
     // list that contains the millisecond when they entered the command.
 
-    private static void addRequest(String nickname) {
+    public static void addRequest(String nickname) {
+        addRequest(nickname, 1);
+    }
+
+    public static void addRequest(String nickname, int request) {
         // If the hashmap contains the username as a key
         if (userRequests.containsKey(nickname)) {
             synchronized (RateLimiter.class) {
                 // Make a list, and put that user's requests into the list.
                 List<Long> timeList = userRequests.get(nickname);
 
-                timeList.add(System.currentTimeMillis());
+                for (int x = 0; x < request; x++) {
+                    timeList.add(System.currentTimeMillis());
+                    // logger.info("for loop " + x);
+                }
 
                 userRequests.put(nickname, timeList);
             }
         } else {
             // If the user is not in the hashmap, then add them to the hashmap along with the current time
             List<Long> timeList = new ArrayList<Long>();
-            timeList.add(System.currentTimeMillis());
+
+            for (int x = 0; x < request; x++) {
+                timeList.add(System.currentTimeMillis());
+                // logger.info("for loop " + x);
+            }
+
             userRequests.put(nickname, timeList);
         }
     }
 
     public static boolean isRateLimited(String nickname) {
+        return isRateLimited(nickname, 5);
+    }
+
+    public static boolean isRateLimited(String nickname, int maxRequests) {
         // Cleanup the request queue for the user, if it can be cleaned up.
         cleanupRequest(nickname);
 

@@ -55,6 +55,13 @@ public class MiscUtil {
         return message.trim();
     }
 
+    /**
+     * Outputs a formatted time based on the current time, and the last seen time.
+     * 
+     * @param oldTime
+     *            Time since person was last seen in seconds.
+     * @return a formatted string like this: "N days" or "N minutes" or "N hours"
+     */
     public static String timeFormat(int oldTime) {
         // Make a pretty string (like this: "N days" or "N minutes" or "N hours", etc.)
         int seconds = (int) (System.currentTimeMillis() / 1000) - oldTime;
@@ -81,6 +88,13 @@ public class MiscUtil {
         return formatTime;
     }
 
+    /**
+     * Outputs a formatted time based on the current time, and the start time of the system, or the bot.
+     * 
+     * @param total_seconds
+     *            Time since the bot/system has been started in seconds.
+     * @return a formatted string like this: "N days, N hours, N minutes, N seconds"
+     */
     public static String uptimeFormat(long total_seconds) throws Exception {
         // Helper variables.
         int MINUTE = 60;
