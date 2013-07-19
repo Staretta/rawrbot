@@ -18,15 +18,14 @@ public class EightballCommand extends ListenerAdapter {
     private String[]      answerList = FileUtil.readLines(filename);
 
     public void onMessage(MessageEvent event) throws Exception {
-        // Check if message starts with !8ball or !eightball
+        // Check if message starts with !8ball or !eightball, and ends with "?"
         if ((event.getMessage().trim().toLowerCase().startsWith("!8ball") || event.getMessage().trim().toLowerCase()
                 .startsWith("!eightball"))
                 && event.getMessage().trim().toLowerCase().endsWith("?")) {
 
-            // If they are rate limited, then return.
-            if (RateLimiter.isRateLimited(event.getUser().getNick())) {
+            // Return if they are rate limited.
+            if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
-            }
 
             String answer = MiscUtil.randomSelection(answerList);
             ircUtil.sendMessage(event, answer);
@@ -34,13 +33,19 @@ public class EightballCommand extends ListenerAdapter {
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) {
-        // Check if message starts with !8ball or !eightball
+        // Check if message starts with !8ball or !eightball and ends with "?"
         if ((event.getMessage().trim().toLowerCase().startsWith("!8ball") || event.getMessage().trim().toLowerCase()
                 .startsWith("!eightball"))
                 && event.getMessage().trim().toLowerCase().endsWith("?")) {
 
             String answer = MiscUtil.randomSelection(answerList);
             ircUtil.sendMessage(event, answer);
+
+            // If message equals !8ball reload
+        } else if (event.getMessage().trim().toLowerCase().equalsIgnoreCase("!8ball -reload")
+                && event.getUser().getNick().equalsIgnoreCase(RawrBot.bot_owner)) {
+            ircUtil.sendMessage(event, "Reloading 8ball reply list");
+            answerList = FileUtil.readLines(filename);
         }
     }
 }

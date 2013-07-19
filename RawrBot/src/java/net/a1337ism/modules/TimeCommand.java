@@ -18,6 +18,7 @@ public class TimeCommand extends ListenerAdapter {
 
     // Check for channel messages.
     public void onMessage(MessageEvent event) throws Exception {
+
         // Check if message starts with !time
         if (event.getMessage().trim().toLowerCase().startsWith("!time")) {
 
@@ -27,8 +28,10 @@ public class TimeCommand extends ListenerAdapter {
 
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them help information
                 String timeHelp = "!time : Displays the current time.";
                 ircUtil.sendMessage(event, timeHelp);
+
             } else {
                 String newDate = "The current time is " + new Date();
                 ircUtil.sendMessage(event, newDate);
@@ -38,12 +41,16 @@ public class TimeCommand extends ListenerAdapter {
 
     // Check for private messages.
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+
         // Check if message starts with !time
         if (event.getMessage().trim().toLowerCase().startsWith("!time")) {
+
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them help information
                 String timeHelp = "!time : Displays the current time.";
                 ircUtil.sendMessage(event, timeHelp);
+
             } else {
                 String newDate = "The current time is " + new Date();
                 ircUtil.sendMessage(event, newDate);

@@ -19,6 +19,7 @@ public class QuoteCommand extends ListenerAdapter {
 
     // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
+
         // Check if message starts with !quote
         if (event.getMessage().trim().toLowerCase().startsWith("!quote")) {
 
@@ -28,8 +29,10 @@ public class QuoteCommand extends ListenerAdapter {
 
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them help information
                 String quoteHelp = "!quote : Says a random quote from the iheartquotes.com Database.";
                 ircUtil.sendMessage(event, quoteHelp);
+
             } else {
                 // Throw it into a variable
                 Object[] quote = getQuote();
@@ -43,12 +46,16 @@ public class QuoteCommand extends ListenerAdapter {
 
     // Check for private messages.
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+
         // Check if message starts with !quote
         if (event.getMessage().trim().toLowerCase().startsWith("!quote")) {
+
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
+                // If message ends with -help or -h, then send them help information
                 String quoteHelp = "!quote : Says a random quote from the iheartquotes.com Database.";
                 ircUtil.sendMessage(event, quoteHelp);
+
             } else {
                 // Throw it into a variable
                 Object[] quote = getQuote();

@@ -14,10 +14,10 @@ public class HelpCommand extends ListenerAdapter {
     private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
     public void onMessage(MessageEvent event) throws Exception {
-        // Check if message starts with !commands
+        // Check if message starts with !commands and if they are rate limited.
         if (event.getMessage().trim().toLowerCase().startsWith("!commands")) {
 
-            // If they are rate limited, then return.
+            // Return if they are rate limited
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
 

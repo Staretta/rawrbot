@@ -39,7 +39,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
     public static String  irc_channel  = cfg.getProperty("irc_channel");
     static String         irc_nickname = cfg.getProperty("irc_nickname");
     static String         irc_username = cfg.getProperty("irc_username");
-    static String         bot_owner    = cfg.getProperty("bot_owner");
+    public static String  bot_owner    = cfg.getProperty("bot_owner");
     static String         bot_version  = cfg.getProperty("bot_version");
     private static String bot_password = cfg.getProperty("bot_password");
 

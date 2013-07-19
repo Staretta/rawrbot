@@ -34,6 +34,7 @@ public class LastSeenCommand extends ListenerAdapter {
         // Get the last message to the channel and update the database
         setLastSeenChannel(event);
         try {
+
             // Check if message starts with !lastseen
             if (event.getMessage().trim().toLowerCase().startsWith("!lastseen")) {
 
@@ -47,8 +48,9 @@ public class LastSeenCommand extends ListenerAdapter {
                     // If message contains only 1 string, then send them the correct syntax
                     String lastseen_syntax = "!lastseen <Nickname> : Displays the last thing a user said, and when the user was last seen.";
                     ircUtil.sendMessage(event, lastseen_syntax);
-                } else if (param[1].compareToIgnoreCase("-help") == 0 || param[1].compareToIgnoreCase("-h") == 0) {
-                    // If message equals -help, or -h then do this awesome stuff! :D
+
+                } else if (param[1].equalsIgnoreCase("-help") || param[1].equalsIgnoreCase("-h")) {
+                    // If message equals -help or -h, then send them help information.
                     logger.info("stuff");
                     String[] lastseen_help = {
                             "!lastseen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen.",
@@ -58,50 +60,74 @@ public class LastSeenCommand extends ListenerAdapter {
                     for (int i = 0; i < lastseen_help.length; i++) {
                         ircUtil.sendMessage(event, lastseen_help[i]);
                     }
-                } else if (param[1].compareToIgnoreCase("-host") == 0) {
+
+                } else if (param[1].equalsIgnoreCase("-host")) {
                     // If the second parameter equals -host, then do this stuff.
-                    if (param.length == 2) { // If message only contains !lastseen -host, then send correct syntax
+
+                    if (param.length == 2) {
+                        // If message only contains !lastseen -host, then send correct syntax
                         String lastseen_syntax = "!lastseen -host <User's Hostname> : Displays the last thing a user said, based on their hostname.";
                         ircUtil.sendMessage(event, lastseen_syntax);
-                    } else { // Otherwise search for the host string, and send them the results
+
+                    } else {
+                        // Otherwise search for the host string, and send them the results
                         String hostSearch = param[2].toString();
                         List sentMsg = getLastSeenHost(hostSearch);
+
                         if (sentMsg == null) {
+                            // If sentMsg is null, we know the search didn't find anything.
                             String lastseenError = hostSearch + " hasn't said anything.";
                             ircUtil.sendMessage(event, lastseenError);
+
                         } else {
+                            // Otherwise, we send them the search results.
                             Iterator itr = sentMsg.iterator();
                             while (itr.hasNext()) {
                                 ircUtil.sendMessage(event, itr.next().toString());
                             }
                         }
                     }
-                } else if (param[1].compareToIgnoreCase("-nick") == 0) {
+
+                } else if (param[1].equalsIgnoreCase("-nick")) {
                     // if message contains -nick, then do this stuff
-                    if (param.length == 2) { // If message only contains !lastseen -nick, then send correct syntax
+
+                    if (param.length == 2) {
+                        // If message only contains !lastseen -nick, then send correct syntax
                         String lastseen_syntax = "!lastseen -nick <Nickname> : Displays the last thing a user said, based on their nickname.";
                         ircUtil.sendMessage(event, lastseen_syntax);
-                    } else { // Otherwise search for the nick string, and send them the results
+
+                    } else {
+                        // Otherwise search for the nick string, and send them the results
                         String nickSearch = param[2].toString();
                         List sentMsg = getLastSeenNick(nickSearch);
+
                         if (sentMsg == null) {
+                            // If sentMsg equals null, we know the search didn't find anything.
                             String lastseenError = nickSearch + " hasn't said anything.";
                             ircUtil.sendMessage(event, lastseenError);
+
                         } else {
+                            // Otherwise, we send them the search results.
                             Iterator itr = sentMsg.iterator();
                             while (itr.hasNext()) {
                                 ircUtil.sendMessage(event, itr.next().toString());
                             }
                         }
                     }
+
                 } else {
+
                     // Otherwise, we know they want to search a nickname, and send them the results.
                     String nickSearch = param[1].toString();
                     List sentMsg = getLastSeenNick(nickSearch);
+
                     if (sentMsg == null) {
+                        // If sentMsg equals null, we know the search didn't find anything.
                         String lastseenError = nickSearch + " hasn't said anything.";
                         ircUtil.sendMessage(event, lastseenError);
+
                     } else {
+                        // Otherwise, we send them the search results.
                         Iterator itr = sentMsg.iterator();
                         while (itr.hasNext()) {
                             ircUtil.sendMessage(event, itr.next().toString());
@@ -110,22 +136,27 @@ public class LastSeenCommand extends ListenerAdapter {
                 }
             }
         } catch (Exception ex) {
+            // I'm not actually sure why I have this catch here. >.<
             ex.printStackTrace();
         }
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
         try {
+
             // Check if message starts with !lastseen
             if (event.getMessage().trim().toLowerCase().startsWith("!lastseen")) {
+
                 // Spilt the message, so we can get the different parameters
                 String[] param = event.getMessage().trim().split("\\s", 3);
+
                 if (param.length == 1) {
                     // If message contains only 1 string, then send them the correct syntax
                     String lastseen_syntax = "!lastseen <Nickname> : Displays the last thing a user said, and when the user was last seen.";
                     ircUtil.sendMessage(event, lastseen_syntax);
+
                 } else if (param[1].compareToIgnoreCase("-help") == 0 || param[1].compareToIgnoreCase("-h") == 0) {
-                    // If message equals -help, or -h then do this awesome stuff! :D
+                    // If message equals -help or -h, then we send them the help information.
                     logger.info("stuff");
                     String[] lastseen_help = {
                             "!lastseen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen.",
@@ -135,36 +166,54 @@ public class LastSeenCommand extends ListenerAdapter {
                     for (int i = 0; i < lastseen_help.length; i++) {
                         ircUtil.sendMessage(event, lastseen_help[i]);
                     }
+
                 } else if (param[1].compareToIgnoreCase("-host") == 0) {
                     // If the second parameter equals -host, then do this stuff.
-                    if (param.length == 2) { // If message only contains !lastseen -host, then send correct syntax
+
+                    if (param.length == 2) {
+                        // If message only contains !lastseen -host, then send correct syntax
                         String lastseen_syntax = "!lastseen -host <User's Hostname> : Displays the last thing a user said, based on their hostname.";
                         ircUtil.sendMessage(event, lastseen_syntax);
-                    } else { // Otherwise search for the host string, and send them the results
+
+                    } else {
+                        // Otherwise search for the host string, and send them the results
                         String hostSearch = param[2].toString();
                         List sentMsg = getLastSeenHost(hostSearch);
+
                         if (sentMsg == null) {
+                            // If sentMsg equals null, we know the search didn't find anything.
                             String lastseenError = hostSearch + " hasn't said anything.";
                             ircUtil.sendMessage(event, lastseenError);
+
                         } else {
+                            // Otherwise, we send them the search results.
                             Iterator itr = sentMsg.iterator();
                             while (itr.hasNext()) {
                                 ircUtil.sendMessage(event, itr.next().toString());
                             }
                         }
                     }
+
                 } else if (param[1].compareToIgnoreCase("-nick") == 0) {
                     // if message contains -nick, then do this stuff
-                    if (param.length == 2) { // If message only contains !lastseen -nick, then send correct syntax
+
+                    if (param.length == 2) {
+                        // If message only contains !lastseen -nick, then send correct syntax
                         String lastseen_syntax = "!lastseen -nick <Nickname> : Displays the last thing a user said, based on their nickname.";
                         ircUtil.sendMessage(event, lastseen_syntax);
-                    } else { // Otherwise search for the nick string, and send them the results
+
+                    } else {
+                        // Otherwise search for the nick string, and send them the results
                         String nickSearch = param[2].toString();
                         List sentMsg = getLastSeenNick(nickSearch);
+
                         if (sentMsg == null) {
+                            // If sentMsg equals null, we know the search didn't find anything.
                             String lastseenError = nickSearch + " hasn't said anything.";
                             ircUtil.sendMessage(event, lastseenError);
+
                         } else {
+                            // Otherwise, we send them the search results.
                             Iterator itr = sentMsg.iterator();
                             while (itr.hasNext()) {
                                 ircUtil.sendMessage(event, itr.next().toString());
@@ -172,13 +221,18 @@ public class LastSeenCommand extends ListenerAdapter {
                         }
                     }
                 } else {
-                    // Otherwise, we know they want to search a nickname, and send them the results.
+
+                    // Now we know they want to search a nickname, and send them the results.
                     String nickSearch = param[1].toString();
                     List sentMsg = getLastSeenNick(nickSearch);
+
                     if (sentMsg == null) {
+                        // If sentMsg equals null, we know the search didn't find anything.
                         String lastseenError = nickSearch + " hasn't said anything.";
                         ircUtil.sendMessage(event, lastseenError);
+
                     } else {
+                        // Otherwise, send them the search results.
                         Iterator itr = sentMsg.iterator();
                         while (itr.hasNext()) {
                             ircUtil.sendMessage(event, itr.next().toString());
@@ -187,6 +241,7 @@ public class LastSeenCommand extends ListenerAdapter {
                 }
             }
         } catch (Exception ex) {
+            // Also not sure what this catch is here for.
             ex.printStackTrace();
         }
     }
@@ -197,6 +252,7 @@ public class LastSeenCommand extends ListenerAdapter {
     }
 
     private SqliteDb dbConnect() {
+        // Open a connection to the database.
         SqliteDb db = new SqliteDb(sDriverString, sUrlString);
         return db;
     }
@@ -209,7 +265,7 @@ public class LastSeenCommand extends ListenerAdapter {
     private List<String> getLastSeenNick(String nick, int limit) {
         ResultSet resultSet = null; // If somehow the statement dies, it'll return null.
         List<String> message = new ArrayList<>();
-        SqliteDb db = dbConnect(); // Connect to the database.
+        SqliteDb db = dbConnect(); // Open a connection to the database.
         PreparedStatement selectNickname = null;
 
         try {
