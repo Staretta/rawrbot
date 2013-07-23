@@ -61,12 +61,12 @@ public class RawrBot extends ListenerAdapter implements Listener {
 
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-        if (event.getMessage().equalsIgnoreCase("!quit") && (event.getUser().getNick().equalsIgnoreCase(bot_owner))
-                || ircUtil.isOP(event, irc_channel)) {
+        if ((event.getUser().getNick().equalsIgnoreCase(bot_owner) || ircUtil.isOP(event, irc_channel))
+                && event.getMessage().equalsIgnoreCase("!quit")) {
             // Shutdown upon receiving a quit command
             ircUtil.sendMessage(event, "Shutting Down.");
-            event.getBot().stopBotReconnect();
-            event.getBot().sendIRC().quitServer();
+            // event.getBot().stopBotReconnect();
+            // event.getBot().sendIRC().quitServer();
         }
     }
 
