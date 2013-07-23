@@ -65,8 +65,8 @@ public class RawrBot extends ListenerAdapter implements Listener {
                 && event.getMessage().equalsIgnoreCase("!quit")) {
             // Shutdown upon receiving a quit command
             ircUtil.sendMessage(event, "Shutting Down.");
-            // event.getBot().stopBotReconnect();
-            // event.getBot().sendIRC().quitServer();
+            event.getBot().stopBotReconnect();
+            event.getBot().sendIRC().quitServer();
         }
     }
 
