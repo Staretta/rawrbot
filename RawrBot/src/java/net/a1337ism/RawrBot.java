@@ -56,23 +56,18 @@ public class RawrBot extends ListenerAdapter implements Listener {
      */
     @Override
     public void onMessage(final MessageEvent event) throws Exception {
-        PircBotX bot = event.getBot();
+        // PircBotX bot = event.getBot();
     }
 
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-        if (event.getMessage().equalsIgnoreCase("!quit") && event.getUser().getNick().equalsIgnoreCase(bot_owner)) {
-            // Shutdown upon receiving a quit command
-            ircUtil.sendMessage(event, "Shutting Down.");
-            event.getBot().stopBotReconnect();
-            event.getBot().sendIRC().quitServer();
-        } else if (event.getMessage().equalsIgnoreCase("!quit") && ircUtil.isOP(event, irc_channel)) {
+        if (event.getMessage().equalsIgnoreCase("!quit") && (event.getUser().getNick().equalsIgnoreCase(bot_owner))
+                || ircUtil.isOP(event, irc_channel)) {
             // Shutdown upon receiving a quit command
             ircUtil.sendMessage(event, "Shutting Down.");
             event.getBot().stopBotReconnect();
             event.getBot().sendIRC().quitServer();
         }
-
     }
 
     @Override
