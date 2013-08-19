@@ -1,5 +1,7 @@
 package net.a1337ism.modules;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,10 +27,31 @@ public class LastSeenCommand extends ListenerAdapter {
     private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
 
     // Set up the database stuff
-    String                sUrlString    = "jdbc:sqlite:data/lastseen.db";
-    String                sDriverString = "org.sqlite.JDBC";
+    private String        sUrlString    = "jdbc:sqlite:data/lastseen.db";
+    private String        sDriverString = "org.sqlite.JDBC";
 
-    // SqliteDb db = new SqliteDb("org.sqlite.JDBC", sUrlString);
+    private boolean       tableExist    = createTableIfNotExist();
+
+    private SqliteDb dbConnect() {
+        // Open a connection to the database.
+        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        return db;
+    }
+
+    private boolean createTableIfNotExist() {
+        SqliteDb db = dbConnect(); // Open a connection to the database.
+        Connection conn = db.getConnection();
+        try {
+            DatabaseMetaData meta = conn.getMetaData();
+            ResultSet resultSet = meta.getTables(null, null, "LASTSEEN", null);
+            if (resultSet.next()) {
+
+            }
+        } catch (SQLException pass) {
+        }
+
+        return false;
+    }
 
     public void onMessage(MessageEvent event) throws Exception {
         // Get the last message to the channel and update the database
@@ -251,12 +274,6 @@ public class LastSeenCommand extends ListenerAdapter {
         setLastSeenAction(event);
     }
 
-    private SqliteDb dbConnect() {
-        // Open a connection to the database.
-        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
-        return db;
-    }
-
     private List<String> getLastSeenNick(String nick) {
         // Need to send a default for limit, if not specified.
         return getLastSeenNick(nick, 5);
@@ -266,11 +283,12 @@ public class LastSeenCommand extends ListenerAdapter {
         ResultSet resultSet = null; // If somehow the statement dies, it'll return null.
         List<String> message = new ArrayList<>();
         SqliteDb db = dbConnect(); // Open a connection to the database.
+        Connection conn = db.getConnection();
         PreparedStatement selectNickname = null;
 
         try {
-            selectNickname = db.getConnection().prepareStatement(
-                    "SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
+            selectNickname = conn
+                    .prepareStatement("SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
             selectNickname.setString(1, "%" + nick + "%");
             selectNickname.setInt(2, limit);
             resultSet = selectNickname.executeQuery();
@@ -280,7 +298,7 @@ public class LastSeenCommand extends ListenerAdapter {
         } finally {
             DbUtils.closeQuietly(resultSet); // Close the result set
             DbUtils.closeQuietly(selectNickname); // close the prepared statement.
-            DbUtils.closeQuietly(db.getConnection()); // After everything is done, close the connection to the database.
+            DbUtils.closeQuietly(conn); // After everything is done, close the connection to the database.
         }
 
         return message;
@@ -322,12 +340,13 @@ public class LastSeenCommand extends ListenerAdapter {
     private List<String> getLastSeenHost(String host, int limit) {
         ResultSet resultSet = null; // If somehow the statement dies, it'll return null.
         List<String> message = new ArrayList<>();
-        SqliteDb db = dbConnect(); // Connect to the database.
+        SqliteDb db = dbConnect(); // Open a connection to the database.
+        Connection conn = db.getConnection();
         PreparedStatement selectHostname = null;
 
         try {
-            selectHostname = db.getConnection().prepareStatement(
-                    "SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
+            selectHostname = conn
+                    .prepareStatement("SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
             selectHostname.setString(1, "%" + host + "%");
             selectHostname.setInt(2, limit);
             resultSet = selectHostname.executeQuery();
@@ -337,7 +356,7 @@ public class LastSeenCommand extends ListenerAdapter {
         } finally {
             DbUtils.closeQuietly(resultSet); // Close the result set
             DbUtils.closeQuietly(selectHostname); // close the prepared statement.
-            DbUtils.closeQuietly(db.getConnection()); // After everything is done, close the connection to the database.
+            DbUtils.closeQuietly(conn); // After everything is done, close the connection to the database.
         }
 
         return message;
@@ -376,23 +395,24 @@ public class LastSeenCommand extends ListenerAdapter {
 
     private void setLastSeen(String nickname, String hostname, String message, int timeNow, boolean action) {
         ResultSet resultSet = null;
-        SqliteDb db = dbConnect();
+        SqliteDb db = dbConnect(); // Open a connection to the database.
+        Connection conn = db.getConnection();
         PreparedStatement updateHostname = null;
         PreparedStatement updateNickname = null;
         PreparedStatement insertHostname = null;
         PreparedStatement insertNickname = null;
 
         try {
-            db.getConnection().setAutoCommit(false);
-            updateHostname = db.getConnection().prepareStatement(
-                    "UPDATE lastseen_host SET Nickname = ? , Time = ? , Line = ? , Action = ? WHERE Hostname = ?");
-            updateNickname = db.getConnection().prepareStatement(
-                    "UPDATE lastseen_nick SET Hostname = ? , Time = ? , Line = ? , Action = ? WHERE Nickname = ?");
-            insertHostname = db.getConnection().prepareStatement("INSERT INTO lastseen_host VALUES (?,?,?,?,?)");
-            insertNickname = db.getConnection().prepareStatement("INSERT INTO lastseen_nick VALUES (?,?,?,?,?)");
+            conn.setAutoCommit(false);
+            updateHostname = conn
+                    .prepareStatement("UPDATE lastseen_host SET Nickname = ? , Time = ? , Line = ? , Action = ? WHERE Hostname = ?");
+            updateNickname = conn
+                    .prepareStatement("UPDATE lastseen_nick SET Hostname = ? , Time = ? , Line = ? , Action = ? WHERE Nickname = ?");
+            insertHostname = conn.prepareStatement("INSERT INTO lastseen_host VALUES (?,?,?,?,?)");
+            insertNickname = conn.prepareStatement("INSERT INTO lastseen_nick VALUES (?,?,?,?,?)");
 
             // Insert by nickname
-            resultSet = db.executeQry("SELECT * FROM lastseen_nick WHERE Nickname = " + db.sqlQuote(nickname));
+            resultSet = db.executeQry("SELECT * FROM lastseen_nick WHERE Nickname = " + SqliteDb.sqlQuote(nickname));
             // If the set is empty, then the nickname doesn't exist in the database.
             if (!resultSet.isBeforeFirst()) {
                 insertNickname.setString(1, nickname);
@@ -419,7 +439,7 @@ public class LastSeenCommand extends ListenerAdapter {
             }
 
             // Insert by hostname
-            resultSet = db.executeQry("SELECT * FROM lastseen_host WHERE Hostname = " + db.sqlQuote(hostname));
+            resultSet = db.executeQry("SELECT * FROM lastseen_host WHERE Hostname = " + SqliteDb.sqlQuote(hostname));
             // If the set is emtpy, then the hostname doesn't exist in the database.
             if (!resultSet.isBeforeFirst()) {
                 insertHostname.setString(1, nickname);
@@ -445,17 +465,17 @@ public class LastSeenCommand extends ListenerAdapter {
                 updateHostname.executeUpdate();
             }
         } catch (SQLException ex) {
-            if (db.getConnection() != null) {
+            if (conn != null) {
                 try {
                     logger.error("Lastseen DB Update is being rolled back.");
-                    DbUtils.rollback(db.getConnection());
+                    DbUtils.rollback(conn);
                 } catch (SQLException ex1) {
                     logger.error("Lastseen DB rollback failed.");
                 }
             }
         } finally {
             try {
-                db.getConnection().setAutoCommit(true);
+                conn.setAutoCommit(true);
             } catch (SQLException ingore) {
             } finally {
                 // Need to close the statements and result sets since we are done with them.
@@ -464,7 +484,7 @@ public class LastSeenCommand extends ListenerAdapter {
                 DbUtils.closeQuietly(updateNickname);
                 DbUtils.closeQuietly(insertHostname);
                 DbUtils.closeQuietly(updateHostname);
-                DbUtils.commitAndCloseQuietly(db.getConnection()); // then we close the connection to the db.
+                DbUtils.commitAndCloseQuietly(conn); // then we close the connection to the db.
             }
         }
     }

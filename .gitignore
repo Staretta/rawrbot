@@ -1,8 +1,5 @@
-*.metadata
-RawrBot/target/*
-*.classpath
-RawrBot/.classpath
-RawrBot/logs/*
-RemoteSystemsTempFiles
+RawrBot/target
+RawrBot/logs
 RawrBot/data/*.db
-RawrBot/.settings/*
+.metadata
+bin
