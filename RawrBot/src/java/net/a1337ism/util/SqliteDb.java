@@ -22,7 +22,7 @@ public class SqliteDb extends Db {
         }
     }
 
-    public String sqlQuote(String i) {
+    public static String sqlQuote(String i) {
         // Just a simple method to encapsulate a string with quotes that are destined to be used in an SQL statement.
         return "'" + i + "'";
     }
