@@ -265,13 +265,8 @@ public class LastSeenCommand extends ListenerAdapter {
 
             // Split the message, so we can get the different parameters
             String[] param = event.getMessage().trim().split("\\s", 3);
-            if (param.length == 1) {
-                // If message contains only 1 string, then send them the correct syntax
-                String lastseen_syntax = "!lastseen <Nickname> : Displays the last thing a user said, and when the user was last seen.";
-                ircUtil.sendMessage(event, lastseen_syntax);
-            } else if (param[1].equalsIgnoreCase("-help") || param[1].equalsIgnoreCase("-h")) {
-                // If the second parameter is -help, send them the help information.
-                logger.info("stuff");
+            if (param.length == 1 || param[1].equalsIgnoreCase("-help") || param[1].equalsIgnoreCase("-h")) {
+                // If message contains only 1 string, or if they entered -help, or -h, then send them the help info.
                 String[] lastseen_help = {
                         "!lastseen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen.",
                         "!lastseen -nick <Nickname> : Displays the last thing a user said, based on their nickname.",
