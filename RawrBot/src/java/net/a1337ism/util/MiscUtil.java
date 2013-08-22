@@ -129,6 +129,11 @@ public class MiscUtil {
         return uptime;
     }
 
+    /**
+     * Outputs a formatted date based on the current time.
+     * 
+     * @return a formatted string like this: "MM/dd/yy HH:mm:ss"
+     */
     public static String dateFormat() {
         // Set up the date stuff. Seems a bit redundant though. Argh.
         String dateNow = null;
@@ -136,6 +141,15 @@ public class MiscUtil {
         dateNow = new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(date);
 
         return dateNow;
+    }
+
+    /**
+     * Returns current seconds based on the systems milliseconds
+     * 
+     * @return an integer seconds
+     */
+    public static int seconds() {
+        return (int) (System.currentTimeMillis() / 1000);
     }
 
 }
