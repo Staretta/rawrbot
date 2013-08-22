@@ -26,35 +26,6 @@ public class ircUtil {
      *            we want to send
      */
     public static void sendMessage(MessageEvent event, String message) {
-        sendMessageChannel(event, message);
-    }
-
-    /**
-     * Sends a Private Message to a user
-     * 
-     * @param event
-     *            PrivateMessageEvent
-     * @param message
-     *            we want to send
-     */
-    public static void sendMessage(PrivateMessageEvent event, String message) {
-        sendMessagePrivate(event, message);
-    }
-
-    /**
-     * Sends a message to a channel
-     * 
-     * @param event
-     *            MessageEvent
-     * @param message
-     *            we want to send
-     */
-    public static void sendMessageChannel(MessageEvent event, String message) {
-        // This function is used by all the commands. DO NOT DELETE.
-        // Log the sent message
-        // logger.info("<" + event.getBot().getNick() + "> " + message);
-
-        // Send a channel message
         event.getChannel().send().message(message);
     }
 
@@ -66,12 +37,7 @@ public class ircUtil {
      * @param message
      *            we want to send
      */
-    public static void sendMessagePrivate(PrivateMessageEvent event, String message) {
-        // This function is used by all the commands. DO NOT DELETE.
-        // Log the sent message
-        // logger.info("(" + event.getBot().getNick() + "->" + event.getUser().getNick() + ") " + message);
-
-        // Send a private message
+    public static void sendMessage(PrivateMessageEvent event, String message) {
         event.getUser().send().message(message);
     }
 
@@ -86,11 +52,6 @@ public class ircUtil {
      *            we want to send
      */
     public static void sendNotice(MessageEvent event, String message) {
-        // This function is used by all the commands. DO NOT DELETE.
-        // Log the sent message
-        // logger.info("->" + event.getUser().getNick() + "<- " + message);
-
-        // Send the notice
         event.getUser().send().notice(message);
     }
 
@@ -105,11 +66,6 @@ public class ircUtil {
      *            we want to send
      */
     public static void sendNotice(PrivateMessageEvent event, String target, String message) {
-        // This function is used by all the commands. DO NOT DELETE.
-        // Log the sent message
-        // logger.info("->" + target + "<- " + message);
-
-        // Send the notice
         event.getUser().send().notice(message);
     }
 
@@ -146,14 +102,10 @@ public class ircUtil {
      * 
      * @param event
      *            MessageEvent
-     * @param channel
-     *            Channel we want to check
      * @return boolean
      * 
      */
-    public static boolean isOP(MessageEvent event, String channel) {
-        // See if user is an operator of the specified channel.
-
+    public static boolean isOP(MessageEvent event) {
         // Initialize the variable.
         boolean isOP = false;
 
@@ -173,6 +125,35 @@ public class ircUtil {
      * Checks to see if user is an operator of the specified channel.
      * 
      * @param event
+     *            MessageEvent
+     * @param channel
+     *            Channel we want to check
+     * @return boolean
+     * 
+     */
+    public static boolean isOP(MessageEvent event, String channel) {
+        // See if user is an operator of the specified channel.
+        // Initialize the variable.
+        boolean isOP = false;
+
+        // Get list of operators in a channel.
+        Set<Channel> channels = event.getUser().getChannelsOpIn();
+        Iterator<Channel> itr = channels.iterator();
+        // Step through the set, and see if the user is an operator.
+        while (itr.hasNext()) {
+            Channel chan = itr.next();
+            if (chan.getName().equalsIgnoreCase(channel) && chan.isOp(event.getUser())) {
+                isOP = true;
+            }
+        }
+
+        return isOP;
+    }
+
+    /**
+     * Checks to see if user is an operator of the specified channel.
+     * 
+     * @param event
      *            PrivateMessageEvent
      * @param channel
      *            Channel we want to check
@@ -180,6 +161,7 @@ public class ircUtil {
      * 
      */
     public static boolean isOP(PrivateMessageEvent event, String channel) {
+        // See if user is an operator of the specified channel.
         // Initialize the variable.
         boolean isOP = false;
 
@@ -188,7 +170,7 @@ public class ircUtil {
         Iterator<Channel> itr = channels.iterator();
         while (itr.hasNext()) {
             Channel chan = itr.next();
-            if (chan.getName().equalsIgnoreCase(RawrBot.irc_channel) && chan.isOp(event.getUser())) {
+            if (chan.getName().equalsIgnoreCase(channel) && chan.isOp(event.getUser())) {
                 isOP = true;
             }
         }
