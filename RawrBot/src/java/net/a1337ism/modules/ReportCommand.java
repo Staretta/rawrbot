@@ -33,7 +33,11 @@ public class ReportCommand extends ListenerAdapter {
     private String        sUrlString    = "jdbc:sqlite:data/report.db";
     private String        sDriverString = "org.sqlite.JDBC";
 
+    // Create the tables if they don't exist
     private boolean       tableExist    = createTableIfNotExist();
+
+    // Going with a private error code, because I can't think of a better way to do error reporting, atm.
+    private byte          ERROR         = 0;
 
     private SqliteDb dbConnect() {
         // Open a connection to the database.
@@ -74,9 +78,9 @@ public class ReportCommand extends ListenerAdapter {
      *            the nickname of the person who has been reported
      * @param fromNick
      *            the nickname of the person who reported the issue
-     * @return 1: Success, 2: SQL Exception, 3: No connection to DB
+     * @return true = Success, false = Failure
      */
-    private byte addReport(String reason, String reportedNick, String fromNick) {
+    private boolean addReport(String reason, String reportedNick, String fromNick) {
         // Set up a connection, and variables
         SqliteDb db = dbConnect();
         Connection conn = db.getConnection();
@@ -91,14 +95,14 @@ public class ReportCommand extends ListenerAdapter {
             insertReport.setString(3, reason);
             insertReport.setString(4, date);
             insertReport.execute();
-            return 1;
+            return true;
         } catch (SQLException ex) {
-            return 2;
+            ERROR = 3;
         } finally {
             DbUtils.closeQuietly(insertReport);
             DbUtils.closeQuietly(conn);
         }
-
+        return false;
     }
 
     /**
@@ -106,9 +110,9 @@ public class ReportCommand extends ListenerAdapter {
      * 
      * @param ID
      *            number of the report
-     * @return 1: Success, 2: No report w/ that ID, 3: No DB connection, 4: SQL Exception, 5: Invalid Number
+     * @return true = Success, false = Failure
      */
-    private byte delReport(String ID) {
+    private boolean delReport(String ID) {
         // Set up a connection, and variables
         SqliteDb db = dbConnect();
         Connection conn = db.getConnection();
@@ -129,19 +133,19 @@ public class ReportCommand extends ListenerAdapter {
                 deleteReport = conn.prepareStatement("DELETE FROM reports WHERE ID = ?");
                 deleteReport.setInt(1, inputNumber);
                 deleteReport.execute();
-                return 1;
-            } else {
-                return 2;
-            }
+                return true;
+            } else
+                ERROR = 2;
         } catch (SQLException ex) {
-            return 3;
+            ERROR = 3;
         } catch (NumberFormatException nfe) {
-            return 4;
+            ERROR = 4;
         } finally {
             DbUtils.closeQuietly(selectReport);
             DbUtils.closeQuietly(deleteReport);
             DbUtils.closeQuietly(conn);
         }
+        return false;
     }
 
     /**
@@ -149,7 +153,7 @@ public class ReportCommand extends ListenerAdapter {
      * 
      * @param ID
      *            number of the report
-     * @return a formatted report to be sent to the user
+     * @return a formatted report to be sent to the user, if there is none, return null;
      */
     private String getReportID(String ID) {
         // Set up a connection, and variables
@@ -157,6 +161,7 @@ public class ReportCommand extends ListenerAdapter {
         Connection conn = db.getConnection();
         ResultSet resultSet = null;
         PreparedStatement selectReport = null;
+        String msg = null;
 
         try {
             // Try and parse their input to see if it's a valid integer.
@@ -171,17 +176,17 @@ public class ReportCommand extends ListenerAdapter {
                 // If ID exists, return it.
                 List<String> message = resultSetParser(resultSet);
                 Object[] finalMsg = message.toArray();
-                return finalMsg[0].toString();
-            } else {
-                return "2";
-            }
+                msg = finalMsg[0].toString();
+            } else
+                ERROR = 2;
         } catch (SQLException ex) {
-            return "3";
+            ERROR = 3;
         } catch (NumberFormatException nfe) {
-            return "4";
+            ERROR = 4;
         } finally {
             DbUtils.closeQuietly(conn, selectReport, resultSet);
         }
+        return msg;
     }
 
     /**
@@ -202,7 +207,7 @@ public class ReportCommand extends ListenerAdapter {
      *            nickname of the reported person
      * @param limit
      *            Limit of reports we want to get
-     * @return a formatted report to be sent to the user
+     * @return a formatted report to be sent to the user, if there is none,
      */
     private List<String> getReportNick(String nickname, int limit) {
         // Set up a connection, and variables
@@ -219,8 +224,10 @@ public class ReportCommand extends ListenerAdapter {
 
             if (resultSet.isBeforeFirst())
                 message = resultSetParser(resultSet);
-
+            else
+                ERROR = 2;
         } catch (SQLException ignore) {
+            ERROR = 3;
         } finally {
             DbUtils.closeQuietly(conn, selectReport, resultSet);
         }
@@ -246,8 +253,10 @@ public class ReportCommand extends ListenerAdapter {
 
             if (resultSet.isBeforeFirst())
                 message = resultSetParser(resultSet);
-
+            else
+                ERROR = 2;
         } catch (SQLException ignore) {
+            ERROR = 3;
         } finally {
             DbUtils.closeQuietly(db.getConnection(), selectReports, resultSet);
         }
@@ -297,19 +306,19 @@ public class ReportCommand extends ListenerAdapter {
                 // Set up some variables.
                 String reportedNick = param[1];
                 String reason = "No reason given.";
-                byte reportResult = 0;
+                boolean result = false;
 
                 // If they entered a reason, overwrite the default reason.
                 if (param.length == 3)
                     reason = param[2];
 
                 // Add the report
-                reportResult = addReport(reason, reportedNick, event.getUser().getNick());
+                result = addReport(reason, reportedNick, event.getUser().getNick());
 
-                if (reportResult == 1) {
+                if (result == true) {
                     // Set the success string, and message success
-                    String reportSuccess = "Your report has been added, and the operators of the channel have been notified.";
-                    ircUtil.sendMessage(event, reportSuccess);
+                    String success = "Your report has been added, and the operators of the channel have been notified.";
+                    ircUtil.sendMessage(event, success);
 
                     // Get a list of operators for the channel, and throw it into an iterator.
                     // TODO: Move this to a function in ircUtil.java
@@ -326,8 +335,8 @@ public class ReportCommand extends ListenerAdapter {
                     }
                 } else {
                     // If adding the report failed for some reason, tell them it failed.
-                    String reportFailure = "Error " + reportResult + ": Failed to add report.";
-                    ircUtil.sendMessage(event, reportFailure);
+                    String failure = "Error " + ERROR + ": Failed to add report.";
+                    ircUtil.sendMessage(event, failure);
                 }
             }
         }
@@ -343,16 +352,22 @@ public class ReportCommand extends ListenerAdapter {
             if (ircUtil.isOP(event, RawrBot.irc_channel)) {
                 if (param.length == 1) {
                     // Get 5 newest reports
-                    List<String> reportResult = getReportAll();
-                    // If reportResult == null, then we know there aren't any new reports.
-                    if (reportResult == null) {
-                        String reportNone = "No new reports.";
-                        ircUtil.sendMessage(event, reportNone);
-                    } else {
-                        // Send them the list of new reports.
-                        Iterator itr = reportResult.iterator();
+                    List<String> result = getReportAll();
+
+                    if (result != null) {
+                        // Send them the reports.
+                        Iterator itr = result.iterator();
                         while (itr.hasNext())
                             ircUtil.sendMessage(event, itr.next().toString());
+                    } else if (ERROR == 2) {
+                        String none = "No new reports.";
+                        ircUtil.sendMessage(event, none);
+                    } else if (ERROR == 3) {
+                        String sqlError = "Error " + ERROR + ": SQL Error.";
+                        ircUtil.sendMessage(event, sqlError);
+                    } else {
+                        String failure = "Error: Unknown Error";
+                        ircUtil.sendMessage(event, failure);
                     }
                 } else if (param[1].equalsIgnoreCase("-help") || param[1].equalsIgnoreCase("-h")) {
                     // If the second parameter is -help or -h, send them the help information.
@@ -374,31 +389,24 @@ public class ReportCommand extends ListenerAdapter {
                     } else {
                         // Otherwise, assume they entered a number, and set up variables.
                         String ID = param[2];
-                        byte reportResult = 0;
-                        reportResult = delReport(ID);
+                        boolean result = false;
+                        result = delReport(ID);
 
-                        // Report Result Codes
-                        // 1 = Success
-                        // 2 = No such ID in database
-                        // 3 = SQLException
-                        // 4 = Not a valid number entered
-                        String reportSuccess = "Sucessfully deleted report with ID: " + ID;
-                        String reportError = "Error " + reportResult + ": ";
-                        String reportFailure = reportError + "Unable to delete report with ID: " + ID;
-                        String reportNonNumber = reportError + ID + " is not a valid number.";
-                        String reportSQLError = reportError + "No connection to the database.";
-                        String reportNone = "No report with ID: " + ID;
-
-                        if (reportResult == 1) {
-                            ircUtil.sendMessage(event, reportSuccess);
-                        } else if (reportResult == 2) {
-                            ircUtil.sendMessage(event, reportNone);
-                        } else if (reportResult == 3) {
-                            ircUtil.sendMessage(event, reportSQLError);
-                        } else if (reportResult == 4) {
-                            ircUtil.sendMessage(event, reportNonNumber);
+                        if (result == true) {
+                            String success = "Sucessfully deleted report ID: " + ID;
+                            ircUtil.sendMessage(event, success);
+                        } else if (ERROR == 2) {
+                            String none = "No report for ID: " + ID;
+                            ircUtil.sendMessage(event, none);
+                        } else if (ERROR == 3) {
+                            String sqlError = "Error " + ERROR + ": SQL Error.";
+                            ircUtil.sendMessage(event, sqlError);
+                        } else if (ERROR == 4) {
+                            String nonNumber = "Error " + ERROR + ": " + ID + " is not a valid number.";
+                            ircUtil.sendMessage(event, nonNumber);
                         } else {
-                            ircUtil.sendMessage(event, reportFailure);
+                            String failure = "Error " + ERROR + ": Unable to delete report with ID: " + ID;
+                            ircUtil.sendMessage(event, failure);
                         }
                     }
                 } else if (param[1].equalsIgnoreCase("-id")) {
@@ -409,24 +417,23 @@ public class ReportCommand extends ListenerAdapter {
                         ircUtil.sendMessage(event, reportSyntax);
                     } else {
                         String ID = param[2].toString();
-                        String reportResult = getReportID(ID);
-                        String reportError = "Error " + reportResult + ": ";
-                        String reportFailure = reportError + "General error.";
-                        String reportNonNumber = reportError + ID + " is not a valid number.";
-                        String reportNone = "No report with ID: " + ID;
+                        String result = getReportID(ID);
 
-                        // Report Result Codes
-                        // 2 = No such ID in database
-                        // 3 = SQLException
-                        // 4 = Not a valid number
-                        if (reportResult == "2") {
-                            ircUtil.sendMessage(event, reportNone);
-                        } else if (reportResult == "3") {
-                            ircUtil.sendMessage(event, reportFailure);
-                        } else if (reportResult == "4") {
-                            ircUtil.sendMessage(event, reportNonNumber);
+                        if (result != null) {
+                            // Send them the information they requested
+                            ircUtil.sendMessage(event, result);
+                        } else if (ERROR == 2) {
+                            String none = "No report for ID: " + ID;
+                            ircUtil.sendMessage(event, none);
+                        } else if (ERROR == 3) {
+                            String sqlError = "Error " + ERROR + ": SQL Error.";
+                            ircUtil.sendMessage(event, sqlError);
+                        } else if (ERROR == 4) {
+                            String nonNumber = "Error " + ERROR + ": " + ID + " is not a valid number.";
+                            ircUtil.sendMessage(event, nonNumber);
                         } else {
-                            ircUtil.sendMessage(event, reportResult);
+                            String failure = "Error: Unknown Error";
+                            ircUtil.sendMessage(event, failure);
                         }
                     }
                 } else if (param[1].equalsIgnoreCase("-nick") || param[1].equalsIgnoreCase("-n")) {
@@ -438,43 +445,55 @@ public class ReportCommand extends ListenerAdapter {
                     } else {
                         // Set nickname to what they entered, and search for it in the database.
                         String nickname = param[2].toString();
-                        List<String> reportResult = getReportNick(nickname);
+                        List<String> result = getReportNick(nickname);
 
-                        if (reportResult == null) {
-                            // If reportResult is null, then there are no reports for that nickname.
-                            String reportNone = "No reports for nickname: " + nickname;
-                            ircUtil.sendMessage(event, reportNone);
-                        } else {
+                        if (result != null) {
                             // Send them the information they searched for.
-                            Iterator itr = reportResult.iterator();
+                            Iterator itr = result.iterator();
                             while (itr.hasNext())
                                 ircUtil.sendMessage(event, itr.next().toString());
+                        } else if (ERROR == 2) {
+                            String none = "No reports for nickname: " + nickname;
+                            ircUtil.sendMessage(event, none);
+                        } else if (ERROR == 3) {
+                            String sqlError = "Error " + ERROR + ": SQL Error.";
+                            ircUtil.sendMessage(event, sqlError);
+                        } else {
+                            String failure = "Error: Unknown Error";
+                            ircUtil.sendMessage(event, failure);
                         }
                     }
                 } else {
                     // Otherwise, they just want "x" amount of the newest available reports.
                     String limit = param[1].toString();
+
+                    // Check to see if the limit they input is a valid number
+                    int inputNumber = 5;
                     try {
-                        // Check to see if the limit they input is a valid number
-                        int inputNumber = Integer.parseInt(limit);
-
-                        List<String> reportResult = getReportAll(inputNumber);
-
-                        if (reportResult == null) {
-                            // If reportResult is null, then we know there are no new reports.
-                            String reportNone = "No new reports.";
-                            ircUtil.sendMessage(event, reportNone);
-                        } else {
-                            // Send them the reports.
-                            Iterator itr = reportResult.iterator();
-                            while (itr.hasNext()) {
-                                ircUtil.sendMessage(event, itr.next().toString());
-                            }
-                        }
+                        inputNumber = Integer.parseInt(limit);
                     } catch (NumberFormatException nfe) {
                         // If the number they input wasn't a number, let them know.
-                        String reportFailure = "Error 4: " + limit + " is not a valid number";
-                        ircUtil.sendMessage(event, reportFailure);
+                        String nonNumber = "Error 4: " + limit + " is not a valid number";
+                        ircUtil.sendMessage(event, nonNumber);
+                        return;
+                    }
+
+                    List<String> result = getReportAll(inputNumber);
+
+                    if (result != null) {
+                        // Send them the reports.
+                        Iterator itr = result.iterator();
+                        while (itr.hasNext())
+                            ircUtil.sendMessage(event, itr.next().toString());
+                    } else if (ERROR == 2) {
+                        String none = "No new reports.";
+                        ircUtil.sendMessage(event, none);
+                    } else if (ERROR == 3) {
+                        String sqlError = "Error " + ERROR + ": SQL Error.";
+                        ircUtil.sendMessage(event, sqlError);
+                    } else {
+                        String failure = "Error: Unknown Error";
+                        ircUtil.sendMessage(event, failure);
                     }
                 }
             }
@@ -494,19 +513,19 @@ public class ReportCommand extends ListenerAdapter {
                 // Set up some variables.
                 String reportedNick = param[1];
                 String reason = "No reason given.";
-                byte reportResult = 0;
+                boolean result = false;
 
                 // If they entered a reason, overwrite the default reason.
                 if (param.length == 3)
                     reason = param[2];
 
                 // Add the report
-                reportResult = addReport(reason, reportedNick, event.getUser().getNick());
+                result = addReport(reason, reportedNick, event.getUser().getNick());
 
-                if (reportResult == 1) {
+                if (result == true) {
                     // Set the success string, and message success
-                    String reportSuccess = "Your report has been added, and the operators of the channel have been notified.";
-                    ircUtil.sendMessage(event, reportSuccess);
+                    String success = "Your report has been added, and the operators of the channel have been notified.";
+                    ircUtil.sendMessage(event, success);
 
                     // Get a list of operators for the channel, and throw it into an iterator.
                     // TODO: Move this to a function in ircUtil.java
@@ -524,8 +543,8 @@ public class ReportCommand extends ListenerAdapter {
                     }
                 } else {
                     // If adding the report failed for some reason, tell them it failed.
-                    String reportFailure = "Error " + reportResult + ": Failed to add report.";
-                    ircUtil.sendMessage(event, reportFailure);
+                    String failure = "Error " + ERROR + ": Failed to add report.";
+                    ircUtil.sendMessage(event, failure);
                 }
             }
         }
