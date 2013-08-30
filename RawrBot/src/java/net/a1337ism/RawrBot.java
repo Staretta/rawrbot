@@ -1,6 +1,7 @@
 package net.a1337ism;
 
 import net.a1337ism.modules.EightballCommand;
+import net.a1337ism.modules.Greeter;
 import net.a1337ism.modules.HelpCommand;
 import net.a1337ism.modules.JokeCommand;
 import net.a1337ism.modules.LastSeenCommand;
@@ -183,7 +184,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         Configuration configuration = new Configuration.Builder()
                 .setName(irc_nickname)
                 .setLogin(irc_username)
-                .setVersion(bot_version)
+                .setRealname(bot_version)
                 .setAutoNickChange(true)
                 .setAutoReconnect(true)
                 .setCapEnabled(true)
@@ -204,6 +205,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
                 .addListener(new ReportCommand())
                 .addListener(new RulesCommand())
                 .addListener(new EightballCommand())
+                .addListener(new Greeter())
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on

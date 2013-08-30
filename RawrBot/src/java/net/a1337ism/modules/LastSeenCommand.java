@@ -64,36 +64,39 @@ public class LastSeenCommand extends ListenerAdapter {
         }
     }
 
-    private List<String> getLastSeenNick(String nick) {
+    private List<String> getLastSeen(String search, boolean isNickname) {
         // Need to send a default for limit, if not specified.
-        return getLastSeenNick(nick, 5);
+        return getLastSeen(search, 3, isNickname);
     }
 
-    private List<String> getLastSeenNick(String nick, int limit) {
-        // Open connection to the database, and set up variables.
+    private List<String> getLastSeen(String search, int limit, boolean isNickname) {
         SqliteDb db = dbConnect();
         Connection conn = db.getConnection();
-        PreparedStatement selNick = null;
+        PreparedStatement select = null;
         ResultSet rs = null;
         List<String> message = new ArrayList<>();
 
         try {
-            selNick = conn
-                    .prepareStatement("SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
-            selNick.setString(1, "%" + nick + "%");
-            selNick.setInt(2, limit);
-            rs = selNick.executeQuery();
-            message = getLastSeen(rs, limit, message);
+            if (isNickname)
+                select = conn
+                        .prepareStatement("SELECT * FROM lastseen_nick WHERE Nickname LIKE ? ORDER BY Time DESC LIMIT ?");
+            else
+                select = conn
+                        .prepareStatement("SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
+            select.setString(1, "%" + search + "%");
+            select.setInt(2, limit);
+            rs = select.executeQuery();
+            message = rsParser(rs, limit, message);
         } catch (SQLException ex) {
             return null;
         } finally {
-            DbUtils.closeQuietly(conn, selNick, rs);
+            DbUtils.closeQuietly(conn, select, rs);
         }
 
         return message;
     }
 
-    private List<String> getLastSeen(ResultSet rs, int limit, List<String> message) throws SQLException {
+    private List<String> rsParser(ResultSet rs, int limit, List<String> message) throws SQLException {
         // Most of the getLastSeen stuff happens here.
         // TODO: Find a way to make both nick and host into one function instead of two. Since it's more or less the
         // same method except for one line, searching for hostname instead of nickname, and vice versa.
@@ -117,35 +120,6 @@ public class LastSeenCommand extends ListenerAdapter {
                     + limit + " reached.";
             message.add(0, newMessage);
         }
-        return message;
-    }
-
-    private List<String> getLastSeenHost(String host) {
-        // Need to send a default for limit, if not specified.
-        return getLastSeenHost(host, 5);
-    }
-
-    private List<String> getLastSeenHost(String host, int limit) {
-        // Open a connection to the database, and set up variables
-        SqliteDb db = dbConnect();
-        Connection conn = db.getConnection();
-        PreparedStatement selHost = null;
-        ResultSet rs = null;
-        List<String> message = new ArrayList<>();
-
-        try {
-            selHost = conn
-                    .prepareStatement("SELECT * FROM lastseen_host WHERE Hostname LIKE ? ORDER BY Time DESC LIMIT ?");
-            selHost.setString(1, "%" + host + "%");
-            selHost.setInt(2, limit);
-            rs = selHost.executeQuery();
-            message = getLastSeen(rs, limit, message);
-        } catch (SQLException ex) {
-            return null;
-        } finally {
-            DbUtils.closeQuietly(conn, selHost, rs);
-        }
-
         return message;
     }
 
@@ -283,7 +257,7 @@ public class LastSeenCommand extends ListenerAdapter {
                 } else {
                     // Otherwise search for the host string, and send them the results
                     String hostSearch = param[2].toString();
-                    List sentMsg = getLastSeenHost(hostSearch);
+                    List sentMsg = getLastSeen(hostSearch, false);
 
                     if (sentMsg == null) {
                         // If sentMsg is null, we know the search didn't find anything.
@@ -305,7 +279,7 @@ public class LastSeenCommand extends ListenerAdapter {
                 } else {
                     // Otherwise search for the nick string, and send them the results
                     String nickSearch = param[2].toString();
-                    List sentMsg = getLastSeenNick(nickSearch);
+                    List sentMsg = getLastSeen(nickSearch, true);
 
                     if (sentMsg == null) {
                         // If sentMsg equals null, we know the search didn't find anything.
@@ -322,7 +296,7 @@ public class LastSeenCommand extends ListenerAdapter {
             } else {
                 // Otherwise, we know they want to search a nickname, and send them the results.
                 String nickSearch = param[1].toString();
-                List sentMsg = getLastSeenNick(nickSearch);
+                List sentMsg = getLastSeen(nickSearch, true);
 
                 if (sentMsg == null) {
                     // If sentMsg equals null, we know the search didn't find anything.
@@ -364,7 +338,7 @@ public class LastSeenCommand extends ListenerAdapter {
                 } else {
                     // Otherwise search for the host string, and send them the results
                     String hostSearch = param[2].toString();
-                    List sentMsg = getLastSeenHost(hostSearch);
+                    List sentMsg = getLastSeen(hostSearch, false);
 
                     if (sentMsg == null) {
                         // If sentMsg equals null, we know the search didn't find anything.
@@ -387,7 +361,7 @@ public class LastSeenCommand extends ListenerAdapter {
                 } else {
                     // Otherwise search for the nick string, and send them the results
                     String nickSearch = param[2].toString();
-                    List sentMsg = getLastSeenNick(nickSearch);
+                    List sentMsg = getLastSeen(nickSearch, true);
 
                     if (sentMsg == null) {
                         // If sentMsg equals null, we know the search didn't find anything.
@@ -404,7 +378,7 @@ public class LastSeenCommand extends ListenerAdapter {
             } else {
                 // Now we know they want to search a nickname, and send them the results.
                 String nickSearch = param[1].toString();
-                List sentMsg = getLastSeenNick(nickSearch);
+                List sentMsg = getLastSeen(nickSearch, true);
 
                 if (sentMsg == null) {
                     // If sentMsg equals null, we know the search didn't find anything.
