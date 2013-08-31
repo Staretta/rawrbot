@@ -24,17 +24,17 @@ import org.slf4j.LoggerFactory;
 
 public class LastSeenCommand extends ListenerAdapter {
     // Set up the logger stuff
-    private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
+    private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
 
     // Set up the database stuff
-    private String        sUrlString    = "jdbc:sqlite:data/lastseen.db";
-    private String        sDriverString = "org.sqlite.JDBC";
+    private String        dbUrl      = "jdbc:sqlite:data/lastseen.db";
+    private String        dbDriver   = "org.sqlite.JDBC";
 
-    private boolean       tableExist    = createTableIfNotExist();
+    private boolean       tableExist = createTableIfNotExist();
 
     private SqliteDb dbConnect() {
         // Open a connection to the database.
-        SqliteDb db = new SqliteDb(sDriverString, sUrlString);
+        SqliteDb db = new SqliteDb(dbDriver, dbUrl);
         return db;
     }
 
