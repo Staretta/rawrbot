@@ -18,14 +18,11 @@ public class EightballCommand extends ListenerAdapter {
     private String[]      answerList = FileUtil.readLines(filename);
 
     public void onMessage(MessageEvent event) throws Exception {
-        // Check if message starts with !8ball or !eightball, and ends with "?"
         if ((event.getMessage().trim().toLowerCase().startsWith("!8ball") || event.getMessage().trim().toLowerCase()
                 .startsWith("!eightball"))
-                && event.getMessage().trim().toLowerCase().endsWith("?")) {
-
-            // Return if they are rate limited.
-            if (RateLimiter.isRateLimited(event.getUser().getNick()))
-                return;
+                && event.getMessage().trim().toLowerCase().endsWith("?")
+                && !RateLimiter.isRateLimited(event.getUser().getNick())) {
+            // Check if message starts with !8ball or !eightball, and ends with "?", and if they are not rate limited
 
             String answer = MiscUtil.randomSelection(answerList);
             ircUtil.sendMessage(event, answer);
@@ -33,17 +30,17 @@ public class EightballCommand extends ListenerAdapter {
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) {
-        // Check if message starts with !8ball or !eightball and ends with "?"
         if ((event.getMessage().trim().toLowerCase().startsWith("!8ball") || event.getMessage().trim().toLowerCase()
                 .startsWith("!eightball"))
                 && event.getMessage().trim().toLowerCase().endsWith("?")) {
+            // Check if message starts with !8ball or !eightball and ends with "?"
 
             String answer = MiscUtil.randomSelection(answerList);
             ircUtil.sendMessage(event, answer);
 
-            // If message equals !8ball reload
         } else if (event.getMessage().trim().toLowerCase().equalsIgnoreCase("!8ball -reload")
                 && event.getUser().getNick().equalsIgnoreCase(RawrBot.bot_owner)) {
+            // If message equals !8ball reload
             ircUtil.sendMessage(event, "Reloading 8ball reply list");
             answerList = FileUtil.readLines(filename);
         }

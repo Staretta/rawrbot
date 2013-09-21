@@ -29,7 +29,11 @@ public class Greeter extends ListenerAdapter {
     private String        dbUrl      = "jdbc:sqlite:data/greeter.db";
     private String        dbDriver   = "org.sqlite.JDBC";
 
+    // Creates the database tables if they haven't been created yet.
     private boolean       tableExist = createTableIfNotExist();
+
+    // Going with a private error code, because I can't think of a better way to do error reporting, atm.
+    private byte          ERROR      = 0;
 
     private SqliteDb dbConnect() {
         // Open a connection to the database.
@@ -75,14 +79,15 @@ public class Greeter extends ListenerAdapter {
             insGreet.execute();
             return true;
         } catch (SQLException ex) {
-            return false;
+            ERROR = 3;
         } finally {
             DbUtils.closeQuietly(insGreet);
             DbUtils.closeQuietly(conn);
         }
+        return false;
     }
 
-    private byte delGreeting(String ID) {
+    private boolean delGreeting(String ID) {
         // Set up the connection, and some variables
         SqliteDb db = dbConnect();
         Connection conn = db.getConnection();
@@ -103,23 +108,24 @@ public class Greeter extends ListenerAdapter {
                 delGreet = conn.prepareStatement("DELETE FROM Greeting WHERE ID = ?");
                 delGreet.setInt(1, inputNumber);
                 delGreet.execute();
-                return 1;
+                return true;
             } else {
-                return 2;
+                ERROR = 2;
             }
         } catch (SQLException ex) {
-            return 3;
+            ERROR = 3;
         } catch (NumberFormatException nfe) {
-            return 4;
+            ERROR = 4;
         } finally {
             DbUtils.closeQuietly(rs);
             DbUtils.closeQuietly(delGreet);
             DbUtils.closeQuietly(selGreet);
             DbUtils.closeQuietly(conn);
         }
+        return false;
     }
 
-    private String getGreeting() {
+    private List<String> getGreeting() {
         // Set up the connection and some variables
         SqliteDb db = dbConnect();
         Connection conn = db.getConnection();
@@ -127,21 +133,30 @@ public class Greeter extends ListenerAdapter {
         PreparedStatement selGreet = null;
 
         try {
-            selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY RANDOM() LIMIT 1");
+            // Need to see if there is a greeting in the database, and if there is, grab a random one
+            // selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY RANDOM() LIMIT 1");
+            // rs = selGreet.executeQuery();
+            //
+            // if (rs.isBeforeFirst()) {
+            // List<String> message = rsParser(rs);
+            // Object[] finalMsg = message.toArray();
+            // return finalMsg[0].toString();
+            // Get all the greetings from the database
+            selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY ID");
             rs = selGreet.executeQuery();
 
             if (rs.isBeforeFirst()) {
                 List<String> message = rsParser(rs);
-                Object[] finalMsg = message.toArray();
-                return finalMsg[0].toString();
+                return message;
             } else {
-                return null;
+                ERROR = 2;
             }
-        } catch (SQLException pass) {
-            return null;
+        } catch (SQLException ex) {
+            ERROR = 3;
         } finally {
             DbUtils.closeQuietly(conn, selGreet, rs);
         }
+        return null;
     }
 
     private String getGreeting(String ID) {
@@ -155,6 +170,7 @@ public class Greeter extends ListenerAdapter {
             // Parse input to see if it's a valid number
             int inputNumber = Integer.parseInt(ID);
 
+            // Now we need to see if there the number relates to a greeting in the db
             selGreet = conn.prepareStatement("SELECT * FROM Greeting WHERE ID = ?");
             selGreet.setInt(1, inputNumber);
             rs = selGreet.executeQuery();
@@ -164,15 +180,16 @@ public class Greeter extends ListenerAdapter {
                 Object[] finalMsg = message.toArray();
                 return finalMsg[0].toString();
             } else {
-                return "2";
+                ERROR = 2;
             }
         } catch (SQLException ex) {
-            return "3";
+            ERROR = 3;
         } catch (NumberFormatException nfe) {
-            return "4";
+            ERROR = 4;
         } finally {
             DbUtils.closeQuietly(conn, selGreet, rs);
         }
+        return null;
 
     }
 
@@ -184,6 +201,7 @@ public class Greeter extends ListenerAdapter {
         PreparedStatement selGreet = null;
 
         try {
+            // Get all the greetings from the database
             selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY ID");
             rs = selGreet.executeQuery();
 
@@ -191,15 +209,14 @@ public class Greeter extends ListenerAdapter {
                 List<String> message = rsParser(rs, true);
                 return message;
             } else {
-                return null;
+                ERROR = 2;
             }
         } catch (SQLException ex) {
-            return null;
-        } catch (NumberFormatException nfe) {
-            return null;
+            ERROR = 3;
         } finally {
             DbUtils.closeQuietly(conn, selGreet, rs);
         }
+        return null;
 
     }
 
@@ -255,16 +272,19 @@ public class Greeter extends ListenerAdapter {
 
             if (param.length == 1) {
                 // If they entered !greeter -all, display all the current greetings being used.
-                List<String> result = getGreetingAll();
+                List<String> greeting = getGreetingAll();
 
-                if (result != null) {
-                    Iterator itr = result.iterator();
+                if (greeting != null) {
+                    Iterator itr = greeting.iterator();
                     while (itr.hasNext()) {
                         ircUtil.sendMessage(event, itr.next().toString());
                     }
+                } else if (ERROR == 3) {
+                    String sqlError = "Error " + ERROR + ": SQL Error.";
+                    ircUtil.sendMessage(event, sqlError);
                 } else {
-                    String failure = "There are no greetings.";
-                    ircUtil.sendMessage(event, failure);
+                    String none = "There are no greetings.";
+                    ircUtil.sendMessage(event, none);
                 }
             } else if (param[1].equalsIgnoreCase("-help") || param[1].equalsIgnoreCase("-h")) {
                 // If they entered !greeter, send the user the help information
@@ -292,8 +312,8 @@ public class Greeter extends ListenerAdapter {
                         String success = "Your greeting has been added.";
                         ircUtil.sendMessage(event, success);
                     } else {
-                        String failure = "Failed to add your greeting.";
-                        ircUtil.sendMessage(event, failure);
+                        String sqlError = "Error " + ERROR + ": Failed to add your greeting.";
+                        ircUtil.sendMessage(event, sqlError);
                     }
                 }
             } else if (param[1].equalsIgnoreCase("-del") || param[1].equalsIgnoreCase("-d")) {
@@ -304,14 +324,21 @@ public class Greeter extends ListenerAdapter {
                 } else {
                     // We know they entered an ID, so lets see if we can delete it.
                     String ID = param[2];
-                    byte result = delGreeting(ID);
+                    boolean result = delGreeting(ID);
 
-                    if (result == 1) {
+                    // 2 = No greeting, 3 = SQL Exception, 4 = Not a number
+                    if (result) {
                         String success = "Sucessfully deleted greeting with ID: " + ID;
                         ircUtil.sendMessage(event, success);
-                    } else if (result == 2) {
-                        String failure = "Unable to delete greeting with ID: " + ID;
-                        ircUtil.sendMessage(event, failure);
+                    } else if (ERROR == 3) {
+                        String sqlError = "Error " + ERROR + ": SQL Error.";
+                        ircUtil.sendMessage(event, sqlError);
+                    } else if (ERROR == 4) {
+                        String nonNumber = "Error " + ERROR + ": " + ID + " is not a valid number.";
+                        ircUtil.sendMessage(event, nonNumber);
+                    } else {
+                        String none = "No greeting for ID: " + ID;
+                        ircUtil.sendMessage(event, none);
                     }
                 }
             } else if (param[1].equalsIgnoreCase("-id")) {
@@ -324,11 +351,18 @@ public class Greeter extends ListenerAdapter {
                     String ID = param[2];
                     String result = getGreeting(ID);
 
+                    // 2 = No greeting, 3 = SQL Exception, 4 = Not a number
                     if (result != null) {
-                        ircUtil.sendMessage(event, getGreeting(ID));
+                        ircUtil.sendMessage(event, result);
+                    } else if (ERROR == 3) {
+                        String sqlError = "Error " + ERROR + ": SQL Error.";
+                        ircUtil.sendMessage(event, sqlError);
+                    } else if (ERROR == 4) {
+                        String nonNumber = "Error " + ERROR + ": " + ID + " is not a valid number.";
+                        ircUtil.sendMessage(event, nonNumber);
                     } else {
-                        String failure = "No greeting for ID: " + ID;
-                        ircUtil.sendMessage(event, failure);
+                        String none = "No greeting for ID: " + ID;
+                        ircUtil.sendMessage(event, none);
                     }
                 }
             }
@@ -340,10 +374,13 @@ public class Greeter extends ListenerAdapter {
         // Need to filter out the bot joining channel from other people joining channel.
         if (!event.getUser().getNick().equals(event.getBot().getNick())) {
             // Send a greeting to users who join the channel.
-            String greeting = getGreeting();
+            List<String> greeting = getGreeting();
 
             if (greeting != null) {
-                event.getUser().send().notice(getGreeting());
+                Iterator itr = greeting.iterator();
+                while (itr.hasNext()) {
+                    event.getUser().send().notice(itr.next().toString());
+                }
             }
         }
     }
