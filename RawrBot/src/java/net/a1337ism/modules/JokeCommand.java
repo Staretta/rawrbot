@@ -37,7 +37,9 @@ public class JokeCommand extends ListenerAdapter {
             } else {
                 // It's currently in an array because I wanted to know what ID number the joke was using in the event
                 // that I needed to debug escape characters.
-                Object[] joke = getJoke();
+                Object[] joke = null;
+                joke = getJoke();
+
                 // If joke isn't null, meaning it didn't crash, then do the good stuff!
                 if (joke != null) {
                     ircUtil.sendMessage(event, joke[1].toString());
@@ -61,7 +63,9 @@ public class JokeCommand extends ListenerAdapter {
             } else {
                 // It's currently in an array because I wanted to know what ID number the joke was using in the event
                 // that I needed to debug escape characters.
-                Object[] joke = getJoke();
+                Object[] joke = null;
+                joke = getJoke();
+
                 // If joke isn't null, meaning it didn't crash, then do the good stuff!
                 if (joke != null) {
                     ircUtil.sendMessage(event, joke[1].toString());
@@ -70,19 +74,12 @@ public class JokeCommand extends ListenerAdapter {
         }
     }
 
-    private Object[] getJoke() {
-        try {
-            // grabs JSONobject and stores it into json for us to read from
-            org.json.JSONObject json = Json
-                    .readJsonFromUrl("http://api.icndb.com/jokes/random?escape=javascript&firstName=Rawr&lastName=Bot");
-            // stores the specific values I want into an array to be used later.
-            Object[] array = { ((JSONObject) json.get("value")).get("id"), ((JSONObject) json.get("value")).get("joke") };
-            return array;
-        } catch (JSONException ex) {
-            logger.error("ERROR " + ex);
-        } catch (IOException ex) {
-            logger.error("ERROR " + ex);
-        }
-        return null;
+    private Object[] getJoke() throws IOException, JSONException {
+        // grabs JSONobject and stores it into json for us to read from
+        org.json.JSONObject json = Json
+                .readJsonFromUrl("http://api.icndb.com/jokes/random?escape=javascript&firstName=Rawr&lastName=Bot");
+        // stores the specific values I want into an array to be used later.
+        Object[] array = { ((JSONObject) json.get("value")).get("id"), ((JSONObject) json.get("value")).get("joke") };
+        return array;
     }
 }

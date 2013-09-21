@@ -88,6 +88,10 @@ public class RawrCommand extends ListenerAdapter {
                     ircUtil.sendMessage(event, line);
                 }
             }
+        } else if (event.getMessage().trim().toLowerCase().startsWith("!woosh")
+                && !RateLimiter.isRateLimited(event.getUser().getNick())) {
+            String whoosh = "wooshes!";
+            event.getChannel().send().action(whoosh);
         }
     }
 

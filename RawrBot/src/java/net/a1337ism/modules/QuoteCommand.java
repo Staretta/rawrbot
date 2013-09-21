@@ -35,7 +35,9 @@ public class QuoteCommand extends ListenerAdapter {
 
             } else {
                 // Throw it into a variable
-                Object[] quote = getQuote();
+                Object[] quote = null;
+                quote = getQuote();
+
                 // If it's not null, continue
                 if (quote != null) {
                     ircUtil.sendMessage(event, quote[0].toString());
@@ -58,7 +60,9 @@ public class QuoteCommand extends ListenerAdapter {
 
             } else {
                 // Throw it into a variable
-                Object[] quote = getQuote();
+                Object[] quote = null;
+                quote = getQuote();
+
                 // If it's not null, continue
                 if (quote != null) {
                     ircUtil.sendMessage(event, quote[0].toString());
@@ -68,18 +72,11 @@ public class QuoteCommand extends ListenerAdapter {
     }
 
     private Object[] getQuote() throws IOException, JSONException {
-        try {
-            // grabs JSONobject and stores it into json for us to read from
-            org.json.JSONObject json = Json.readJsonFromUrl("http://www.iheartquotes.com/api/v1/random?"
-                    + "format=json&max_lines=1&max_characters=510&source=oneliners");
-            // stores the specific values I want into an array to be used later.
-            Object[] array = { json.get("quote"), json.get("link") };
-            return array;
-        } catch (JSONException ex) {
-            logger.error("ERROR " + ex);
-        } catch (IOException ex) {
-            logger.error("ERROR " + ex);
-        }
-        return null;
+        // grabs JSONobject and stores it into json for us to read from
+        org.json.JSONObject json = Json.readJsonFromUrl("http://www.iheartquotes.com/api/v1/random?"
+                + "format=json&max_lines=1&max_characters=510&source=oneliners");
+        // stores the specific values I want into an array to be used later.
+        Object[] array = { json.get("quote"), json.get("link") };
+        return array;
     }
 }
