@@ -69,6 +69,34 @@ public class ircUtil {
         event.getUser().send().notice(message);
     }
 
+    /**
+     * Sends an action message to target user
+     * 
+     * @param event
+     *            PrivateMessageEvent
+     * @param target
+     *            who to send the message to
+     * @param message
+     *            we want to send
+     */
+    public static void sendAction(MessageEvent event, String message) {
+        event.getChannel().send().action(message);
+    }
+
+    /**
+     * Sends an action message to target user
+     * 
+     * @param event
+     *            MessageEvent
+     * @param target
+     *            who to send the message to
+     * @param message
+     *            we want to send
+     */
+    public static void sendAction(PrivateMessageEvent event, String message) {
+        event.getUser().send().action(message);
+    }
+
     public static Set<User> channelOPs(MessageEvent event, String channel) {
         // Returns a list of nicknames of channel operators, divided by channel in the list.
         // Based on channels that the bot is currently in.

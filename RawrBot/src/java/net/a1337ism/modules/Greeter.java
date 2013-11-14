@@ -35,6 +35,9 @@ public class Greeter extends ListenerAdapter {
     // Going with a private error code, because I can't think of a better way to do error reporting, atm.
     private byte          ERROR      = 0;
 
+    // Settings and shiz?
+    private boolean       RandGreet  = false;
+
     private SqliteDb dbConnect() {
         // Open a connection to the database.
         SqliteDb db = new SqliteDb(dbDriver, dbUrl);
@@ -45,25 +48,33 @@ public class Greeter extends ListenerAdapter {
         // Set up the connection,
         SqliteDb db = dbConnect();
         Connection conn = db.getConnection();
+        ResultSet greeting = null;
+        ResultSet settings = null;
         try {
             DatabaseMetaData dbm = conn.getMetaData();
-            ResultSet tables = dbm.getTables(null, null, "GREETING", null);
-            if (tables.next()) {
-                // Table exists
-                // logger.info("Table Greeting exists");
+            greeting = dbm.getTables(null, null, "GREETING", null);
+            settings = dbm.getTables(null, null, "SETTINGS", null);
+            if (!greeting.next() && !settings.next()) {
+                // Table doesn't exist
+                logger.info("Tables for Greetings do not exist, creating...");
+                db.executeStmt("CREATE TABLE Greeting (ID INTEGER PRIMARY KEY, Line TEXT, Nickname TEXT, Date TEXT)");
+                db.executeStmt("CREATE TABLE Settings (Setting TEXT, Bool BOOLEAN, Text TEXT, Int INTEGER)");
+                logger.info("Created table.");
                 return true;
             } else {
-                // Table doesn't exist
-                logger.info("Table Greeting doesn't exist.");
-                db.executeStmt("CREATE TABLE Greeting (ID INTEGER PRIMARY KEY, Line TEXT, Nickname TEXT, Date TEXT)");
-                logger.info("Created table.");
                 return true;
             }
         } catch (SQLException pass) {
             return false;
         } finally {
+            DbUtils.closeQuietly(greeting);
+            DbUtils.closeQuietly(settings);
             DbUtils.closeQuietly(conn);
         }
+    }
+
+    private void loadSettings() {
+
     }
 
     private boolean addGreeting(String greeting, String nickname, String date) {
@@ -141,8 +152,12 @@ public class Greeter extends ListenerAdapter {
             // List<String> message = rsParser(rs);
             // Object[] finalMsg = message.toArray();
             // return finalMsg[0].toString();
-            // Get all the greetings from the database
-            selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY ID");
+
+            if (RandGreet) {
+                selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY RANDOM() LIMIT 1");
+            } else {
+                selGreet = conn.prepareStatement("SELECT * FROM Greeting ORDER BY ID");
+            }
             rs = selGreet.executeQuery();
 
             if (rs.isBeforeFirst()) {
@@ -190,7 +205,6 @@ public class Greeter extends ListenerAdapter {
             DbUtils.closeQuietly(conn, selGreet, rs);
         }
         return null;
-
     }
 
     private List<String> getGreetingAll() {
@@ -217,7 +231,6 @@ public class Greeter extends ListenerAdapter {
             DbUtils.closeQuietly(conn, selGreet, rs);
         }
         return null;
-
     }
 
     /**

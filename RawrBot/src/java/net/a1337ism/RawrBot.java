@@ -1,17 +1,17 @@
 package net.a1337ism;
 
-import net.a1337ism.modules.EightballCommand;
+import net.a1337ism.modules.Eightball;
 import net.a1337ism.modules.Greeter;
-import net.a1337ism.modules.HelpCommand;
-import net.a1337ism.modules.JokeCommand;
-import net.a1337ism.modules.LastSeenCommand;
-import net.a1337ism.modules.QuoteCommand;
+import net.a1337ism.modules.Help;
+import net.a1337ism.modules.Joke;
+import net.a1337ism.modules.LastSeen;
+import net.a1337ism.modules.Quote;
 import net.a1337ism.modules.RateLimiter;
-import net.a1337ism.modules.RawrCommand;
-import net.a1337ism.modules.ReportCommand;
-import net.a1337ism.modules.RulesCommand;
-import net.a1337ism.modules.TimeCommand;
-import net.a1337ism.modules.UptimeCommand;
+import net.a1337ism.modules.Rawr;
+import net.a1337ism.modules.Report;
+import net.a1337ism.modules.Rules;
+import net.a1337ism.modules.Uptime;
+import net.a1337ism.modules.Youtube;
 import net.a1337ism.util.ircUtil;
 
 import org.pircbotx.Configuration;
@@ -73,11 +73,11 @@ public class RawrBot extends ListenerAdapter implements Listener {
 
     @Override
     public void onConnect(ConnectEvent event) throws Exception {
-        if (!bot_password.isEmpty()) {
-            // TODO: replace with identify at some point.
-            logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-            event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
-        }
+        // if (!bot_password.isEmpty()) {
+        // // TODO: replace with identify at some point.
+        // logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
+        // event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
+        // }
     }
 
     @Override
@@ -184,7 +184,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         Configuration configuration = new Configuration.Builder()
                 .setName(irc_nickname)
                 .setLogin(irc_username)
-                .setRealname(bot_version)
+                .setRealName(bot_version)
                 .setAutoNickChange(true)
                 .setAutoReconnect(true)
                 .setCapEnabled(true)
@@ -192,20 +192,21 @@ public class RawrBot extends ListenerAdapter implements Listener {
                 .setServerHostname(irc_server)
                 .setServerPort(irc_port)
                 .addAutoJoinChannel(irc_channel)
+                //.setNickservPassword(bot_password)
                 //.addListener(new LogBot())
                 .addListener(new RateLimiter())
                 .addListener(new RawrBot())
-                .addListener(new TimeCommand())
-                .addListener(new JokeCommand())
-                .addListener(new QuoteCommand())
-                .addListener(new UptimeCommand())
-                .addListener(new RawrCommand())
-                .addListener(new HelpCommand())
-                .addListener(new LastSeenCommand())
-                .addListener(new ReportCommand())
-                .addListener(new RulesCommand())
-                .addListener(new EightballCommand())
+                .addListener(new Joke())
+                .addListener(new Quote())
+                .addListener(new Uptime())
+                .addListener(new Rawr())
+                .addListener(new Help())
+                .addListener(new LastSeen())
+                .addListener(new Report())
+                .addListener(new Rules())
+                .addListener(new Eightball())
                 .addListener(new Greeter())
+                .addListener(new Youtube())
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on
