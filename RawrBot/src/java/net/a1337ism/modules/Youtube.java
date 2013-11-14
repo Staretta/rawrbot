@@ -1,10 +1,12 @@
 package net.a1337ism.modules;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.ircUtil;
 
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -18,6 +20,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 public class Youtube extends ListenerAdapter {
@@ -27,8 +30,7 @@ public class Youtube extends ListenerAdapter {
     private String        patternID     = "^.*((youtu.be" + "\\/)"
                                                 + "|(v\\/)|(\\/u\\/w\\/)|(embed\\/)|(watch\\?))\\??v?=?([^#\\&\\?]*).*";
     private Pattern       cPatternID    = Pattern.compile(patternID, Pattern.CASE_INSENSITIVE);
-    private String        clientID      = "758626281673-84evpp47vmg3o8b6d31hu61h33lbr7cl.apps.googleusercontent.com";
-    private String        clientSecret  = "x3mqoqMsPIMepj4McY2vP4Uw";
+    private String        clientID      = "AIzaSyAnJew19gmHRP2KBBIuUyhFoCcwSQiPDs0";
     private HttpTransport httpTransport = new NetHttpTransport();
     private JsonFactory   jsonFactory   = new JacksonFactory();
     private YouTube       youtube;
@@ -36,16 +38,15 @@ public class Youtube extends ListenerAdapter {
     private boolean isURL(String link) {
         Matcher matcher = cPatternURL.matcher(link);
         if (matcher.find()) {
-            System.out.println(matcher.group());
             return true;
         }
         return false;
     }
 
-    private String getVideoID(String youtubeUrl) {
-        String video_id = "";
-        if (youtubeUrl != null && youtubeUrl.trim().length() > 0 && youtubeUrl.startsWith("http")) {
-            CharSequence input = youtubeUrl;
+    private String getVideoID(String link) {
+        String video_id = null;
+        if (link != null && link.trim().length() > 0 && link.startsWith("http")) {
+            CharSequence input = link;
             Matcher matcher = cPatternID.matcher(input);
             if (matcher.matches()) {
                 String groupIndex1 = matcher.group(7);
@@ -65,16 +66,23 @@ public class Youtube extends ListenerAdapter {
         }).setApplicationName("RawrBot").build();
         String ID = getVideoID(link);
 
-        YouTube.Videos.List video = null;
+        if (ID == null)
+            return null;
+
+        YouTube.Videos.List videos = null;
         try {
-            video = youtube.videos().list("id,snippet");
-            video.setKey(clientID);
-            video.setId(ID);
-            VideoListResponse videoResponse = video.execute();
+            videos = youtube.videos().list("snippet");
+            videos.setKey(clientID);
+            videos.setId(ID);
+            VideoListResponse response = videos.execute();
+            List<Video> list = response.getItems();
+
+            if (!list.isEmpty()) {
+                return list.get(0).getSnippet().getTitle();
+            }
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
-
         return null;
     }
 
@@ -82,8 +90,10 @@ public class Youtube extends ListenerAdapter {
         // If message is a youtube url
         if (isURL(event.getMessage())) {
             // Get the title of the video, and message the channel.
-            getTitle(event.getMessage());
-            // ircUtil.sendMessage(event, getTitle(event.getMessage()));
+            String title = getTitle(event.getMessage());
+            String message = "YouTube: " + title;
+            if (title != null)
+                ircUtil.sendMessage(event, message);
         }
     }
 }
