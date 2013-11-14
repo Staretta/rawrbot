@@ -17,17 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Rules extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
-
-    // Set up the database stuff
     String                dbUrl      = "jdbc:sqlite:data/rules.db";
     String                dbDriver   = "org.sqlite.JDBC";
-
-    // Creates the database tables if they haven't been created yet.
     private boolean       tableExist = createTableIfNotExist();
-
-    // Going with a private error code, because I can't think of a better way to do error reporting, atm.
     private byte          ERROR      = 0;
 
     private SqliteDb dbConnect() {
@@ -55,6 +48,7 @@ public class Rules extends ListenerAdapter {
                 return true;
             }
         } catch (SQLException pass) {
+            logger.info("SQLException in Rules.createTableIfNotExist: " + pass.toString());
             return false;
         } finally {
             DbUtils.closeQuietly(conn);

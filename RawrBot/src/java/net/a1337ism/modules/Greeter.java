@@ -22,20 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Greeter extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
-
-    // Database stuff. Should probably move to the config file at some point.
     private String        dbUrl      = "jdbc:sqlite:data/greeter.db";
     private String        dbDriver   = "org.sqlite.JDBC";
-
-    // Creates the database tables if they haven't been created yet.
     private boolean       tableExist = createTableIfNotExist();
-
-    // Going with a private error code, because I can't think of a better way to do error reporting, atm.
     private byte          ERROR      = 0;
-
-    // Settings and shiz?
     private boolean       RandGreet  = false;
 
     private SqliteDb dbConnect() {
@@ -65,6 +56,7 @@ public class Greeter extends ListenerAdapter {
                 return true;
             }
         } catch (SQLException pass) {
+            logger.info("SQLException in Greeter.createTableIfNotExist: " + pass.toString());
             return false;
         } finally {
             DbUtils.closeQuietly(greeting);
@@ -90,6 +82,7 @@ public class Greeter extends ListenerAdapter {
             insGreet.execute();
             return true;
         } catch (SQLException ex) {
+            logger.info("SQLException in Greeter.addGreeting: " + ex.toString());
             ERROR = 3;
         } finally {
             DbUtils.closeQuietly(insGreet);
@@ -124,6 +117,7 @@ public class Greeter extends ListenerAdapter {
                 ERROR = 2;
             }
         } catch (SQLException ex) {
+            logger.info("SQLException in Greeter.delGreeting: " + ex.toString());
             ERROR = 3;
         } catch (NumberFormatException nfe) {
             ERROR = 4;
@@ -167,6 +161,7 @@ public class Greeter extends ListenerAdapter {
                 ERROR = 2;
             }
         } catch (SQLException ex) {
+            logger.info("SQLException in Greeter.getGreeting: " + ex.toString());
             ERROR = 3;
         } finally {
             DbUtils.closeQuietly(conn, selGreet, rs);
@@ -198,6 +193,7 @@ public class Greeter extends ListenerAdapter {
                 ERROR = 2;
             }
         } catch (SQLException ex) {
+            logger.info("SQLException in Greeter.getGreeting(ID): " + ex.toString());
             ERROR = 3;
         } catch (NumberFormatException nfe) {
             ERROR = 4;
@@ -226,6 +222,7 @@ public class Greeter extends ListenerAdapter {
                 ERROR = 2;
             }
         } catch (SQLException ex) {
+            logger.info("SQLException in Greeter.getGreetingAll: " + ex.toString());
             ERROR = 3;
         } finally {
             DbUtils.closeQuietly(conn, selGreet, rs);

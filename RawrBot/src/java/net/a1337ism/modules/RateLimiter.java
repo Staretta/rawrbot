@@ -12,11 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RateLimiter extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger                     logger       = LoggerFactory.getLogger(RawrBot.class);
-
     private static int                        timeout      = 600000;                                // Milliseconds
-    // private static int maxRequests = 5;
     private static volatile Map<String, List> userRequests = new HashMap<String, List>();
 
     // userRequests is our hashmap of users and how many times they do a command.
@@ -36,7 +33,6 @@ public class RateLimiter extends ListenerAdapter {
 
                 for (int x = 0; x < request; x++) {
                     timeList.add(System.currentTimeMillis());
-                    // logger.info("for loop " + x);
                 }
 
                 userRequests.put(nickname, timeList);
@@ -77,14 +73,13 @@ public class RateLimiter extends ListenerAdapter {
             }
         } else {
             // If the user is not in the hashmap, then we know cleanupRequest deleted their old requests.
-            addRequest(nickname);
             // Then we return false, because they aren't limited at the moment.
+            addRequest(nickname);
             return false;
         }
     }
 
     private static void cleanupRequest(String nickname) {
-        // If the hashmap contains the nickname
         if (userRequests.containsKey(nickname)) {
 
             synchronized (RateLimiter.class) {
@@ -93,8 +88,7 @@ public class RateLimiter extends ListenerAdapter {
                 int listSize = timeList.size();
 
                 // We need to try and see if any of the times listed in the list can be removed, and then put it into
-                // the
-                // hashmap if we removed anything from the list.
+                // the hashmap if we removed anything from the list.
                 for (int i = timeList.size() - 1; i >= 0; i--) {
                     // If the time is less than the current system time minus timeout, then remove that time from the
                     // list

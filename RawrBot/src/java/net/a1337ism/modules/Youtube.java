@@ -24,17 +24,21 @@ import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 public class Youtube extends ListenerAdapter {
+    // TODO: Move clientID to properties file.
+    // TODO: Add Duration, Uploader, and short description of youtube video.
+    // Probably requires making a new function for building http requests, and passing the list
+    // for snippets, and video details.
     private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
     private String        patternURL    = "^(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
     private Pattern       cPatternURL   = Pattern.compile(patternURL, Pattern.CASE_INSENSITIVE);
-    private String        patternID     = "^.*((youtu.be" + "\\/)"
-                                                + "|(v\\/)|(\\/u\\/w\\/)|(embed\\/)|(watch\\?))\\??v?=?([^#\\&\\?]*).*";
-    private Pattern       cPatternID    = Pattern.compile(patternID, Pattern.CASE_INSENSITIVE);
     private String        clientID      = "AIzaSyAnJew19gmHRP2KBBIuUyhFoCcwSQiPDs0";
     private HttpTransport httpTransport = new NetHttpTransport();
     private JsonFactory   jsonFactory   = new JacksonFactory();
     private YouTube       youtube;
 
+    /**
+     * Checks if the message has a URL
+     */
     private boolean isURL(String link) {
         Matcher matcher = cPatternURL.matcher(link);
         if (matcher.find()) {
@@ -43,45 +47,51 @@ public class Youtube extends ListenerAdapter {
         return false;
     }
 
+    /**
+     * Gets the youtube video ID from the url<br>
+     * <br>
+     * URL: http://www.youtube.com/watch?v=wwJDhg-BLHM<br>
+     * ID: wwJDhg-BLHM<br>
+     */
     private String getVideoID(String link) {
         String video_id = null;
-        if (link != null && link.trim().length() > 0 && link.startsWith("http")) {
-            CharSequence input = link;
-            Matcher matcher = cPatternID.matcher(input);
-            if (matcher.matches()) {
-                String groupIndex1 = matcher.group(7);
-                if (groupIndex1 != null && groupIndex1.length() == 11)
-                    video_id = groupIndex1;
-                else if (groupIndex1 != null && groupIndex1.length() == 10)
-                    video_id = "v" + groupIndex1;
+        Matcher matcher = cPatternURL.matcher(link);
+        if (matcher.find()) {
+            String groupIndex1 = matcher.group(1);
+            if (groupIndex1 != null && groupIndex1.length() == 11) {
+                video_id = groupIndex1;
             }
         }
         return video_id;
     }
 
+    /**
+     * Gets the YouTube title using Google's API and the ID
+     */
     private String getTitle(String link) {
+        // Need to build our http request for Youtube's API
         youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
             public void initialize(HttpRequest request) throws IOException {
             }
         }).setApplicationName("RawrBot").build();
+
+        // Parse the ID from the URL, and if it's not null, then get the title.
         String ID = getVideoID(link);
+        if (ID != null) {
+            try {
+                YouTube.Videos.List videos = null;
+                videos = youtube.videos().list("snippet");
+                videos.setKey(clientID).setId(ID);
+                // videos.setId(ID);
+                VideoListResponse response = videos.execute();
+                List<Video> list = response.getItems();
 
-        if (ID == null)
-            return null;
-
-        YouTube.Videos.List videos = null;
-        try {
-            videos = youtube.videos().list("snippet");
-            videos.setKey(clientID);
-            videos.setId(ID);
-            VideoListResponse response = videos.execute();
-            List<Video> list = response.getItems();
-
-            if (!list.isEmpty()) {
-                return list.get(0).getSnippet().getTitle();
+                if (!list.isEmpty()) {
+                    return list.get(0).getSnippet().getTitle();
+                }
+            } catch (IOException e) {
+                logger.info("IOException in YouTube.GetTitle: " + e.toString());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }

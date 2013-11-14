@@ -12,15 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Rawr extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger   = LoggerFactory.getLogger(RawrBot.class);
     private String        filename = "data/rawr.txt";                       // Set the rawr.txt location
     private String[]      rawrList = FileUtil.readLines(filename);          // Throw the lines into a list
 
-    // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
-
-        // Check if message starts with !rawr, and if they are rate limited.
         if (event.getMessage().trim().toLowerCase().startsWith("!rawr")
                 && !RateLimiter.isRateLimited(event.getUser().getNick())) {
 
@@ -95,7 +91,6 @@ public class Rawr extends ListenerAdapter {
         }
     }
 
-    // Check for private messages
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
 
         // Check if message starts with !rawr
@@ -174,15 +169,11 @@ public class Rawr extends ListenerAdapter {
     }
 
     /**
-     * <p>
-     * Replaces Rawr with Meow.
-     * </p>
-     * 
-     * <p>
+     * Replaces Rawr with Meow.<br>
+     * <br>
      * We want to split Rawr into individual words in a list, and then for each word, replace the first instance of "R"
      * with "M", and then replace "a" with "e", "w" with "o", and finally "r" with "w". We then merge the words back
      * together into a message, and return message.
-     * </p>
      * 
      * @param meow
      *            String of Rawr's we want to replace

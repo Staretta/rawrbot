@@ -26,17 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Report extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
-
-    // Set up the database stuff
     private String        dbUrl      = "jdbc:sqlite:data/report.db";
     private String        dbDriver   = "org.sqlite.JDBC";
-
-    // Create the tables if they don't exist
     private boolean       tableExist = createTableIfNotExist();
-
-    // Going with a private error code, because I can't think of a better way to do error reporting, atm.
     private byte          ERROR      = 0;
 
     private SqliteDb dbConnect() {
@@ -63,6 +56,7 @@ public class Report extends ListenerAdapter {
                 return true;
             }
         } catch (SQLException pass) {
+            logger.info("SQLException in Report.createTableIfNotExist: " + pass.toString());
             return false;
         } finally {
             DbUtils.closeQuietly(conn);
@@ -97,6 +91,7 @@ public class Report extends ListenerAdapter {
             insertReport.execute();
             return true;
         } catch (SQLException ex) {
+            logger.info("SQLException in Report.addReport: " + ex.toString());
             ERROR = 3;
         } finally {
             DbUtils.closeQuietly(insertReport);
@@ -137,6 +132,7 @@ public class Report extends ListenerAdapter {
             } else
                 ERROR = 2;
         } catch (SQLException ex) {
+            logger.info("SQLException in Report.delReport: " + ex.toString());
             ERROR = 3;
         } catch (NumberFormatException nfe) {
             ERROR = 4;
@@ -180,6 +176,7 @@ public class Report extends ListenerAdapter {
             } else
                 ERROR = 2;
         } catch (SQLException ex) {
+            logger.info("SQLException in Report.getReportID: " + ex.toString());
             ERROR = 3;
         } catch (NumberFormatException nfe) {
             ERROR = 4;
@@ -226,7 +223,8 @@ public class Report extends ListenerAdapter {
                 message = resultSetParser(resultSet);
             else
                 ERROR = 2;
-        } catch (SQLException ignore) {
+        } catch (SQLException ex) {
+            logger.info("SQLException in Report.getReportNick: " + ex.toString());
             ERROR = 3;
         } finally {
             DbUtils.closeQuietly(conn, selectReport, resultSet);
@@ -255,7 +253,8 @@ public class Report extends ListenerAdapter {
                 message = resultSetParser(resultSet);
             else
                 ERROR = 2;
-        } catch (SQLException ignore) {
+        } catch (SQLException ex) {
+            logger.info("SQLException in Report.getReportAll: " + ex.toString());
             ERROR = 3;
         } finally {
             DbUtils.closeQuietly(db.getConnection(), selectReports, resultSet);
@@ -484,7 +483,6 @@ public class Report extends ListenerAdapter {
             }
         } else if (event.getMessage().trim().toLowerCase().startsWith("!report")) {
             // If the message starts with !report
-
             // Split the message into parameters.
             String[] param = event.getMessage().trim().split("\\s", 3);
 

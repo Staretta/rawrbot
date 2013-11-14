@@ -14,15 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Quote extends ListenerAdapter {
-    // Log4j setup stuffs
     private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
-    // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
-
-        // Check if message starts with !quote
         if (event.getMessage().trim().toLowerCase().startsWith("!quote")) {
-
             // If they are rate limited, then return.
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
@@ -32,13 +27,12 @@ public class Quote extends ListenerAdapter {
                 // If message ends with -help or -h, then send them help information
                 String quoteHelp = "!quote : Says a random quote from the iheartquotes.com Database.";
                 ircUtil.sendMessage(event, quoteHelp);
-
             } else {
                 // Throw it into a variable
                 Object[] quote = null;
                 quote = getQuote();
 
-                // If it's not null, continue
+                // If it's not null, send them a quote
                 if (quote != null) {
                     ircUtil.sendMessage(event, quote[0].toString());
                 }
@@ -46,24 +40,19 @@ public class Quote extends ListenerAdapter {
         }
     }
 
-    // Check for private messages.
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-
-        // Check if message starts with !quote
         if (event.getMessage().trim().toLowerCase().startsWith("!quote")) {
-
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 // If message ends with -help or -h, then send them help information
                 String quoteHelp = "!quote : Says a random quote from the iheartquotes.com Database.";
                 ircUtil.sendMessage(event, quoteHelp);
-
             } else {
                 // Throw it into a variable
                 Object[] quote = null;
                 quote = getQuote();
 
-                // If it's not null, continue
+                // If it's not null, send them a quote
                 if (quote != null) {
                     ircUtil.sendMessage(event, quote[0].toString());
                 }

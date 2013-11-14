@@ -19,18 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Uptime extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger         = LoggerFactory.getLogger(RawrBot.class);
     private long          bot_start_time = System.currentTimeMillis();            // Set time when the bot
                                                                                    // starts.
 
-    // Check for channel messages
     public void onMessage(MessageEvent event) throws Exception {
-
-        // Check if message starts with !uptime
         if (event.getMessage().trim().toLowerCase().startsWith("!uptime")) {
-
-            // If they are rate limited, then return.
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
 
@@ -39,7 +33,6 @@ public class Uptime extends ListenerAdapter {
                 // If message ends with -help or -h, then send them help information
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
                 ircUtil.sendMessage(event, uptimeHelp);
-
             } else {
                 String currentUptime = "Bot Uptime: " + MiscUtil.uptimeFormat(getBotUptime() / 1000) + " | "
                         + "System Uptime: " + MiscUtil.uptimeFormat(getSystemUptime() / 1000);
@@ -48,17 +41,13 @@ public class Uptime extends ListenerAdapter {
         }
     }
 
-    // Check for private messages
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-
-        // Check if message starts with !uptime
         if (event.getMessage().trim().toLowerCase().startsWith("!uptime")) {
             if (event.getMessage().trim().toLowerCase().endsWith("-help")
                     || event.getMessage().trim().toLowerCase().endsWith("-h")) {
                 // If message ends with -help or -h, then send them help information
                 String uptimeHelp = "!uptime : Displays the bot and the system's current uptime.";
                 ircUtil.sendMessage(event, uptimeHelp);
-
             } else {
                 String currentUptime = "Bot Uptime: " + MiscUtil.uptimeFormat(getBotUptime() / 1000) + " | "
                         + "System Uptime: " + MiscUtil.uptimeFormat(getSystemUptime() / 1000);
