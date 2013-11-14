@@ -16,16 +16,11 @@ import net.a1337ism.util.ircUtil;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
-import org.pircbotx.hooks.managers.ListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,22 +39,6 @@ public class RawrBot extends ListenerAdapter implements Listener {
     static String         bot_version  = cfg.getProperty("bot_version");
     private static String bot_password = cfg.getProperty("bot_password");
 
-    /**
-     * Easy and recommended way to handle events: Override respective methods in {@link ListenerAdapter}.
-     * 
-     * *WARNING:* This example requires using a Threaded listener manager (this is PircBotX's default)
-     * 
-     * @param event
-     *            A MessageEvent
-     * @throws Exception
-     *             If any Exceptions might be thrown, throw them up and let the {@link ListenerManager} handle it. This
-     *             can be removed though if not needed
-     */
-    @Override
-    public void onMessage(final MessageEvent event) throws Exception {
-        // PircBotX bot = event.getBot();
-    }
-
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
         if ((event.getUser().getNick().equalsIgnoreCase(bot_owner) || ircUtil.isOP(event, irc_channel))
@@ -69,15 +48,6 @@ public class RawrBot extends ListenerAdapter implements Listener {
             event.getBot().stopBotReconnect();
             event.getBot().sendIRC().quitServer();
         }
-    }
-
-    @Override
-    public void onConnect(ConnectEvent event) throws Exception {
-        // if (!bot_password.isEmpty()) {
-        // // TODO: replace with identify at some point.
-        // logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-        // event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
-        // }
     }
 
     @Override
@@ -98,80 +68,9 @@ public class RawrBot extends ListenerAdapter implements Listener {
         }
     }
 
-    // @Override
-    // public void onReconnect(ReconnectEvent event) throws Exception {
-    // if (!bot_password.isEmpty()) {
-    // logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-    // event.getBot().sendMessage("NickServ", "IDENTIFY " + bot_password);
-    // }
-    //
-    // event.getBot().joinChannel(irc_channel);
-    // }
-
-    @Override
-    public void onDisconnect(DisconnectEvent event) throws Exception {
-        // Thread.sleep(10000);
-        // try {
-        // event.getBot();
-        // } catch (NickAlreadyInUseException ex) {
-        // event.getBot().changeNick(alterCollidedNick(event.getBot().getNick()));
-        // event.getBot().reconnect();
-        // }
-    }
-
     @Override
     public void onUnknown(UnknownEvent event) throws Exception {
         logger.info(event.toString());
-    }
-
-    /**
-     * Older way to handle events. We are given a generic event and must cast to the event type that we want. This is
-     * helpful for when you need to funnel all events into a single method, eg logging
-     * <p>
-     * This also shows the other way to send messages: With PircBotX's send* methods. These should be used when the
-     * respond() method of the event doesn't send the message to where you want it to go.
-     * <p>
-     * *WARNING:* If you are extending ListenerAdapter and implementing Listener in the same class (as this does) you
-     * *must* call super.onEvent(event); otherwise none of the methods in ListenerAdapter will get called!
-     * 
-     * @param rawevent
-     *            A generic event
-     * @throws Exception
-     *             If any Exceptions might be thrown, throw them up and let the {@link ListenerManager} handle it. This
-     *             can be removed though if not needed
-     */
-    @Override
-    public void onEvent(Event rawevent) throws Exception {
-        // Since we extend ListenerAdapter and implement Listener in the same class call the super onEvent so
-        // ListenerAdapter will work. Unless you are doing that, this line shouldn't be added
-        super.onEvent(rawevent);
-        // logger.error(rawevent);
-        // logger.debug(rawevent);
-        // logger.info(rawevent);
-
-        // Make sure we're dealing with a private message
-        if (rawevent instanceof PrivateMessageEvent) {
-            // Cast to get access to all the PrivateMessageEvent specific methods
-            PrivateMessageEvent event = (PrivateMessageEvent) rawevent;
-
-            // Log the private message
-            // logger.info(PRIV_MSG,
-            // "(" + event.getUser().getNick() + "->" + event.getBot().getName() + ") " + event.getMessage());
-        }
-
-        // Make sure we're dealing with a channel message
-        else if (rawevent instanceof MessageEvent) {
-            // Cast to get access to all the MessageEvent specific methods
-            MessageEvent event = (MessageEvent) rawevent;
-
-            // Log the message
-            // logger.info(CHAN_MSG, "<" + event.getUser().getNick() + "> " + event.getMessage());
-
-            // Basic hello
-            // if (event.getMessage().startsWith("?hi")) {
-            // ircUtil.sendMessageChannel(event, "Hello");
-            // }
-        }
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -192,7 +91,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
                 .setServerHostname(irc_server)
                 .setServerPort(irc_port)
                 .addAutoJoinChannel(irc_channel)
-                //.setNickservPassword(bot_password)
+                //.setNickservPassword(bot_password) // REMEMER TO UNCOMMENT THIS BEFORE PUSHING UPDATE
                 //.addListener(new LogBot())
                 .addListener(new RateLimiter())
                 .addListener(new RawrBot())
@@ -214,7 +113,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
         try {
             bot.startBot();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.info("Exception in RawrBot.main: " + ex.toString());
         }
     }
 }

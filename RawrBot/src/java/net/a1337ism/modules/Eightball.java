@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Eightball extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
     private String        filename   = "data/eightball_answers.txt";
     private String[]      answerList = FileUtil.readLines(filename);

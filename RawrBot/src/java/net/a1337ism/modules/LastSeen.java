@@ -23,13 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LastSeen extends ListenerAdapter {
-    // Set up the logger stuff
     private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
-
-    // Set up the database stuff
     private String        dbUrl      = "jdbc:sqlite:data/lastseen.db";
     private String        dbDriver   = "org.sqlite.JDBC";
-
     private boolean       tableExist = createTableIfNotExist();
 
     private SqliteDb dbConnect() {
@@ -88,6 +84,7 @@ public class LastSeen extends ListenerAdapter {
             rs = select.executeQuery();
             message = rsParser(rs, limit, message);
         } catch (SQLException ex) {
+            logger.info("SQLException in LastSeen.createTableIfNotExist: " + ex.toString());
             return null;
         } finally {
             DbUtils.closeQuietly(conn, select, rs);
@@ -198,10 +195,10 @@ public class LastSeen extends ListenerAdapter {
         } catch (SQLException ex) {
             if (conn != null) {
                 try {
-                    logger.error("Lastseen DB Update is being rolled back.");
+                    logger.error("SQLException in LastSeen.setLastSeen: Lastseen DB Update is being rolled back.");
                     DbUtils.rollback(conn);
                 } catch (SQLException ex1) {
-                    logger.error("Lastseen DB rollback failed.");
+                    logger.error("SQLException in LastSeen.setLastSeen: Lastseen DB rollback failed.");
                 }
             }
         } finally {
@@ -233,7 +230,6 @@ public class LastSeen extends ListenerAdapter {
             setLastSeen(nickname, hostname, message, seconds, action);
         }
 
-        // Check if message starts with !lastseen, and check if they are rate limited.
         if (event.getMessage().trim().toLowerCase().startsWith("!lastseen")
                 && !RateLimiter.isRateLimited(event.getUser().getNick())) {
 
@@ -314,7 +310,6 @@ public class LastSeen extends ListenerAdapter {
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-        // Check if message starts with !lastseen
         if (event.getMessage().trim().toLowerCase().startsWith("!lastseen")) {
             // Spilt the message, so we can get the different parameters
             String[] param = event.getMessage().trim().split("\\s", 3);

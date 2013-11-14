@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FileUtil {
-    // Set up the logging stuff
     private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
     public static String[] readLines(String filename) {
