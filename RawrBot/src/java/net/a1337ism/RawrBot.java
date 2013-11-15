@@ -11,6 +11,7 @@ import net.a1337ism.modules.Rawr;
 import net.a1337ism.modules.Report;
 import net.a1337ism.modules.Rules;
 import net.a1337ism.modules.Uptime;
+import net.a1337ism.modules.Vimeo;
 import net.a1337ism.modules.Youtube;
 import net.a1337ism.util.ircUtil;
 
@@ -106,6 +107,7 @@ public class RawrBot extends ListenerAdapter implements Listener {
                 .addListener(new Eightball())
                 .addListener(new Greeter())
                 .addListener(new Youtube())
+                .addListener(new Vimeo())
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on

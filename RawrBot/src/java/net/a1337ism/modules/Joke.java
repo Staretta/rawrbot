@@ -65,7 +65,7 @@ public class Joke extends ListenerAdapter {
 
     private Object[] getJoke() throws IOException, JSONException {
         // grabs JSONobject and stores it into json for us to read from
-        org.json.JSONObject json = Json
+        JSONObject json = Json
                 .readJsonFromUrl("http://api.icndb.com/jokes/random?escape=javascript&firstName=Rawr&lastName=Bot");
         // stores the specific values I want into an array to be used later.
         Object[] array = { ((JSONObject) json.get("value")).get("id"), ((JSONObject) json.get("value")).get("joke") };
