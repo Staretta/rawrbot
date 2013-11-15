@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 public class MiscUtil {
 
     // URL Regex matching
-    static String  regex     = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
-    static Pattern URL_REGEX = Pattern.compile(regex);
+    static String  regex   = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
+    static Pattern pattern = Pattern.compile(regex);
 
     /**
      * Chooses a random number based on the length of a list.
@@ -40,19 +40,26 @@ public class MiscUtil {
     }
 
     public static String redactURL(String line) {
-        // Initialize variables
-        String[] words = null;
+        // // Initialize variables
+        // String[] words = null;
+        // String message = "";
+        // // Split line into individual words at the spaces.
+        // words = line.split("\\s");
+        // for (String word : words) {
+        // if (word.length() < 15) {
+        // if (pattern.matcher(word).matches()) {
+        // word = "URL_REDACTED";
+        // }
+        // }
+        // // piece the words back together into a nice string
+        // message += word + " ";
+        // }
+        // return message.trim();
         String message = "";
-        // Split line into individual words at the spaces.
-        words = line.split("\\s");
-        for (String word : words) {
-            if (URL_REGEX.matcher(word).matches()) {
-                word = "URL_REDACTED";
-            }
-            // piece the words back together into a nice string
-            message += word + " ";
+        if (pattern.matcher(line).find()) {
+            message = pattern.matcher(line).replaceAll("URL_REDACTED");
         }
-        return message.trim();
+        return message;
     }
 
     /**

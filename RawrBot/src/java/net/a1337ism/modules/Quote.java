@@ -7,6 +7,7 @@ import net.a1337ism.util.Json;
 import net.a1337ism.util.ircUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -62,7 +63,7 @@ public class Quote extends ListenerAdapter {
 
     private Object[] getQuote() throws IOException, JSONException {
         // grabs JSONobject and stores it into json for us to read from
-        org.json.JSONObject json = Json.readJsonFromUrl("http://www.iheartquotes.com/api/v1/random?"
+        JSONObject json = Json.readJsonFromUrl("http://www.iheartquotes.com/api/v1/random?"
                 + "format=json&max_lines=1&max_characters=510&source=oneliners");
         // stores the specific values I want into an array to be used later.
         Object[] array = { json.get("quote"), json.get("link") };

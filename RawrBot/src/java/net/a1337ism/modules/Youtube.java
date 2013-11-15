@@ -28,39 +28,41 @@ public class Youtube extends ListenerAdapter {
     // TODO: Add Duration, Uploader, and short description of youtube video.
     // Probably requires making a new function for building http requests, and passing the list
     // for snippets, and video details.
+    // TODO: Fix Youtube URL Detection - IDEA: Throw user message into a for loop, splitting message up by spaces to get
+    // individual words, and check those words for a Youtube URL.
+    // THROW IT INTO FOR LOOP AFTER CHECKING FIRST TO SEE IF URL IS THE FIRST THING POSTED. TO SAVE TIME ON PROCESSING A
+    // FOR LOOP.
     private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
-    private String        patternURL    = "^(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
-    private Pattern       cPatternURL   = Pattern.compile(patternURL, Pattern.CASE_INSENSITIVE);
+    private String        regex         = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
+    private Pattern       pattern       = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
     private String        clientID      = "AIzaSyAnJew19gmHRP2KBBIuUyhFoCcwSQiPDs0";
     private HttpTransport httpTransport = new NetHttpTransport();
     private JsonFactory   jsonFactory   = new JacksonFactory();
     private YouTube       youtube;
 
     /**
-     * Checks if the message has a URL
+     * Checks if the message has a valid YouTube URL
      */
-    private boolean isURL(String link) {
-        Matcher matcher = cPatternURL.matcher(link);
-        if (matcher.find()) {
+    private boolean isYouTubeURL(String link) {
+        Matcher matcher = pattern.matcher(link);
+        if (matcher.find())
             return true;
-        }
         return false;
     }
 
     /**
-     * Gets the youtube video ID from the url<br>
+     * Gets the YouTube video ID from the url<br>
      * <br>
      * URL: http://www.youtube.com/watch?v=wwJDhg-BLHM<br>
      * ID: wwJDhg-BLHM<br>
      */
-    private String getVideoID(String link) {
+    private String getYouTubeVideoID(String link) {
         String video_id = null;
-        Matcher matcher = cPatternURL.matcher(link);
+        Matcher matcher = pattern.matcher(link);
         if (matcher.find()) {
             String groupIndex1 = matcher.group(1);
-            if (groupIndex1 != null && groupIndex1.length() == 11) {
+            if (groupIndex1 != null && groupIndex1.length() == 11)
                 video_id = groupIndex1;
-            }
         }
         return video_id;
     }
@@ -68,7 +70,7 @@ public class Youtube extends ListenerAdapter {
     /**
      * Gets the YouTube title using Google's API and the ID
      */
-    private String getTitle(String link) {
+    private String getYouTubeTitle(String link) {
         // Need to build our http request for Youtube's API
         youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
             public void initialize(HttpRequest request) throws IOException {
@@ -76,19 +78,17 @@ public class Youtube extends ListenerAdapter {
         }).setApplicationName("RawrBot").build();
 
         // Parse the ID from the URL, and if it's not null, then get the title.
-        String ID = getVideoID(link);
+        String ID = getYouTubeVideoID(link);
         if (ID != null) {
             try {
                 YouTube.Videos.List videos = null;
                 videos = youtube.videos().list("snippet");
                 videos.setKey(clientID).setId(ID);
-                // videos.setId(ID);
                 VideoListResponse response = videos.execute();
                 List<Video> list = response.getItems();
 
-                if (!list.isEmpty()) {
+                if (!list.isEmpty())
                     return list.get(0).getSnippet().getTitle();
-                }
             } catch (IOException e) {
                 logger.info("IOException in YouTube.GetTitle: " + e.toString());
             }
@@ -98,9 +98,9 @@ public class Youtube extends ListenerAdapter {
 
     public void onMessage(MessageEvent event) throws Exception {
         // If message is a youtube url
-        if (isURL(event.getMessage())) {
+        if (isYouTubeURL(event.getMessage())) {
             // Get the title of the video, and message the channel.
-            String title = getTitle(event.getMessage());
+            String title = getYouTubeTitle(event.getMessage());
             String message = "YouTube: " + title;
             if (title != null)
                 ircUtil.sendMessage(event, message);
