@@ -22,29 +22,29 @@ public class Json {
         return sb.toString();
     }
 
+    public static String getHttpPage(String url) throws IOException {
+        String page = "";
+        InputStream is = new URL(url).openStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        page = readAll(rd);
+        is.close();
+        return page;
+    }
+
     /**
      * Converts URL Connection response to a JSON Object
      * 
      * @return JSONObject json
      */
-    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        // Grabs API from url, and puts it into InputStream
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            // Makes a string and stores it in jsonText
-            String jsonText = readAll(rd);
-            if (jsonText.startsWith("[")) {
-                JSONArray array = new JSONArray(jsonText);
-                JSONObject json = array.getJSONObject(0);
-                return json;
-            } else {
-                // Makes a jsonObject out of the string
-                JSONObject json = new JSONObject(jsonText);
-                return json;
-            }
-        } finally {
-            is.close();
-        }
+    public static JSONArray readJsonFromURL(String url) throws IOException, JSONException {
+        JSONArray array = new JSONArray(getHttpPage(url));
+        // JSONObject json = array.getJSONObject(0);
+        return array;
     }
+
+    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+        JSONObject json = new JSONObject(getHttpPage(url));
+        return json;
+    }
+
 }

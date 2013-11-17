@@ -8,6 +8,7 @@ import net.a1337ism.RawrBot;
 import net.a1337ism.util.Json;
 import net.a1337ism.util.ircUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -44,7 +45,8 @@ public class Vimeo extends ListenerAdapter {
         if (ID != null) {
             String jsonURL = "http://vimeo.com/api/v2/video/" + ID + ".json";
             try {
-                JSONObject json = Json.readJsonFromUrl(jsonURL);
+                JSONArray jsonArray = Json.readJsonFromURL(jsonURL);
+                JSONObject json = jsonArray.getJSONObject(0);
                 Object[] array = { json.get("title") };
                 return array[0].toString();
             } catch (JSONException e) {
