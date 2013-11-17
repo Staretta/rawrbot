@@ -5,6 +5,11 @@ import java.util.Date;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import org.joda.time.Period;
+import org.joda.time.Seconds;
+import org.joda.time.format.ISOPeriodFormat;
+import org.joda.time.format.PeriodFormatter;
+
 public class MiscUtil {
 
     // URL Regex matching
@@ -60,6 +65,35 @@ public class MiscUtil {
             message = pattern.matcher(line).replaceAll("URL_REDACTED");
         }
         return message;
+    }
+
+    public static int parsePeriodTime(String time) {
+        PeriodFormatter formatter = ISOPeriodFormat.standard();
+        Period p = formatter.parsePeriod(time);
+        Seconds s = p.toStandardSeconds();
+        return s.getSeconds();
+    }
+
+    public static String durationFormat(int total_seconds) {
+        // Helper variables.
+        int MINUTE = 60;
+        int HOUR = MINUTE * 60;
+
+        // Get the days, hours, etc.
+        long hours = (total_seconds) / HOUR;
+        long minutes = (total_seconds % HOUR) / MINUTE;
+        long seconds = total_seconds % MINUTE;
+
+        // Build a pretty string. (like this: "[HH:mm:ss]")
+        String uptime = "[";
+        if (hours > 0)
+            uptime += hours + ":";
+        if (uptime.length() > 0 || minutes > 0)
+            uptime += minutes + ":";
+        uptime += seconds + "]";
+
+        // Return the ugly bastard.
+        return uptime;
     }
 
     /**
@@ -155,7 +189,7 @@ public class MiscUtil {
      * 
      * @return an integer seconds
      */
-    public static int seconds() {
+    public static int currentTimeSeconds() {
         return (int) (System.currentTimeMillis() / 1000);
     }
 

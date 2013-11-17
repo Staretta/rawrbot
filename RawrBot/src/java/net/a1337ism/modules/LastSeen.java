@@ -224,7 +224,7 @@ public class LastSeen extends ListenerAdapter {
             String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
             String message = event.getMessage();
             message = MiscUtil.redactURL(message);
-            int seconds = MiscUtil.seconds();
+            int seconds = MiscUtil.currentTimeSeconds();
             boolean action = false;
             // Throw some values to lastseen function so that we save space probably!
             setLastSeen(nickname, hostname, message, seconds, action);
@@ -397,7 +397,7 @@ public class LastSeen extends ListenerAdapter {
         String hostname = event.getUser().getLogin() + "@" + event.getUser().getHostmask();
         String message = event.getMessage();
         message = MiscUtil.redactURL(message);
-        int seconds = MiscUtil.seconds();
+        int seconds = MiscUtil.currentTimeSeconds();
         boolean action = true;
         setLastSeen(nickname, hostname, message, seconds, action);
     }

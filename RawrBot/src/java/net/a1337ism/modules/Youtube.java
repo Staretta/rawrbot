@@ -1,11 +1,13 @@
 package net.a1337ism.modules;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.ircUtil;
 
 import org.pircbotx.hooks.ListenerAdapter;
@@ -28,10 +30,6 @@ public class Youtube extends ListenerAdapter {
     // TODO: Add Duration, Uploader, and short description of youtube video.
     // Probably requires making a new function for building http requests, and passing the list
     // for snippets, and video details.
-    // TODO: Fix Youtube URL Detection - IDEA: Throw user message into a for loop, splitting message up by spaces to get
-    // individual words, and check those words for a Youtube URL.
-    // THROW IT INTO FOR LOOP AFTER CHECKING FIRST TO SEE IF URL IS THE FIRST THING POSTED. TO SAVE TIME ON PROCESSING A
-    // FOR LOOP.
     private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
     private String        regex         = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
     private Pattern       pattern       = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -67,41 +65,56 @@ public class Youtube extends ListenerAdapter {
         return video_id;
     }
 
-    /**
-     * Gets the YouTube title using Google's API and the ID
-     */
-    private String getYouTubeTitle(String link) {
+    private String getYouTubeTitle(List<Video> list) {
+        return list.get(0).getSnippet().getTitle();
+    }
+
+    private String getYouTubeDuration(List<Video> list) {
+        return list.get(0).getContentDetails().getDuration();
+    }
+
+    private List<Video> getYouTubeAPI(String ID) {
         // Need to build our http request for Youtube's API
+        List<Video> list = null;
         youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
             public void initialize(HttpRequest request) throws IOException {
             }
         }).setApplicationName("RawrBot").build();
+        try {
+            YouTube.Videos.List videos = null;
+            videos = youtube.videos().list("snippet,contentDetails");
+            videos.setKey(clientID).setId(ID);
+            VideoListResponse response = videos.execute();
+            list = response.getItems();
+        } catch (IOException e) {
+            logger.info("IOException in YouTube.getYouTubeAPI: " + e.toString());
+        }
+        return list;
+    }
 
+    /**
+     * Gets the YouTube Video info using Google's API and the ID
+     */
+    private List<String> getYouTubeInfo(String link) {
         // Parse the ID from the URL, and if it's not null, then get the title.
         String ID = getYouTubeVideoID(link);
+        List<String> msgList = new ArrayList<String>();
         if (ID != null) {
-            try {
-                YouTube.Videos.List videos = null;
-                videos = youtube.videos().list("snippet");
-                videos.setKey(clientID).setId(ID);
-                VideoListResponse response = videos.execute();
-                List<Video> list = response.getItems();
-
-                if (!list.isEmpty())
-                    return list.get(0).getSnippet().getTitle();
-            } catch (IOException e) {
-                logger.info("IOException in YouTube.GetTitle: " + e.toString());
+            List<Video> list = getYouTubeAPI(ID);
+            if (!list.isEmpty()) {
+                msgList.add(getYouTubeTitle(list));
+                msgList.add(MiscUtil.durationFormat(MiscUtil.parsePeriodTime(getYouTubeDuration(list))));
             }
         }
-        return null;
+        return msgList;
     }
 
     public void onMessage(MessageEvent event) throws Exception {
         // If message is a youtube url
         if (isYouTubeURL(event.getMessage())) {
             // Get the title of the video, and message the channel.
-            String title = getYouTubeTitle(event.getMessage());
-            String message = "YouTube: " + title;
+            List<String> title = getYouTubeInfo(event.getMessage());
+            String message = "YouTube: " + title.get(0) + " " + title.get(1);
             if (title != null)
                 ircUtil.sendMessage(event, message);
         }
