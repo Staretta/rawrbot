@@ -1,4 +1,4 @@
-package net.a1337ism;
+package net.a1337ism.util;
 
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -6,11 +6,10 @@ import java.util.Properties;
 public class Config {
     Properties configFile;
 
-    public Config() {
+    public Config(String path) {
         configFile = new java.util.Properties();
         try {
             FileInputStream file;
-            String path = "./config.properties";
             file = new FileInputStream(path);
             configFile.load(file);
         } catch (Exception eta) {

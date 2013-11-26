@@ -13,6 +13,7 @@ import net.a1337ism.modules.Rules;
 import net.a1337ism.modules.Uptime;
 import net.a1337ism.modules.Vimeo;
 import net.a1337ism.modules.Youtube;
+import net.a1337ism.util.Config;
 import net.a1337ism.util.ircUtil;
 
 import org.pircbotx.Configuration;
@@ -32,15 +33,15 @@ public class RawrBot extends ListenerAdapter implements Listener {
     private static Logger logger       = LoggerFactory.getLogger(RawrBot.class);
 
     // Config File
-    static Config         cfg          = new Config();
-    static String         irc_server   = cfg.getProperty("irc_server");
-    static int            irc_port     = Integer.parseInt(cfg.getProperty("irc_port"));
-    public static String  irc_channel  = cfg.getProperty("irc_channel");
-    static String         irc_nickname = cfg.getProperty("irc_nickname");
-    static String         irc_username = cfg.getProperty("irc_username");
-    public static String  bot_owner    = cfg.getProperty("bot_owner");
-    static String         bot_version  = cfg.getProperty("bot_version");
-    private static String bot_password = cfg.getProperty("bot_password");
+    private Config        cfg          = new Config("././config.properties");
+    // private String irc_server = cfg.getProperty("irc_server");
+    // private int irc_port = Integer.parseInt(cfg.getProperty("irc_port"));
+    private String        irc_channel  = cfg.getProperty("irc_channel");
+    private String        irc_nickname = cfg.getProperty("irc_nickname");
+    // private String irc_username = cfg.getProperty("irc_username");
+    private String        bot_owner    = cfg.getProperty("bot_owner");
+    // private String bot_version = cfg.getProperty("bot_version");
+    private String        bot_password = cfg.getProperty("bot_password");
 
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
@@ -95,19 +96,21 @@ public class RawrBot extends ListenerAdapter implements Listener {
         Class.forName("org.sqlite.JDBC");
         Class.forName("com.mysql.jdbc.Driver");
 
+        Config cfg = new Config("././config.properties");
+
         // @formatter:off
         // Configuration
         Configuration configuration = new Configuration.Builder()
-                .setName(irc_nickname)
-                .setLogin(irc_username)
-                .setRealName(bot_version)
+                .setName(cfg.getProperty("irc_nickname"))
+                .setLogin(cfg.getProperty("irc_username"))
+                .setRealName(cfg.getProperty("bot_version"))
                 .setAutoNickChange(true)
                 .setAutoReconnect(true)
                 .setCapEnabled(true)
                 .setIdentServerEnabled(false)
-                .setServerHostname(irc_server)
-                .setServerPort(irc_port)
-                .addAutoJoinChannel(irc_channel)
+                .setServerHostname(cfg.getProperty("irc_server"))
+                .setServerPort(Integer.parseInt(cfg.getProperty("irc_port")))
+                .addAutoJoinChannel(cfg.getProperty("irc_channel"))
                 //.setNickservPassword(bot_password) // REMEMER TO UNCOMMENT THIS BEFORE PUSHING UPDATE
                 //.addListener(new LogBot())
                 .addListener(new RateLimiter())

@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.Config;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.ircUtil;
 
@@ -30,10 +31,11 @@ public class Youtube extends ListenerAdapter {
     // TODO: Add Duration, Uploader, and short description of youtube video.
     // Probably requires making a new function for building http requests, and passing the list
     // for snippets, and video details.
+    private Config        cfg           = new Config("././config.properties");
     private static Logger logger        = LoggerFactory.getLogger(RawrBot.class);
     private String        regex         = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
     private Pattern       pattern       = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-    private String        clientID      = "AIzaSyAnJew19gmHRP2KBBIuUyhFoCcwSQiPDs0";
+    private String        apiKey        = cfg.getProperty("youtube_api_key");
     private HttpTransport httpTransport = new NetHttpTransport();
     private JsonFactory   jsonFactory   = new JacksonFactory();
     private YouTube       youtube;
@@ -83,7 +85,7 @@ public class Youtube extends ListenerAdapter {
         try {
             YouTube.Videos.List videos = null;
             videos = youtube.videos().list("snippet,contentDetails");
-            videos.setKey(clientID).setId(ID);
+            videos.setKey(apiKey).setId(ID);
             VideoListResponse response = videos.execute();
             list = response.getItems();
         } catch (IOException e) {
@@ -110,8 +112,8 @@ public class Youtube extends ListenerAdapter {
     }
 
     public void onMessage(MessageEvent event) throws Exception {
-        // If message is a youtube url
-        if (isYouTubeURL(event.getMessage())) {
+        // If message is a youtube url and we have a youtube api key in the properties file.
+        if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage())) {
             // Get the title of the video, and message the channel.
             List<String> info = getYouTubeInfo(event.getMessage());
             String message = "YouTube: " + info.get(0) + " " + info.get(1);

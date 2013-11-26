@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.Config;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.SqliteDb;
 import net.a1337ism.util.ircUtil;
@@ -26,11 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Report extends ListenerAdapter {
-    private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
-    private String        dbUrl      = "jdbc:sqlite:data/report.db";
-    private String        dbDriver   = "org.sqlite.JDBC";
-    private boolean       tableExist = createTableIfNotExist();
-    private byte          ERROR      = 0;
+    private static Logger logger      = LoggerFactory.getLogger(RawrBot.class);
+    private Config        cfg         = new Config("././config.properties");
+    private String        irc_channel = cfg.getProperty("irc_channel");
+    private String        dbUrl       = "jdbc:sqlite:data/report.db";
+    private String        dbDriver    = "org.sqlite.JDBC";
+    private boolean       tableExist  = createTableIfNotExist();
+    private byte          ERROR       = 0;
 
     private SqliteDb dbConnect() {
         // Open a connection to the database.
@@ -348,7 +351,7 @@ public class Report extends ListenerAdapter {
             String[] param = event.getMessage().trim().split("\\s", 3);
 
             // If the user is an operator of the channel, then continue.
-            if (ircUtil.isOP(event, RawrBot.irc_channel)) {
+            if (ircUtil.isOP(event, irc_channel)) {
                 if (param.length == 1) {
                     // Get 5 newest reports
                     List<String> result = getReportAll();
@@ -512,7 +515,7 @@ public class Report extends ListenerAdapter {
 
                     // Get a list of operators for the channel, and throw it into an iterator.
                     // TODO: Move this to a function in ircUtil.java
-                    Channel channel = event.getBot().getUserChannelDao().getChannel(RawrBot.irc_channel);
+                    Channel channel = event.getBot().getUserChannelDao().getChannel(irc_channel);
                     Set<User> operators = event.getBot().getUserChannelDao().getUsers(channel, UserLevel.OP);
                     Iterator<User> itr = operators.iterator();
                     String reportMessage = event.getUser().getNick() + " reported " + reportedNick + " with reason: "

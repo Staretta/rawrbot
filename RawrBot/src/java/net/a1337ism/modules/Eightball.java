@@ -1,6 +1,7 @@
 package net.a1337ism.modules;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.Config;
 import net.a1337ism.util.FileUtil;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.ircUtil;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 public class Eightball extends ListenerAdapter {
     private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
+    private Config        cfg        = new Config("././config.properties");
+    private String        bot_owner  = cfg.getProperty("bot_owner");
     private String        filename   = "data/eightball_answers.txt";
     private String[]      answerList = FileUtil.readLines(filename);
 
@@ -40,7 +43,7 @@ public class Eightball extends ListenerAdapter {
             ircUtil.sendMessage(event, answer);
 
         } else if (event.getMessage().trim().toLowerCase().equalsIgnoreCase("!8ball -reload")
-                && event.getUser().getNick().equalsIgnoreCase(RawrBot.bot_owner)) {
+                && event.getUser().getNick().equalsIgnoreCase(bot_owner)) {
             // If message equals !8ball reload
             ircUtil.sendMessage(event, "Reloading 8ball reply list");
             answerList = FileUtil.readLines(filename);

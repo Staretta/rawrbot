@@ -1,6 +1,7 @@
 package net.a1337ism.modules;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.Config;
 import net.a1337ism.util.FileUtil;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.ircUtil;
@@ -12,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Rawr extends ListenerAdapter {
-    private static Logger logger   = LoggerFactory.getLogger(RawrBot.class);
-    private String        filename = "data/rawr.txt";                       // Set the rawr.txt location
-    private String[]      rawrList = FileUtil.readLines(filename);          // Throw the lines into a list
+    private static Logger logger    = LoggerFactory.getLogger(RawrBot.class);
+    private Config        cfg       = new Config("././config.properties");
+    private String        bot_owner = cfg.getProperty("bot_owner");
+    private String        filename  = "data/rawr.txt";                       // Set the rawr.txt location
+    private String[]      rawrList  = FileUtil.readLines(filename);          // Throw the lines into a list
 
     public void onMessage(MessageEvent event) throws Exception {
         if (event.getMessage().trim().toLowerCase().startsWith("!rawr")
@@ -103,7 +106,7 @@ public class Rawr extends ListenerAdapter {
                 ircUtil.sendMessage(event, rawrHelp);
 
             } else if (event.getMessage().trim().toLowerCase().endsWith("-reload")
-                    && event.getUser().getNick().equalsIgnoreCase(RawrBot.bot_owner)) {
+                    && event.getUser().getNick().equalsIgnoreCase(bot_owner)) {
                 // If command ends with -reload, and it's the bot's owner, we know they want to reload the file list.
                 ircUtil.sendMessage(event, "Reloading Rawr List");
                 rawrList = FileUtil.readLines(filename);

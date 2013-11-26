@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.a1337ism.RawrBot;
+import net.a1337ism.util.Config;
 import net.a1337ism.util.MiscUtil;
 import net.a1337ism.util.SqliteDb;
 import net.a1337ism.util.ircUtil;
@@ -22,12 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Greeter extends ListenerAdapter {
-    private static Logger logger     = LoggerFactory.getLogger(RawrBot.class);
-    private String        dbUrl      = "jdbc:sqlite:data/greeter.db";
-    private String        dbDriver   = "org.sqlite.JDBC";
-    private boolean       tableExist = createTableIfNotExist();
-    private byte          ERROR      = 0;
-    private boolean       RandGreet  = false;
+    private static Logger logger      = LoggerFactory.getLogger(RawrBot.class);
+    private Config        cfg         = new Config("././config.properties");
+    private String        irc_channel = cfg.getProperty("irc_channel");
+    private String        dbUrl       = "jdbc:sqlite:data/greeter.db";
+    private String        dbDriver    = "org.sqlite.JDBC";
+    private boolean       tableExist  = createTableIfNotExist();
+    private byte          ERROR       = 0;
+    private boolean       RandGreet   = false;
 
     private SqliteDb dbConnect() {
         // Open a connection to the database.
@@ -276,7 +279,7 @@ public class Greeter extends ListenerAdapter {
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
         // If message starts with !greeter and user is an operator of the channel
-        if (event.getMessage().trim().toLowerCase().startsWith("!greeter") && ircUtil.isOP(event, RawrBot.irc_channel)) {
+        if (event.getMessage().trim().toLowerCase().startsWith("!greeter") && ircUtil.isOP(event, irc_channel)) {
             // Get the message and split it into parameters
             String[] param = event.getMessage().trim().split("\\s", 3);
 
