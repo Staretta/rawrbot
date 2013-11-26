@@ -1,0 +1,9 @@
+RawrBot/target
+RawrBot/logs
+RawrBot/data/*.db
+.metadata
+bin
+/RawrBot/.classpath
+/RawrBot/.project
+
+/RawrBot/.settings/*.prefs
