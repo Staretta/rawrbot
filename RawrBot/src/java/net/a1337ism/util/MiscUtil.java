@@ -89,8 +89,14 @@ public class MiscUtil {
         if (hours > 0)
             uptime += hours + ":";
         if (uptime.length() > 0 || minutes > 0)
-            uptime += minutes + ":";
-        uptime += seconds + "]";
+            if (minutes < 10 && hours > 0)
+                uptime += "0" + minutes + ":";
+            else
+                uptime += minutes + ":";
+        if (seconds < 10)
+            uptime += "0" + seconds + "]";
+        else
+            uptime += seconds + "]";
 
         // Return the ugly bastard.
         return uptime;

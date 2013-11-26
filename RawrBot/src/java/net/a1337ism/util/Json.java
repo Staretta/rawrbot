@@ -8,11 +8,17 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import net.a1337ism.RawrBot;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Json {
+    private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+
     private static String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
         int cp;
@@ -32,17 +38,23 @@ public class Json {
     }
 
     /**
-     * Converts URL Connection response to a JSON Object
+     * Converts URL Connection response to a JSON Array
      * 
-     * @return JSONObject json
+     * @return JSONArray json
+     * @throws IOException
      */
-    public static JSONArray readJsonFromURL(String url) throws IOException, JSONException {
+    public static JSONArray readJsonFromURL(String url) throws JSONException, IOException {
         JSONArray array = new JSONArray(getHttpPage(url));
-        // JSONObject json = array.getJSONObject(0);
         return array;
     }
 
-    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+    /**
+     * Converts URL Connection response to a JSON Object
+     * 
+     * @return JSONObject json
+     * @throws IOException
+     */
+    public static JSONObject readJsonFromUrl(String url) throws JSONException, IOException {
         JSONObject json = new JSONObject(getHttpPage(url));
         return json;
     }

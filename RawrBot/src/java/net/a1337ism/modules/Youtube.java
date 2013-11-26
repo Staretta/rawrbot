@@ -113,9 +113,9 @@ public class Youtube extends ListenerAdapter {
         // If message is a youtube url
         if (isYouTubeURL(event.getMessage())) {
             // Get the title of the video, and message the channel.
-            List<String> title = getYouTubeInfo(event.getMessage());
-            String message = "YouTube: " + title.get(0) + " " + title.get(1);
-            if (title != null)
+            List<String> info = getYouTubeInfo(event.getMessage());
+            String message = "YouTube: " + info.get(0) + " " + info.get(1);
+            if (info != null)
                 ircUtil.sendMessage(event, message);
         }
     }
