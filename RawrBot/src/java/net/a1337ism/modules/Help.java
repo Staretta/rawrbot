@@ -13,7 +13,8 @@ public class Help extends ListenerAdapter {
     private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
     public void onMessage(MessageEvent event) throws Exception {
-        if (event.getMessage().trim().toLowerCase().startsWith("!commands")) {
+        if (event.getMessage().trim().toLowerCase().startsWith("!commands")
+                || event.getMessage().trim().toLowerCase().startsWith("!help")) {
             if (RateLimiter.isRateLimited(event.getUser().getNick()))
                 return;
 
@@ -26,7 +27,8 @@ public class Help extends ListenerAdapter {
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-        if (event.getMessage().trim().toLowerCase().startsWith("!commands")) {
+        if (event.getMessage().trim().toLowerCase().startsWith("!commands")
+                || event.getMessage().trim().toLowerCase().startsWith("!help")) {
             String[] commandHelp = { "Commands: !joke !quote !rawr !8ball !lastseen !report !uptime !time !commands",
                     "For command specific help, type \"-help\" after a command." };
             for (String line : commandHelp) {
