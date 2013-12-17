@@ -80,9 +80,9 @@ public class MiscUtil {
         int HOUR = MINUTE * 60;
 
         // Get the days, hours, etc.
-        long hours = (total_seconds) / HOUR;
-        long minutes = (total_seconds % HOUR) / MINUTE;
-        long seconds = total_seconds % MINUTE;
+        int hours = (total_seconds) / HOUR;
+        int minutes = (total_seconds % HOUR) / MINUTE;
+        int seconds = total_seconds % MINUTE;
 
         // Build a pretty string. (like this: "[HH:mm:ss]")
         String uptime = "[";
@@ -93,10 +93,8 @@ public class MiscUtil {
                 uptime += "0" + minutes + ":";
             else
                 uptime += minutes + ":";
-        if (seconds < 10)
-            uptime += "0" + seconds + "]";
-        else
-            uptime += seconds + "]";
+        // if (seconds < 10)
+        uptime += String.format("%1$02d", seconds) + "]";
 
         // Return the ugly bastard.
         return uptime;

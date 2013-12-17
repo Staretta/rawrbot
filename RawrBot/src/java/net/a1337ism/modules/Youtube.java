@@ -75,6 +75,10 @@ public class Youtube extends ListenerAdapter {
         return list.get(0).getContentDetails().getDuration();
     }
 
+    private String getYouTubeDefinition(List<Video> list) {
+        return list.get(0).getContentDetails().getDefinition();
+    }
+
     private List<Video> getYouTubeAPI(String ID) {
         // Need to build our http request for Youtube's API
         List<Video> list = null;
@@ -106,6 +110,7 @@ public class Youtube extends ListenerAdapter {
             if (!list.isEmpty()) {
                 msgList.add(getYouTubeTitle(list));
                 msgList.add(MiscUtil.durationFormat(MiscUtil.parsePeriodTime(getYouTubeDuration(list))));
+                msgList.add(getYouTubeDefinition(list));
             }
         }
         return msgList;
@@ -116,7 +121,7 @@ public class Youtube extends ListenerAdapter {
         if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage())) {
             // Get the title of the video, and message the channel.
             List<String> info = getYouTubeInfo(event.getMessage());
-            String message = "YouTube: " + info.get(0) + " " + info.get(1);
+            String message = "YouTube: " + info.get(0) + " " + info.get(1) + "[" + info.get(2).toUpperCase() + "]";
             if (info != null)
                 ircUtil.sendMessage(event, message);
         }
