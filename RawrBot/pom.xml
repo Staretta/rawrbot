@@ -7,14 +7,6 @@
     <artifactId>RawrBot</artifactId>
     <version>1.0</version>
     <dependencies>
-<!-- PIRCBOTX DEPENDENCY - 1.9 -->
-<!--
-        <dependency>
-            <groupId>org.pircbotx</groupId>
-            <artifactId>pircbotx</artifactId>
-            <version>1.9</version>
-        </dependency>
--->
 <!-- PIRCBOTX DEPENDENCY - 2.0 -->
         <dependency>
                 <groupId>org.pircbotx</groupId>
@@ -32,17 +24,6 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
-<!-- LOGGING DEPENDENCIES - LOG4J 2.0        
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.0-beta7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.0-beta7</version>
-        </dependency>  -->
 <!-- JSON DEPENDENCY -->
         <dependency>
             <groupId>org.json</groupId>
@@ -90,6 +71,22 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.3</version>
+        </dependency>
+<!-- JACKSON JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.3.0</version>
         </dependency>
 	</dependencies>
 	<repositories>

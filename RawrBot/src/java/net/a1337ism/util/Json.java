@@ -1,51 +1,52 @@
 package net.a1337ism.util;
 
-import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 import net.a1337ism.RawrBot;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Json {
     private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    public static String getHttpPage(String url) throws IOException {
-        String page = "";
-        InputStream is = new URL(url).openStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        page = readAll(rd);
-        is.close();
-        return page;
-    }
-
     /**
-     * Converts URL Connection response to a JSON Array
+     * Gets the HTTP Page URL, and returns as a string.
      * 
-     * @return JSONArray json
+     * @param url
+     * @return page(string)
      * @throws IOException
      */
-    public static JSONArray readJsonFromURL(String url) throws JSONException, IOException {
-        JSONArray array = new JSONArray(getHttpPage(url));
-        return array;
+    public static JsonNode getHttpJson(String url) {
+        ObjectMapper m = new ObjectMapper();
+        JsonNode node = m.createObjectNode();
+        InputStream is = null;
+        try {
+            is = new URL(url).openStream();
+            node = m.readTree(is);
+            is.close();
+        } catch (Exception e) {
+            logger.info("Exception: Could not get or parse " + url);
+        }
+        return node;
+    }
+
+    private static JsonNode getFileJson(String location) {
+        ObjectMapper m = new ObjectMapper();
+        JsonNode node = m.createObjectNode();
+        try {
+            node = m.readTree(new FileReader(location));
+        } catch (Exception e) {
+            logger.info("Exception: Could not get or parse " + location);
+            e.printStackTrace();
+        }
+        return node;
     }
 
     /**
@@ -54,9 +55,15 @@ public class Json {
      * @return JSONObject json
      * @throws IOException
      */
-    public static JSONObject readJsonFromUrl(String url) throws JSONException, IOException {
-        JSONObject json = new JSONObject(getHttpPage(url));
+    public static JsonNode readJsonFromUrl(String url) {
+        JsonNode json = new ObjectMapper().createObjectNode();
+        json = getHttpJson(url);
         return json;
     }
 
+    public static JsonNode readJsonFromFile(String location) {
+        JsonNode json = new ObjectMapper().createObjectNode();
+        json = getFileJson(location);
+        return json;
+    }
 }

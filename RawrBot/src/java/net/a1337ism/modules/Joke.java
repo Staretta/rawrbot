@@ -7,12 +7,13 @@ import net.a1337ism.util.Json;
 import net.a1337ism.util.ircUtil;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class Joke extends ListenerAdapter {
     private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
@@ -65,10 +66,10 @@ public class Joke extends ListenerAdapter {
 
     private Object[] getJoke() throws IOException, JSONException {
         // grabs JSONobject and stores it into json for us to read from
-        JSONObject json = Json
+        JsonNode json = Json
                 .readJsonFromUrl("http://api.icndb.com/jokes/random?escape=javascript&firstName=Rawr&lastName=Bot");
         // stores the specific values I want into an array to be used later.
-        Object[] array = { ((JSONObject) json.get("value")).get("id"), ((JSONObject) json.get("value")).get("joke") };
+        Object[] array = { (json.get("value")).get("id").asText(), (json.get("value")).get("joke").asText() };
         return array;
     }
 }
