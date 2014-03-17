@@ -27,7 +27,7 @@ public class Vimeo extends ListenerAdapter
 		int		videoID;
 		String	title;
 		int		duration;
-		String	sDuration;
+		String	fDuration;
 		int		plays;
 		int		comments;
 		int		likes;
@@ -94,7 +94,7 @@ public class Vimeo extends ListenerAdapter
 				if (json.has("duration"))
 				{
 					videoDetails.duration = Integer.parseInt(json.get("duration").asText());
-					videoDetails.sDuration = MiscUtil.durationFormat(videoDetails.duration);
+					videoDetails.fDuration = MiscUtil.durationFormat(videoDetails.duration);
 				}
 				if (json.has("width"))
 					videoDetails.width = json.get("width").asInt();
@@ -130,7 +130,8 @@ public class Vimeo extends ListenerAdapter
 		{
 			VideoDetails videoDetails = getVimeoVideoDetails(event.getMessage());
 			String videoSize = "[" + videoDetails.width + "x" + videoDetails.height + "]";
-			String message = "Vimeo: " + videoDetails.title + " " + videoDetails.sDuration + videoSize;
+			String message = "Vimeo: " + videoDetails.title + " by " + videoDetails.username + " "
+					+ videoDetails.fDuration + videoSize;
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);
 		}
