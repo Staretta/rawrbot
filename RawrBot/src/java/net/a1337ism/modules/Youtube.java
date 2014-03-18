@@ -87,21 +87,6 @@ public class Youtube extends ListenerAdapter
 		return video_id;
 	}
 
-	private String getYouTubeTitle(List<Video> list)
-	{
-		return list.get(0).getSnippet().getTitle();
-	}
-
-	private String getYouTubeDuration(List<Video> list)
-	{
-		return list.get(0).getContentDetails().getDuration();
-	}
-
-	private String getYouTubeDefinition(List<Video> list)
-	{
-		return list.get(0).getContentDetails().getDefinition();
-	}
-
 	private List<Video> getYouTubeAPI(String ID)
 	{
 		// Need to build our http request for Youtube's API

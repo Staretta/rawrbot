@@ -28,77 +28,98 @@ import org.pircbotx.hooks.events.UnknownEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RawrBot extends ListenerAdapter implements Listener {
-    // slf4j Stuff
-    private static Logger logger       = LoggerFactory.getLogger(RawrBot.class);
+public class RawrBot extends ListenerAdapter implements Listener
+{
+	// slf4j Stuff
+	private static Logger	logger			= LoggerFactory.getLogger(RawrBot.class);
 
-    // Config File
-    private Config        cfg          = new Config("././config.properties");
-    // private String irc_server = cfg.getProperty("irc_server");
-    // private int irc_port = Integer.parseInt(cfg.getProperty("irc_port"));
-    private String        irc_channel  = cfg.getProperty("irc_channel");
-    private String        irc_nickname = cfg.getProperty("irc_nickname");
-    // private String irc_username = cfg.getProperty("irc_username");
-    private String        bot_owner    = cfg.getProperty("bot_owner");
-    // private String bot_version = cfg.getProperty("bot_version");
-    private String        bot_password = cfg.getProperty("bot_password");
+	// Config File
+	private Config			cfg				= new Config("././config.properties");
+	// private String irc_server = cfg.getProperty("irc_server");
+	// private int irc_port = Integer.parseInt(cfg.getProperty("irc_port"));
+	private String			irc_channel		= cfg.getProperty("irc_channel");
+	private String			irc_nickname	= cfg.getProperty("irc_nickname");
+	// private String irc_username = cfg.getProperty("irc_username");
+	private String			bot_owner		= cfg.getProperty("bot_owner");
+	// private String bot_version = cfg.getProperty("bot_version");
+	private String			bot_password	= cfg.getProperty("bot_password");
 
-    @Override
-    public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-        if ((event.getUser().getNick().equalsIgnoreCase(bot_owner) || ircUtil.isOP(event, irc_channel))
-                && event.getMessage().equalsIgnoreCase("!quit")) {
-            // Shutdown upon receiving a quit command
-            ircUtil.sendMessage(event, "Shutting Down...");
-            event.getBot().stopBotReconnect();
-            event.getBot().sendIRC().quitServer();
-        }
-    }
+	@Override
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
+	{
+		if ((event.getUser().getNick().equalsIgnoreCase(bot_owner) || ircUtil.isOP(event, irc_channel))
+				&& event.getMessage().equalsIgnoreCase("!quit"))
+		{
+			// Shutdown upon receiving a quit command
+			ircUtil.sendMessage(event, "Shutting Down...");
+			event.getBot().stopBotReconnect();
+			event.getBot().sendIRC().quitServer();
+		}
+		else if (event.getUser().getNick().equalsIgnoreCase(bot_owner) && event.getMessage().equalsIgnoreCase("!join"))
+		{
+			String[] param = event.getMessage().trim().split("\\s", 3);
 
-    @Override
-    public void onQuit(QuitEvent event) throws Exception {
-        // If we see our default nickname quit, then rename our name to it.
-        if (event.getUser().getNick().equalsIgnoreCase(irc_nickname)) {
-            event.getBot().sendIRC().changeNick(irc_nickname);
-        }
-    }
+			if (param.length != 1)
+				event.getBot().sendIRC().joinChannel(param[1]);
+		}
+	}
 
-    @Override
-    public void onConnect(ConnectEvent event) throws Exception {
-        if (!bot_password.isEmpty()) {
-            // TODO: replace with identify at some point.
-            logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-            event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
-        }
-    }
+	@Override
+	public void onQuit(QuitEvent event) throws Exception
+	{
+		// If we see our default nickname quit, then rename our name to it.
+		if (event.getUser().getNick().equalsIgnoreCase(irc_nickname))
+		{
+			event.getBot().sendIRC().changeNick(irc_nickname);
+		}
+	}
 
-    @Override
-    public void onNickAlreadyInUse(NickAlreadyInUseEvent event) {
-        event.respond(alterCollidedNick(event.getUsedNick()));
-    }
+	@Override
+	public void onConnect(ConnectEvent event) throws Exception
+	{
+		if (!bot_password.isEmpty())
+		{
+			// TODO: replace with identify at some point.
+			logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
+			event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
+		}
+	}
 
-    private String alterCollidedNick(String nickname) {
-        // If there is already a nickname with our name on the server, then we need to change our name so it'll work.
-        if (nickname.contains("Rawr")) {
-            nickname.replace("Rawr", "Rawrr");
-            return nickname;
-        } else {
-            return nickname + "_";
-        }
-    }
+	@Override
+	public void onNickAlreadyInUse(NickAlreadyInUseEvent event)
+	{
+		event.respond(alterCollidedNick(event.getUsedNick()));
+	}
 
-    @Override
-    public void onUnknown(UnknownEvent event) throws Exception {
-        logger.info(event.toString());
-    }
+	private String alterCollidedNick(String nickname)
+	{
+		// If there is already a nickname with our name on the server, then we need to change our name so it'll work.
+		if (nickname.contains("Rawr"))
+		{
+			nickname.replace("Rawr", "Rawrr");
+			return nickname;
+		}
+		else
+		{
+			return nickname + "_";
+		}
+	}
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        // Load the sqlite-JDBC and mysql-JDBC driver using the current class loader
-        Class.forName("org.sqlite.JDBC");
-        Class.forName("com.mysql.jdbc.Driver");
+	@Override
+	public void onUnknown(UnknownEvent event) throws Exception
+	{
+		logger.info(event.toString());
+	}
 
-        Config cfg = new Config("././config.properties");
+	public static void main(String[] args) throws ClassNotFoundException
+	{
+		// Load the sqlite-JDBC and mysql-JDBC driver using the current class loader
+		Class.forName("org.sqlite.JDBC");
+		Class.forName("com.mysql.jdbc.Driver");
 
-        // @formatter:off
+		Config cfg = new Config("././config.properties");
+
+		// @formatter:off
         // Configuration
         Configuration configuration = new Configuration.Builder()
                 .setName(cfg.getProperty("irc_nickname"))
@@ -131,10 +152,13 @@ public class RawrBot extends ListenerAdapter implements Listener {
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on
 
-        try {
-            bot.startBot();
-        } catch (Exception ex) {
-            logger.info("Exception in RawrBot.main: " + ex.toString());
-        }
-    }
+		try
+		{
+			bot.startBot();
+		}
+		catch (Exception ex)
+		{
+			logger.info("Exception in RawrBot.main: " + ex.toString());
+		}
+	}
 }
