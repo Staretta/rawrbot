@@ -46,7 +46,6 @@ public class Eightball extends ListenerAdapter
 
 			String answer = MiscUtil.randomSelection(answerList);
 			ircUtil.sendMessage(event, answer);
-
 		}
 		else if (event.getMessage().trim().toLowerCase().equalsIgnoreCase("!8ball -reload")
 				&& event.getUser().getNick().equalsIgnoreCase(bot_owner))

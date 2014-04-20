@@ -97,12 +97,12 @@ public class Rawr extends ListenerAdapter
 			{
 				// Otherwise, we know they just want the cat.
 				// @formatter:off
-                String[] nyan = { 
-                        "...,__,......,__,.....____________", 
-                        "`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
-                        "`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )", 
-                        "-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
-                // @formatter:on
+				String[] nyan = { 
+						"...,__,......,__,.....____________", 
+						"`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
+						"`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )", 
+						"-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
+				// @formatter:on
 				for (String line : nyan)
 				{
 					ircUtil.sendMessage(event, line);
@@ -198,12 +198,12 @@ public class Rawr extends ListenerAdapter
 			{
 				// Otherwise, we know they just want the cat.
 				// @formatter:off
-                String[] nyan = { 
-                        "...,__,......,__,.....____________", 
-                        "`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
-                        "`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )", 
-                        "-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
-                // @formatter:on
+				String[] nyan = { 
+						"...,__,......,__,.....____________", 
+						"`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
+						"`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )", 
+						"-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
+				// @formatter:on
 				for (String line : nyan)
 				{
 					ircUtil.sendMessage(event, line);
