@@ -40,7 +40,6 @@ public class Vimeo extends ListenerAdapter
 		VideoDetails()
 		{
 		}
-
 	}
 
 	private boolean isVimeoURL(String message)
