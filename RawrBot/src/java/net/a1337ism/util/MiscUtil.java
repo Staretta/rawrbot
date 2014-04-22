@@ -214,4 +214,18 @@ public class MiscUtil
 		return (int) (System.currentTimeMillis() / 1000);
 	}
 
+	public static int parseInt(String integer)
+	{
+		int parsedInteger = (Integer) null;
+		try
+		{
+			parsedInteger = Integer.parseInt(integer);
+		}
+		catch (NumberFormatException e)
+		{
+		}
+
+		return parsedInteger;
+	}
+
 }
