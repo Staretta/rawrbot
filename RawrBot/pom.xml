@@ -42,6 +42,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.25</version>
         </dependency>
+<!-- POSTGRESQL JDBC DEPENDENCY -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.2-1003-jdbc4</version>
+		</dependency>
 <!-- JDBC UTILS DEPENDENCY -->
         <dependency>
             <groupId>commons-dbutils</groupId>
@@ -94,6 +100,12 @@
             <artifactId>hibernate-core</artifactId>
             <version>4.3.4.Final</version>
         </dependency>
+<!-- SPRING FRAMEWORK -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.0.3.RELEASE</version>
+		</dependency>
 	</dependencies>
 	<repositories>
         <repository>
