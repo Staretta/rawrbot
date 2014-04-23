@@ -20,6 +20,7 @@ public class Dice extends ListenerAdapter
 	private int				maxDieSize			= 1000;
 	private int				defaultNumberDies	= 1;
 	private int				defaultDieSize		= 20;
+	private int				maxModNumber		= 1000;
 
 	// URL Regex matching
 	static String			regex				= "([\\+\\-])?\\s*((\\d*)d(\\d+)|(\\d+))";
@@ -29,9 +30,6 @@ public class Dice extends ListenerAdapter
 
 	public int randomNumber(int dieSize)
 	{
-		if (dieSize > maxDieSize)
-			dieSize = maxDieSize;
-
 		Random random = new Random();
 		int n = random.nextInt(dieSize) + 1;
 		return n;
@@ -39,9 +37,6 @@ public class Dice extends ListenerAdapter
 
 	private int randomNumber(int numberDies, int dieSize)
 	{
-		if (numberDies > maxNumberDies)
-			numberDies = maxNumberDies;
-
 		Random random = new Random();
 		int n = 0;
 
@@ -108,12 +103,16 @@ public class Dice extends ListenerAdapter
 									if (parseInt(match.group(3)) > 0)
 									{
 										numberDies = parseInt(match.group(3));
+										if (numberDies > maxNumberDies)
+											numberDies = maxNumberDies;
 										rolled += numberDies;
 									}
 
 									if (parseInt(match.group(4)) > 0)
 									{
 										dieSize = parseInt(match.group(4));
+										if (dieSize > maxDieSize)
+											dieSize = maxDieSize;
 										rolled += "d" + dieSize;
 									}
 
@@ -124,8 +123,10 @@ public class Dice extends ListenerAdapter
 								else if (parseInt(match.group(5)) > 0)
 								{
 									modNumber = parseInt(match.group(5));
-									rolled += "(" + modNumber + ")";
+									if (modNumber > maxModNumber)
+										modNumber = maxModNumber;
 									total += modNumber;
+									rolled += "(" + modNumber + ")";
 								}
 							}
 							// if the modifier is -, then add - to the rolled, and see if it's a dice roll or a regular
@@ -139,12 +140,16 @@ public class Dice extends ListenerAdapter
 									if (parseInt(match.group(3)) > 0)
 									{
 										numberDies = parseInt(match.group(3));
+										if (numberDies > maxNumberDies)
+											numberDies = maxNumberDies;
 										rolled += numberDies;
 									}
 
 									if (parseInt(match.group(4)) > 0)
 									{
 										dieSize = parseInt(match.group(4));
+										if (dieSize > maxDieSize)
+											dieSize = maxDieSize;
 										rolled += "d" + dieSize;
 									}
 
@@ -156,6 +161,8 @@ public class Dice extends ListenerAdapter
 								else if (parseInt(match.group(5)) > 0)
 								{
 									modNumber = parseInt(match.group(5));
+									if (modNumber > maxModNumber)
+										modNumber = maxModNumber;
 									total -= modNumber;
 									rolled += "(" + modNumber + ")";
 								}
