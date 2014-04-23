@@ -30,7 +30,7 @@ public class Dice extends ListenerAdapter
 	public int randomNumber(int dieSize)
 	{
 		Random random = new Random();
-		int n = random.nextInt(dieSize);
+		int n = random.nextInt(dieSize) + 1;
 		return n;
 	}
 
@@ -50,7 +50,8 @@ public class Dice extends ListenerAdapter
 	public void onMessage(MessageEvent event)
 	{
 		String userMessage = event.getMessage().trim().toLowerCase();
-		if (userMessage.startsWith("!dice") || userMessage.startsWith("!roll"))
+		if ((userMessage.startsWith("!dice") || userMessage.startsWith("!roll"))
+				&& !RateLimiter.isRateLimited(event.getUser().getNick(), 20))
 		{
 			if (userMessage.endsWith("-help") || userMessage.endsWith("-h"))
 			{
@@ -106,7 +107,7 @@ public class Dice extends ListenerAdapter
 							else if (parseInt(match.group(5)) > 0)
 							{
 								modNumber = parseInt(match.group(5));
-								message += modNumber + "";
+								message += "(" + modNumber + ")";
 								total += modNumber;
 							}
 						}
@@ -137,7 +138,7 @@ public class Dice extends ListenerAdapter
 							{
 								modNumber = parseInt(match.group(5));
 								total -= modNumber;
-								message += modNumber + "";
+								message += "(" + modNumber + ")";
 							}
 						}
 					}
