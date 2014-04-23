@@ -16,8 +16,8 @@ public class Dice extends ListenerAdapter
 {
 	// Logger shit
 	private static Logger	logger				= LoggerFactory.getLogger(RawrBot.class);
-	private int				maxDies				= 1000;
-	private int				maxLimit			= 1000;
+	private int				maxNumberDies		= 20;
+	private int				maxDieSize			= 1000;
 	private int				defaultNumberDies	= 1;
 	private int				defaultDieSize		= 20;
 
@@ -29,6 +29,9 @@ public class Dice extends ListenerAdapter
 
 	public int randomNumber(int dieSize)
 	{
+		if (dieSize > maxDieSize)
+			dieSize = maxDieSize;
+
 		Random random = new Random();
 		int n = random.nextInt(dieSize) + 1;
 		return n;
@@ -36,6 +39,9 @@ public class Dice extends ListenerAdapter
 
 	private int randomNumber(int numberDies, int dieSize)
 	{
+		if (numberDies > maxNumberDies)
+			numberDies = maxNumberDies;
+
 		Random random = new Random();
 		int n = 0;
 
