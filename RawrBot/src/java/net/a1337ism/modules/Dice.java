@@ -174,12 +174,16 @@ public class Dice extends ListenerAdapter
 							if (parseInt(match.group(3)) > 0)
 							{
 								numberDies = parseInt(match.group(3));
+								if (numberDies > maxNumberDies)
+									numberDies = maxNumberDies;
 								rolled += numberDies;
 							}
 
 							if (parseInt(match.group(4)) > 0)
 							{
 								dieSize = parseInt(match.group(4));
+								if (dieSize > maxDieSize)
+									dieSize = maxDieSize;
 								rolled += "d" + dieSize;
 							}
 
