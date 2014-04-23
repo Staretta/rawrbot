@@ -63,106 +63,137 @@ public class Dice extends ListenerAdapter
 				int numberDies = defaultNumberDies;
 				int dieSize = defaultDieSize;
 
+				// If the message only consists of !dice or !roll, throw a standard 1d20
 				if (userMessage.equalsIgnoreCase("!dice") || userMessage.equalsIgnoreCase("!roll"))
 				{
-					String message = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
+					String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
 							+ randomNumber(dieSize);
-					ircUtil.sendMessage(event, message);
+					ircUtil.sendMessage(event, defaultRoll);
 				}
-
-				Matcher match = pattern.matcher(userMessage);
-
-				String message = event.getUser().getNick() + " rolled ";
-				int total = 0;
-
-				while (match.find())
+				// If we find a match to our regex, then roll whatever the regex finds!
+				else if (pattern.matcher(userMessage).find())
 				{
-					String mod = match.group(1);
-					int modNumber = 0;
 
-					if (match.group(1) != null)
+					Matcher match = pattern.matcher(userMessage);
+					String message = event.getUser().getNick() + " rolled ";
+					String rolled = "";
+					int total = 0;
+
+					while (match.find())
 					{
-						if (match.group(1).startsWith("+"))
+						// group 1 is the modifier, +, -, *, /
+						// group 3 is the number of dice
+						// group 4 is the number of sides on the dice
+						// group 5 is the modifier amount
+						String mod = match.group(1);
+						int modNumber = 0;
+
+						// if we have a modifier, then lets stuff with it
+						if (match.group(1) != null)
 						{
-							message += "+";
-
-							if (match.group(2).contains("d"))
+							// if the modifier is +, then add + to the message, and see if it's a dice roll or a regular
+							// number
+							if (match.group(1).startsWith("+"))
 							{
-								if (parseInt(match.group(3)) > 0)
-								{
-									numberDies = parseInt(match.group(3));
-									message += numberDies;
-								}
+								rolled += "+";
 
-								if (parseInt(match.group(4)) > 0)
+								if (match.group(2).contains("d"))
 								{
-									dieSize = parseInt(match.group(4));
-									message += "d" + dieSize;
-								}
+									if (parseInt(match.group(3)) > 0)
+									{
+										numberDies = parseInt(match.group(3));
+										rolled += numberDies;
+									}
 
-								int number = randomNumber(numberDies, dieSize);
-								total += number;
-								message += "(" + number + ")";
+									if (parseInt(match.group(4)) > 0)
+									{
+										dieSize = parseInt(match.group(4));
+										rolled += "d" + dieSize;
+									}
+
+									int number = randomNumber(numberDies, dieSize);
+									total += number;
+									rolled += "(" + number + ")";
+								}
+								else if (parseInt(match.group(5)) > 0)
+								{
+									modNumber = parseInt(match.group(5));
+									rolled += "(" + modNumber + ")";
+									total += modNumber;
+								}
 							}
-							else if (parseInt(match.group(5)) > 0)
+							// if the modifier is -, then add - to the rolled, and see if it's a dice roll or a regular
+							// number
+							else if (match.group(1).startsWith("-"))
 							{
-								modNumber = parseInt(match.group(5));
-								message += "(" + modNumber + ")";
-								total += modNumber;
+								rolled += "-";
+
+								if (match.group(2).contains("d"))
+								{
+									if (parseInt(match.group(3)) > 0)
+									{
+										numberDies = parseInt(match.group(3));
+										rolled += numberDies;
+									}
+
+									if (parseInt(match.group(4)) > 0)
+									{
+										dieSize = parseInt(match.group(4));
+										rolled += "d" + dieSize;
+									}
+
+									int number = randomNumber(numberDies, dieSize);
+									total -= number;
+									rolled += "(" + number + ")";
+
+								}
+								else if (parseInt(match.group(5)) > 0)
+								{
+									modNumber = parseInt(match.group(5));
+									total -= modNumber;
+									rolled += "(" + modNumber + ")";
+								}
 							}
 						}
-						else if (match.group(1).startsWith("-"))
+						// At this point we know it's just the beginning of the roll, and is probably a regular dice
+						else if (match.group(2).contains("d"))
 						{
-							message += "-";
-
-							if (match.group(2).contains("d"))
+							if (parseInt(match.group(3)) > 0)
 							{
-								if (parseInt(match.group(3)) > 0)
-								{
-									numberDies = parseInt(match.group(3));
-									message += numberDies;
-								}
-
-								if (parseInt(match.group(4)) > 0)
-								{
-									dieSize = parseInt(match.group(4));
-									message += "d" + dieSize;
-								}
-
-								int number = randomNumber(numberDies, dieSize);
-								total -= number;
-								message += "(" + number + ")";
-
+								numberDies = parseInt(match.group(3));
+								rolled += numberDies;
 							}
-							else if (parseInt(match.group(5)) > 0)
+
+							if (parseInt(match.group(4)) > 0)
 							{
-								modNumber = parseInt(match.group(5));
-								total -= modNumber;
-								message += "(" + modNumber + ")";
+								dieSize = parseInt(match.group(4));
+								rolled += "d" + dieSize;
 							}
+
+							int number = randomNumber(numberDies, dieSize);
+							total += number;
+							rolled += "(" + number + ")";
 						}
 					}
-					else if (match.group(2).contains("d"))
+
+					if (rolled.length() == 0)
 					{
-						if (parseInt(match.group(3)) > 0)
-						{
-							numberDies = parseInt(match.group(3));
-							message += numberDies;
-						}
-
-						if (parseInt(match.group(4)) > 0)
-						{
-							dieSize = parseInt(match.group(4));
-							message += "d" + dieSize;
-						}
-
-						int number = randomNumber(numberDies, dieSize);
-						total += number;
-						message += "(" + number + ")";
+						String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize
+								+ " = " + randomNumber(dieSize);
+						ircUtil.sendMessage(event, defaultRoll);
+					}
+					else
+					{
+						ircUtil.sendMessage(event, message + rolled + " = " + total);
 					}
 				}
-
-				ircUtil.sendMessage(event, message + " = " + total);
+				// If the regex doesn't find anything, then just roll a standard 1d20
+				else
+				{
+					String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
+							+ randomNumber(dieSize);
+					ircUtil.sendMessage(event, defaultRoll);
+				}
 			}
 		}
 	}
