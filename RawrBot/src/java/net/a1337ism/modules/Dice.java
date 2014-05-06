@@ -1,5 +1,6 @@
 package net.a1337ism.modules;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,7 +53,7 @@ public class Dice extends ListenerAdapter
 	{
 		String userMessage = event.getMessage().trim().toLowerCase();
 		if ((userMessage.startsWith("!dice") || userMessage.startsWith("!roll"))
-				&& !RateLimiter.isRateLimited(event.getUser().getNick(), 20))
+				&& !RateLimiter.isRateLimited(event.getUser().getNick(), 100))
 		{
 			if (userMessage.endsWith("-help") || userMessage.endsWith("-h"))
 			{
@@ -79,6 +80,7 @@ public class Dice extends ListenerAdapter
 					String message = event.getUser().getNick() + " rolled ";
 					String rolled = "";
 					int total = 0;
+					ArrayList<Roll> rollList = new ArrayList<Roll>();
 
 					while (match.find())
 					{
@@ -89,94 +91,95 @@ public class Dice extends ListenerAdapter
 						String mod = match.group(1);
 						int modNumber = 0;
 
-						// if we have a modifier, then lets stuff with it
-						if (match.group(1) != null)
-						{
-							// if the modifier is +, then add + to the message, and see if it's a dice roll or a regular
-							// number
-							if (match.group(1).startsWith("+"))
-							{
-								rolled += "+";
-
-								if (match.group(2).contains("d"))
-								{
-									if (parseInt(match.group(3)) > 0)
-									{
-										numberDies = parseInt(match.group(3));
-										if (numberDies > maxNumberDies)
-											numberDies = maxNumberDies;
-										rolled += numberDies;
-									}
-
-									if (parseInt(match.group(4)) > 0)
-									{
-										dieSize = parseInt(match.group(4));
-										if (dieSize > maxDieSize)
-											dieSize = maxDieSize;
-										rolled += "d" + dieSize;
-									}
-
-									int number = randomNumber(numberDies, dieSize);
-									total += number;
-									rolled += "(" + number + ")";
-								}
-								else if (parseInt(match.group(5)) > 0)
-								{
-									modNumber = parseInt(match.group(5));
-									if (modNumber > maxModNumber)
-										modNumber = maxModNumber;
-									total += modNumber;
-									rolled += "(" + modNumber + ")";
-								}
-							}
-							// if the modifier is -, then add - to the rolled, and see if it's a dice roll or a regular
-							// number
-							else if (match.group(1).startsWith("-"))
-							{
-								rolled += "-";
-
-								if (match.group(2).contains("d"))
-								{
-									if (parseInt(match.group(3)) > 0)
-									{
-										numberDies = parseInt(match.group(3));
-										if (numberDies > maxNumberDies)
-											numberDies = maxNumberDies;
-										rolled += numberDies;
-									}
-
-									if (parseInt(match.group(4)) > 0)
-									{
-										dieSize = parseInt(match.group(4));
-										if (dieSize > maxDieSize)
-											dieSize = maxDieSize;
-										rolled += "d" + dieSize;
-									}
-
-									int number = randomNumber(numberDies, dieSize);
-									total -= number;
-									rolled += "(" + number + ")";
-
-								}
-								else if (parseInt(match.group(5)) > 0)
-								{
-									modNumber = parseInt(match.group(5));
-									if (modNumber > maxModNumber)
-										modNumber = maxModNumber;
-									total -= modNumber;
-									rolled += "(" + modNumber + ")";
-								}
-							}
-						}
+						// // if we have a modifier, then lets stuff with it
+						// if (match.group(1) != null)
+						// {
+						// // if the modifier is +, then add + to the message, and see if it's a dice roll or a regular
+						// // number
+						// if (match.group(1).startsWith("+"))
+						// {
+						// rolled += "+";
+						//
+						// if (match.group(2).contains("d"))
+						// {
+						// if (parseInt(match.group(3)) > 0)
+						// {
+						// numberDies = parseInt(match.group(3));
+						// if (numberDies > maxNumberDies)
+						// numberDies = maxNumberDies;
+						// rolled += numberDies;
+						// }
+						//
+						// if (parseInt(match.group(4)) > 0)
+						// {
+						// dieSize = parseInt(match.group(4));
+						// if (dieSize > maxDieSize)
+						// dieSize = maxDieSize;
+						// rolled += "d" + dieSize;
+						// }
+						//
+						// int number = randomNumber(numberDies, dieSize);
+						// total += number;
+						// rolled += "(" + number + ")";
+						// }
+						// else if (parseInt(match.group(5)) > 0)
+						// {
+						// modNumber = parseInt(match.group(5));
+						// if (modNumber > maxModNumber)
+						// modNumber = maxModNumber;
+						// total += modNumber;
+						// rolled += "(" + modNumber + ")";
+						// }
+						// }
+						// // if the modifier is -, then add - to the rolled, and see if it's a dice roll or a regular
+						// // number
+						// else if (match.group(1).startsWith("-"))
+						// {
+						// rolled += "-";
+						//
+						// if (match.group(2).contains("d"))
+						// {
+						// if (parseInt(match.group(3)) > 0)
+						// {
+						// numberDies = parseInt(match.group(3));
+						// if (numberDies > maxNumberDies)
+						// numberDies = maxNumberDies;
+						// rolled += numberDies;
+						// }
+						//
+						// if (parseInt(match.group(4)) > 0)
+						// {
+						// dieSize = parseInt(match.group(4));
+						// if (dieSize > maxDieSize)
+						// dieSize = maxDieSize;
+						// rolled += "d" + dieSize;
+						// }
+						//
+						// int number = randomNumber(numberDies, dieSize);
+						// total -= number;
+						// rolled += "(" + number + ")";
+						//
+						// }
+						// else if (parseInt(match.group(5)) > 0)
+						// {
+						// modNumber = parseInt(match.group(5));
+						// if (modNumber > maxModNumber)
+						// modNumber = maxModNumber;
+						// total -= modNumber;
+						// rolled += "(" + modNumber + ")";
+						// }
+						// }
+						// }
 						// At this point we know it's just the beginning of the roll, and is probably a regular dice
-						else if (match.group(2).contains("d"))
+						if (match.group(2).contains("d"))
 						{
 							if (parseInt(match.group(3)) > 0)
 							{
 								numberDies = parseInt(match.group(3));
 								if (numberDies > maxNumberDies)
 									numberDies = maxNumberDies;
-								rolled += numberDies;
+								// rolled += numberDies;
+
 							}
 
 							if (parseInt(match.group(4)) > 0)
@@ -184,16 +187,19 @@ public class Dice extends ListenerAdapter
 								dieSize = parseInt(match.group(4));
 								if (dieSize > maxDieSize)
 									dieSize = maxDieSize;
-								rolled += "d" + dieSize;
+								// rolled += "d" + dieSize;
 							}
 
-							int number = randomNumber(numberDies, dieSize);
-							total += number;
-							rolled += "(" + number + ")";
+							Roll roll = new Roll(numberDies, dieSize);
+							rollList.add(roll);
+
+							// int number = randomNumber(numberDies, dieSize);
+							// total += number;
+							// rolled += "(" + number + ")";
 						}
 					}
 
-					if (rolled.length() == 0)
+					if (rollList.size() == 0)
 					{
 						String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize
 								+ " = " + randomNumber(dieSize);
@@ -201,7 +207,13 @@ public class Dice extends ListenerAdapter
 					}
 					else
 					{
-						ircUtil.sendMessage(event, message + rolled + " = " + total);
+						for (Roll roll : rollList)
+						{
+							message += roll.toString() + "+ ";
+							total += roll.getTotal();
+						}
+						message = message.replaceAll("\\s*\\+\\s*$", " ");
+						ircUtil.sendMessage(event, message + "= " + total);
 					}
 				}
 				// If the regex doesn't find anything, then just roll a standard 1d20
@@ -223,7 +235,7 @@ public class Dice extends ListenerAdapter
 		}
 		catch (NumberFormatException e)
 		{
-			return 0;
+			return -1;
 		}
 	}
 }

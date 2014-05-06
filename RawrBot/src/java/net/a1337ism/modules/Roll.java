@@ -10,22 +10,34 @@ public class Roll
 		H, L, N;
 	}
 
-	private ArrayList<Integer>	modifier;
+	private ArrayList<Integer>	modifier	= new ArrayList<Integer>();
 	private Behavior			behavior	= Behavior.N;
 	private int					dieSize;
 	private int					numberDie;
-	private ArrayList<Integer>	results;
+	private ArrayList<Integer>	results		= new ArrayList<Integer>();
 	private int					lowest		= 1001;
 	private int					highest		= 0;
 	private int					total;
 
+	/**
+	 * Constructor for Rolls <br>
+	 * Assumes using only 1 dice
+	 * 
+	 * @param <b>int</b> dice size
+	 */
 	public Roll(int dieSize)
 	{
 		this.dieSize = dieSize;
 		this.numberDie = 1;
 	}
 
-	public Roll(int dieSize, int numberDie)
+	/**
+	 * Constructor for Rolls
+	 * 
+	 * @param <b>int</b> number of dice
+	 * @param <b>int</b> dice size
+	 */
+	public Roll(int numberDie, int dieSize)
 	{
 		this.dieSize = dieSize;
 		this.numberDie = numberDie;
@@ -81,7 +93,9 @@ public class Roll
 			message += result + ",";
 			total += result;
 		}
-		message += ") ";
+		message = message.replaceAll(",$", "") + ") ";
+		// message += ") ";
+
 		if (behavior.equals(Behavior.H))
 		{
 			message += "dropped (" + highest + ") ";
