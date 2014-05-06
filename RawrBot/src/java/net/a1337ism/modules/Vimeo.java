@@ -129,7 +129,7 @@ public class Vimeo extends ListenerAdapter
 		{
 			VideoDetails videoDetails = getVimeoVideoDetails(event.getMessage());
 			String videoSize = "[" + videoDetails.width + "x" + videoDetails.height + "]";
-			String message = "Vimeo: " + videoDetails.title + " by " + videoDetails.username + " "
+			String message = "Vimeo: " + videoDetails.title + " | Uploaded by " + videoDetails.username + " "
 					+ videoDetails.fDuration + videoSize;
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);

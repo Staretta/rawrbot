@@ -145,7 +145,7 @@ public class Youtube extends ListenerAdapter
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = "YouTube: " + videoDetails.title + " by " + videoDetails.channelTitle + " "
+			String message = "YouTube: " + videoDetails.title + " | Uploaded by " + videoDetails.channelTitle + " "
 					+ videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);

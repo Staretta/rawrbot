@@ -1,10 +1,12 @@
 package net.a1337ism;
 
+import net.a1337ism.modules.Dice;
 import net.a1337ism.modules.Eightball;
 import net.a1337ism.modules.Greeter;
 import net.a1337ism.modules.Help;
 import net.a1337ism.modules.Joke;
 import net.a1337ism.modules.LastSeen;
+import net.a1337ism.modules.MessageLogger;
 import net.a1337ism.modules.Quote;
 import net.a1337ism.modules.RateLimiter;
 import net.a1337ism.modules.Rawr;
@@ -117,6 +119,9 @@ public class RawrBot extends ListenerAdapter implements Listener
 		Class.forName("org.sqlite.JDBC");
 		Class.forName("com.mysql.jdbc.Driver");
 
+		// MessageLoggerDbModel messageLoggerDetails = new MessageLoggerDbModel();
+		// HibernateSession hibernateConnection = new HibernateSession();
+
 		Config cfg = new Config("././config.properties");
 
 		// @formatter:off
@@ -133,7 +138,6 @@ public class RawrBot extends ListenerAdapter implements Listener
                 .setServerPort(Integer.parseInt(cfg.getProperty("irc_port")))
                 .addAutoJoinChannel(cfg.getProperty("irc_channel"))
                 //.setNickservPassword(bot_password) // REMEMER TO UNCOMMENT THIS BEFORE PUSHING UPDATE
-                //.addListener(new LogBot())
                 .addListener(new RateLimiter())
                 .addListener(new RawrBot())
                 .addListener(new Joke())
@@ -148,6 +152,8 @@ public class RawrBot extends ListenerAdapter implements Listener
                 .addListener(new Greeter())
                 .addListener(new Youtube())
                 .addListener(new Vimeo())
+                .addListener(new Dice())
+                .addListener(new MessageLogger())
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on
