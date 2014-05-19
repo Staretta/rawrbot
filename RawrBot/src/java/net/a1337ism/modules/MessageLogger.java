@@ -35,7 +35,7 @@ public class MessageLogger extends ListenerAdapter
 	}
 
 	public void addLog(String nickname, String username, String hostmask, String message, String channel, Date date,
-			String type)
+			String type, String role)
 	{
 		Session session = HibernateSession.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -47,6 +47,7 @@ public class MessageLogger extends ListenerAdapter
 		msgLog.setHostmask(hostmask);
 		msgLog.setTime(date);
 		msgLog.setType(type);
+		msgLog.setRole(role);
 		session.save(msgLog);
 		session.getTransaction().commit();
 	}
@@ -56,7 +57,7 @@ public class MessageLogger extends ListenerAdapter
 	{
 		Date date = new Date();
 		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(),
-				event.getMessage(), event.getChannel().getName(), date, "MESSAGE");
+				event.getMessage(), event.getChannel().getName(), date, "MESSAGE", "USER");
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class MessageLogger extends ListenerAdapter
 	{
 		Date date = new Date();
 		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(),
-				event.getMessage(), event.getChannel().getName(), date, "ACTION");
+				event.getMessage(), event.getChannel().getName(), date, "ACTION", "USER");
 	}
 
 	@Override

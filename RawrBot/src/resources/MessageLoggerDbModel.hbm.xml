@@ -5,7 +5,7 @@
 
 <hibernate-mapping>
    <class name="net.a1337ism.database.MessageLoggerDbModel" table="r_crossdressing">
-      <id name="id" type="int" column="id">
+      <id name="id" column="id" type="long">
          <generator class="sequence">
          	<param name="sequence">r_crossdressing_id_seq</param>
          </generator>
@@ -17,5 +17,6 @@
       <property name="channel" column="channel" type="string"/>
       <property name="time" column="time" type="timestamp"/>
       <property name="type" column="type" type="string"/>
+      <property name="role" column="role" type="string"/>
    </class>
 </hibernate-mapping>
