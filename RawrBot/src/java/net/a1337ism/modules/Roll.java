@@ -93,8 +93,8 @@ public class Roll
 			message += result + ",";
 			total += result;
 		}
-		message = message.replaceAll(",$", "") + ") ";
-		// message += ") ";
+		// replace the trailing comma with nothing, then add the parenthesis after.
+		message = message.replaceAll("\\s*,\\s*$", "") + ") ";
 
 		if (behavior.equals(Behavior.H))
 		{
