@@ -32,6 +32,7 @@ public class SettingsService
 		Session s = getSession(em);
 		List<String> channels = getChannels(server);
 		channels.add(channel);
+		s.saveOrUpdate(channels);
 	}
 
 	private void removeChannel(String channel, String server)
