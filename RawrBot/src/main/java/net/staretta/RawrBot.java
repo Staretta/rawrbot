@@ -1,21 +1,6 @@
-package net.a1337ism;
+package net.staretta;
 
-import net.a1337ism.modules.Eightball;
-import net.a1337ism.modules.Greeter;
-import net.a1337ism.modules.Help;
-import net.a1337ism.modules.Joke;
-import net.a1337ism.modules.LastSeen;
-import net.a1337ism.modules.MessageLogger;
-import net.a1337ism.modules.Quote;
-import net.a1337ism.modules.RateLimiter;
-import net.a1337ism.modules.Rawr;
-import net.a1337ism.modules.Report;
-import net.a1337ism.modules.Rules;
-import net.a1337ism.modules.Uptime;
-import net.a1337ism.modules.Vimeo;
-import net.a1337ism.modules.Youtube;
-import net.a1337ism.util.Config;
-import net.a1337ism.util.ircUtil;
+import net.staretta.util.ircUtil;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -32,18 +17,7 @@ import org.slf4j.LoggerFactory;
 public class RawrBot extends ListenerAdapter implements Listener
 {
 	// slf4j Stuff
-	private static Logger	logger			= LoggerFactory.getLogger(RawrBot.class);
-
-	// Config File
-	private Config			cfg				= new Config("././config.properties");
-	// private String irc_server = cfg.getProperty("irc_server");
-	// private int irc_port = Integer.parseInt(cfg.getProperty("irc_port"));
-	private String			irc_channel		= cfg.getProperty("irc_channel");
-	private String			irc_nickname	= cfg.getProperty("irc_nickname");
-	// private String irc_username = cfg.getProperty("irc_username");
-	private String			bot_owner		= cfg.getProperty("bot_owner");
-	// private String bot_version = cfg.getProperty("bot_version");
-	private String			bot_password	= cfg.getProperty("bot_password");
+	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
 
 	@Override
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
@@ -114,15 +88,6 @@ public class RawrBot extends ListenerAdapter implements Listener
 
 	public static void main(String[] args) throws ClassNotFoundException
 	{
-		// Load the sqlite-JDBC and mysql-JDBC driver using the current class loader
-		Class.forName("org.sqlite.JDBC");
-		Class.forName("com.mysql.jdbc.Driver");
-
-		// MessageLoggerDbModel messageLoggerDetails = new MessageLoggerDbModel();
-		// HibernateSession hibernateConnection = new HibernateSession();
-
-		Config cfg = new Config("././config.properties");
-
 		// @formatter:off
         // Configuration
         Configuration configuration = new Configuration.Builder()
@@ -137,22 +102,7 @@ public class RawrBot extends ListenerAdapter implements Listener
                 .setServerPort(Integer.parseInt(cfg.getProperty("irc_port")))
                 .addAutoJoinChannel(cfg.getProperty("irc_channel"))
                 //.setNickservPassword(bot_password) // REMEMER TO UNCOMMENT THIS BEFORE PUSHING UPDATE
-                .addListener(new RateLimiter())
-                .addListener(new RawrBot())
-                .addListener(new Joke())
-                .addListener(new Quote())
-                .addListener(new Uptime())
-                .addListener(new Rawr())
-                .addListener(new Help())
-                .addListener(new LastSeen())
-                .addListener(new Report())
-                .addListener(new Rules())
-                .addListener(new Eightball())
-                .addListener(new Greeter())
-                .addListener(new Youtube())
-                .addListener(new Vimeo())
                 //.addListener(new Dice())
-                .addListener(new MessageLogger())
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on
@@ -163,7 +113,8 @@ public class RawrBot extends ListenerAdapter implements Listener
 		}
 		catch (Exception ex)
 		{
-			logger.info("Exception in RawrBot.main: " + ex.toString());
+
+			logger.error(ex.getCause().toString());
 		}
 	}
 }

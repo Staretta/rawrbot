@@ -1,4 +1,4 @@
-package net.a1337ism.util;
+package net.staretta.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

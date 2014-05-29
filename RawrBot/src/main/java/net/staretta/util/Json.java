@@ -1,11 +1,11 @@
-package net.a1337ism.util;
+package net.staretta.util;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import net.a1337ism.RawrBot;
+import net.staretta.RawrBot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
