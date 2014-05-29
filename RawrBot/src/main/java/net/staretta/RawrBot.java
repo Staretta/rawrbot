@@ -1,6 +1,5 @@
 package net.staretta;
 
-import net.staretta.businesslogic.services.SettingsService;
 import net.staretta.util.ircUtil;
 
 import org.pircbotx.Configuration;
@@ -14,14 +13,14 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class RawrBot extends ListenerAdapter implements Listener
 {
 	// slf4j Stuff
-	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
-
-	SettingsService			settingsService;
-
+	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	
 	@Override
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
@@ -36,12 +35,12 @@ public class RawrBot extends ListenerAdapter implements Listener
 		else if (event.getUser().getNick().equalsIgnoreCase(bot_owner) && event.getMessage().equalsIgnoreCase("!join"))
 		{
 			String[] param = event.getMessage().trim().split("\\s", 3);
-
+			
 			if (param.length != 1)
 				event.getBot().sendIRC().joinChannel(param[1]);
 		}
 	}
-
+	
 	@Override
 	public void onQuit(QuitEvent event) throws Exception
 	{
@@ -51,7 +50,7 @@ public class RawrBot extends ListenerAdapter implements Listener
 			event.getBot().sendIRC().changeNick(irc_nickname);
 		}
 	}
-
+	
 	@Override
 	public void onConnect(ConnectEvent event) throws Exception
 	{
@@ -62,13 +61,13 @@ public class RawrBot extends ListenerAdapter implements Listener
 			event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
 		}
 	}
-
+	
 	@Override
 	public void onNickAlreadyInUse(NickAlreadyInUseEvent event)
 	{
 		event.respond(alterCollidedNick(event.getUsedNick()));
 	}
-
+	
 	private String alterCollidedNick(String nickname)
 	{
 		// If there is already a nickname with our name on the server, then we need to change our name so it'll work.
@@ -82,15 +81,19 @@ public class RawrBot extends ListenerAdapter implements Listener
 			return nickname + "_";
 		}
 	}
-
+	
 	@Override
 	public void onUnknown(UnknownEvent event) throws Exception
 	{
 		logger.info(event.toString());
 	}
-
-	public static void main(String[] args) throws ClassNotFoundException
+	
+	public static void main(String[] args)
 	{
+		logger.info("Initializing Spring context.");
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
+		logger.info("Spring context initialized.");
+		
 		// @formatter:off
         // Configuration
         Configuration configuration = new Configuration.Builder()
@@ -109,14 +112,14 @@ public class RawrBot extends ListenerAdapter implements Listener
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);
         // @formatter:on
-
+		
 		try
 		{
 			bot.startBot();
 		}
 		catch (Exception ex)
 		{
-
+			
 			logger.error(ex.getCause().toString());
 		}
 	}
