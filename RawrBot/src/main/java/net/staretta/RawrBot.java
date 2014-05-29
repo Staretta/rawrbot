@@ -1,5 +1,6 @@
 package net.staretta;
 
+import net.staretta.businesslogic.services.SettingsService;
 import net.staretta.util.ircUtil;
 
 import org.pircbotx.Configuration;
@@ -18,6 +19,8 @@ public class RawrBot extends ListenerAdapter implements Listener
 {
 	// slf4j Stuff
 	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
+
+	SettingsService			settingsService;
 
 	@Override
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
