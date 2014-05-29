@@ -1,9 +1,16 @@
 package net.staretta;
 
+import java.io.IOException;
+import java.util.List;
+
+import net.staretta.businesslogic.entity.Settings;
+import net.staretta.businesslogic.services.SettingsService;
 import net.staretta.util.ircUtil;
 
 import org.pircbotx.Configuration;
+import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -20,11 +27,16 @@ public class RawrBot extends ListenerAdapter implements Listener
 {
 	// slf4j Stuff
 	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	private static SettingsService settingsService;
+	private String botOwner;
+	private String ircChannel;
+	private String botNickname;
+	private String botPassword;
 	
 	@Override
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
-		if ((event.getUser().getNick().equalsIgnoreCase(bot_owner) || ircUtil.isOP(event, irc_channel))
+		if ((event.getUser().getNick().equalsIgnoreCase(botOwner) || ircUtil.isOP(event, ircChannel))
 				&& event.getMessage().equalsIgnoreCase("!quit"))
 		{
 			// Shutdown upon receiving a quit command
@@ -32,7 +44,7 @@ public class RawrBot extends ListenerAdapter implements Listener
 			event.getBot().stopBotReconnect();
 			event.getBot().sendIRC().quitServer();
 		}
-		else if (event.getUser().getNick().equalsIgnoreCase(bot_owner) && event.getMessage().equalsIgnoreCase("!join"))
+		else if (event.getUser().getNick().equalsIgnoreCase(botOwner) && event.getMessage().equalsIgnoreCase("!join"))
 		{
 			String[] param = event.getMessage().trim().split("\\s", 3);
 			
@@ -45,20 +57,20 @@ public class RawrBot extends ListenerAdapter implements Listener
 	public void onQuit(QuitEvent event) throws Exception
 	{
 		// If we see our default nickname quit, then rename our name to it.
-		if (event.getUser().getNick().equalsIgnoreCase(irc_nickname))
+		if (event.getUser().getNick().equalsIgnoreCase(botNickname))
 		{
-			event.getBot().sendIRC().changeNick(irc_nickname);
+			event.getBot().sendIRC().changeNick(botNickname);
 		}
 	}
 	
 	@Override
 	public void onConnect(ConnectEvent event) throws Exception
 	{
-		if (!bot_password.isEmpty())
+		if (!botPassword.isEmpty())
 		{
 			// TODO: replace with identify at some point.
 			logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-			event.getBot().sendIRC().message("NickServ", "IDENTIFY " + bot_password);
+			event.getBot().sendIRC().message("NickServ", "IDENTIFY " + botPassword);
 		}
 	}
 	
@@ -88,39 +100,39 @@ public class RawrBot extends ListenerAdapter implements Listener
 		logger.info(event.toString());
 	}
 	
-	public static void main(String[] args)
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException,
+			IrcException
 	{
 		logger.info("Initializing Spring context.");
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
 		logger.info("Spring context initialized.");
 		
-		// @formatter:off
-        // Configuration
-        Configuration configuration = new Configuration.Builder()
-                .setName(cfg.getProperty("irc_nickname"))
-                .setLogin(cfg.getProperty("irc_username"))
-                .setRealName(cfg.getProperty("bot_version"))
-                .setAutoNickChange(true)
-                .setAutoReconnect(true)
-                .setCapEnabled(true)
-                .setIdentServerEnabled(false)
-                .setServerHostname(cfg.getProperty("irc_server"))
-                .setServerPort(Integer.parseInt(cfg.getProperty("irc_port")))
-                .addAutoJoinChannel(cfg.getProperty("irc_channel"))
-                //.setNickservPassword(bot_password) // REMEMER TO UNCOMMENT THIS BEFORE PUSHING UPDATE
-                //.addListener(new Dice())
-                .buildConfiguration();
-        PircBotX bot = new PircBotX(configuration);
-        // @formatter:on
+		SettingsService settingsService = (SettingsService) applicationContext.getBean(SettingsService.class);
+		List<Settings> settings = settingsService.getBotSettings();
 		
-		try
+		PircBotX bot;
+		for (Settings s : settings)
 		{
+			// @formatter:off
+			Builder builder = new Configuration.Builder()
+				.setName(s.getNickname())
+				.setLogin(s.getUsername())
+				.setRealName(s.getVersion())
+				.setAutoNickChange(true)
+				.setAutoReconnect(true)
+				.setCapEnabled(true)
+				.setIdentServerEnabled(false)
+				.setServerHostname(s.getServer())
+				.setServerPort(s.getPort())
+				.setNickservPassword(s.getPassword());
+			// @formatter:on
+			for (String channel : s.getChannels())
+				builder.addAutoJoinChannel(channel);
+			for (String module : s.getModules())
+				builder.addListener((Listener) Class.forName(module).newInstance());
+			Configuration config = builder.buildConfiguration();
+			bot = new PircBotX(config);
 			bot.startBot();
-		}
-		catch (Exception ex)
-		{
-			
-			logger.error(ex.getCause().toString());
 		}
 	}
 }

@@ -18,38 +18,49 @@ import org.springframework.transaction.annotation.Transactional;
 public class SettingsService
 {
 	@PersistenceContext
-	private EntityManager	em;
-
-	private List<Settings> getBotSettings()
+	private EntityManager em;
+	
+	public List<Settings> getBotSettings()
 	{
-		Session s = getSession(em);
-		Query q = s.createQuery("select s from Settings s");
+		Query q = getSession().createQuery("select s from Settings s");
 		return (List<Settings>) q.list();
 	}
-
-	private void addChannel(String channel, String server)
+	
+	public void addChannel(String channel, String server)
 	{
-		Session s = getSession(em);
-		List<String> channels = getChannels(server);
+		Session s = getSession();
+		Settings serverSettings = getServerSettings(server);
+		List<String> channels = serverSettings.getChannels();
 		channels.add(channel);
-		s.saveOrUpdate(channels);
+		serverSettings.setChannels(channels);
+		s.saveOrUpdate(serverSettings);
 	}
-
-	private void removeChannel(String channel, String server)
+	
+	public void removeChannel(String channel, String server)
 	{
-		Session s = getSession(em);
-
+		Session s = getSession();
+		Settings serverSettings = getServerSettings(server);
+		List<String> channels = serverSettings.getChannels();
+		channels.remove(channel);
+		serverSettings.setChannels(channels);
+		s.saveOrUpdate(serverSettings);
 	}
-
-	private List<String> getChannels(String server)
+	
+	public List<String> getServerChannels(String server)
 	{
-		Session s = getSession(em);
-		Query q = s.createQuery("select s.channels from Settings s where LOWER(s.server) = :server");
+		Query q = getSession().createQuery("select s.channels from Settings s where LOWER(s.server) = :server");
 		q.setParameter("server", server.toLowerCase());
 		return (List<String>) q.list();
 	}
-
-	private Session getSession(EntityManager em)
+	
+	public Settings getServerSettings(String server)
+	{
+		Query q = getSession().createQuery("select s from Settings s where LOWER(s.server) = :server");
+		q.setParameter("server", server);
+		return (Settings) q.uniqueResult();
+	}
+	
+	private Session getSession()
 	{
 		return em.unwrap(EntityManagerImpl.class).getSession();
 	}
