@@ -1,6 +1,5 @@
 package net.a1337ism;
 
-import net.a1337ism.modules.Dice;
 import net.a1337ism.modules.Eightball;
 import net.a1337ism.modules.Greeter;
 import net.a1337ism.modules.Help;
@@ -152,7 +151,7 @@ public class RawrBot extends ListenerAdapter implements Listener
                 .addListener(new Greeter())
                 .addListener(new Youtube())
                 .addListener(new Vimeo())
-                .addListener(new Dice())
+                //.addListener(new Dice())
                 .addListener(new MessageLogger())
                 .buildConfiguration();
         PircBotX bot = new PircBotX(configuration);

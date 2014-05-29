@@ -6,6 +6,11 @@
     <groupId>net.1337ism</groupId>
     <artifactId>RawrBot</artifactId>
     <version>1.0</version>
+    <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
     <dependencies>
 <!-- PIRCBOTX DEPENDENCY - 2.0 -->
         <dependency>
@@ -127,14 +132,14 @@
     </repositories>
     <build>
         <resources>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/resources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/java</directory>
-            </resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/resources</directory>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/java</directory>
+			</resource>
         </resources>
     </build>
 </project>

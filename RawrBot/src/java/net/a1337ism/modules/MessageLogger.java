@@ -7,6 +7,7 @@ import net.a1337ism.database.HibernateSession;
 import net.a1337ism.database.MessageLoggerDbModel;
 
 import org.hibernate.Session;
+import org.pircbotx.UserLevel;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -20,6 +21,8 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableSortedSet;
 
 public class MessageLogger extends ListenerAdapter
 {
@@ -56,44 +59,60 @@ public class MessageLogger extends ListenerAdapter
 	public void onMessage(MessageEvent event) throws Exception
 	{
 		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getChannel().getUserLevels(event.getUser());
 		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(),
-				event.getMessage(), event.getChannel().getName(), date, "MESSAGE", "USER");
+				event.getMessage(), event.getChannel().getName(), date, "MESSAGE", userLevel.toString());
 	}
 
 	@Override
 	public void onAction(ActionEvent event) throws Exception
 	{
 		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getChannel().getUserLevels(event.getUser());
 		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(),
-				event.getMessage(), event.getChannel().getName(), date, "ACTION", "USER");
+				event.getMessage(), event.getChannel().getName(), date, "ACTION", userLevel.toString());
 	}
 
 	@Override
 	public void onJoin(JoinEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onJoin(event);
+		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getChannel().getUserLevels(event.getUser());
+		String message = event.getUser().getNick() + " joined channel " + event.getChannel().getName();
+		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+				.getChannel().getName(), date, "JOIN", userLevel.toString());
 	}
 
 	@Override
 	public void onKick(KickEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onKick(event);
+		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getChannel().getUserLevels(event.getUser());
+		String message = event.getUser().getNick() + " has kicked " + event.getRecipient().getNick() + " from "
+				+ event.getChannel().getName() + " (" + event.getReason() + ")";
+		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+				.getChannel().getName(), date, "JOIN", userLevel.toString());
 	}
 
 	@Override
 	public void onNickChange(NickChangeEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onNickChange(event);
+		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getUser().getUserLevels(
+				event.getBot().getUserBot().getChannels().first());
+		String message = event.getOldNick() + " is now known as " + event.getNewNick();
+		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+				.getBot().getUserBot().getChannels().first().toString(), date, "JOIN", userLevel.toString());
 	}
 
 	@Override
 	public void onNotice(NoticeEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onNotice(event);
+		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getChannel().getUserLevels(event.getUser());
+		String message = "-" + event.getUser().getNick() + "- " + event.getNotice();
+		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+				.getChannel().getName(), date, "JOIN", userLevel.toString());
 	}
 
 	@Override
@@ -106,15 +125,22 @@ public class MessageLogger extends ListenerAdapter
 	@Override
 	public void onPart(PartEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onPart(event);
+		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getChannel().getUserLevels(event.getUser());
+		String message = event.getUser().getNick() + " has left.";
+		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+				.getChannel().getName(), date, "JOIN", userLevel.toString());
 	}
 
 	@Override
 	public void onQuit(QuitEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onQuit(event);
+		Date date = new Date();
+		ImmutableSortedSet<UserLevel> userLevel = event.getUser().getUserLevels(
+				event.getBot().getUserBot().getChannels().first());
+		String message = event.getUser().getNick() + " has quit. (" + event.getReason() + ")";
+		addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+				.getBot().getUserBot().getChannels().first().toString(), date, "JOIN", userLevel.toString());
 	}
 
 	@Override

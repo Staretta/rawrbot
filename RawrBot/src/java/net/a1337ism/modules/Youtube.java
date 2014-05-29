@@ -91,7 +91,8 @@ public class Youtube extends ListenerAdapter
 	{
 		// Need to build our http request for Youtube's API
 		List<Video> list = null;
-		youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
+		youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer()
+		{
 			public void initialize(HttpRequest request) throws IOException
 			{
 			}
@@ -145,8 +146,8 @@ public class Youtube extends ListenerAdapter
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = "YouTube: " + videoDetails.title + " | Uploaded by " + videoDetails.channelTitle + " "
-					+ videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase() + "]";
+			String message = "YouTube: " + videoDetails.title + " " + videoDetails.fDuration + "["
+					+ videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);
 		}
