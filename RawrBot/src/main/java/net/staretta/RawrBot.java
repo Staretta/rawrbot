@@ -13,7 +13,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
@@ -60,17 +59,6 @@ public class RawrBot extends ListenerAdapter implements Listener
 		if (event.getUser().getNick().equalsIgnoreCase(botNickname))
 		{
 			event.getBot().sendIRC().changeNick(botNickname);
-		}
-	}
-	
-	@Override
-	public void onConnect(ConnectEvent event) throws Exception
-	{
-		if (!botPassword.isEmpty())
-		{
-			// TODO: replace with identify at some point.
-			logger.info("(" + event.getBot().getNick() + "->NickServ) IDENTIFY " + "PASSWORD_HERE");
-			event.getBot().sendIRC().message("NickServ", "IDENTIFY " + botPassword);
 		}
 	}
 	
