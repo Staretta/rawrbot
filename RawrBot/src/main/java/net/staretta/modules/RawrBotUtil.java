@@ -1,6 +1,6 @@
 package net.staretta.modules;
 
-import net.staretta.util.ircUtil;
+import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -51,6 +51,6 @@ public class RawrBotUtil extends ListenerAdapter
 	@Override
 	public void onUnknown(UnknownEvent event) throws Exception
 	{
-		logger.debug(event.toString());
+		logger.debug("UNKNOWN EVENT: " + event.toString());
 	}
 }

@@ -1,4 +1,4 @@
-package net.staretta.util;
+package net.staretta.businesslogic.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

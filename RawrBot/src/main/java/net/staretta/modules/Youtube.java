@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.staretta.RawrBot;
-import net.staretta.util.MiscUtil;
-import net.staretta.util.ircUtil;
+import net.staretta.businesslogic.util.MiscUtil;
+import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
