@@ -11,31 +11,32 @@ import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class RawrBot extends ListenerAdapter implements Listener
+public class RawrBot
 {
+	public static ApplicationContext	applicationContext;
+
 	public static void main(String[] args)
 	{
 		Logger logger = LoggerFactory.getLogger(RawrBot.class);
 
 		logger.info("Initializing Spring context.");
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
+		applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
 		logger.info("Spring context initialized.");
 
-		SettingsService settingsService = (SettingsService) applicationContext.getBean(SettingsService.class);
+		SettingsService settingsService = applicationContext.getBean(SettingsService.class);
 		List<Settings> serverSettings = settingsService.getBotSettings();
 		logger.info("Bot Settings Loaded.");
 
-		MultiBotManager<PircBotX> manager = new MultiBotManager();
+		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
 		for (Settings setting : serverSettings)
 		{
 			// @formatter:off
-			Builder builder = new Configuration.Builder()
+			Builder<PircBotX> builder = new Configuration.Builder<PircBotX>()
 				.setName(setting.getNickname())
 				.setLogin(setting.getUsername())
 				.setRealName(setting.getVersion())
@@ -57,7 +58,8 @@ public class RawrBot extends ListenerAdapter implements Listener
 			{
 				try
 				{
-					builder.addListener((Listener) Class.forName("net.staretta.modules." + module).newInstance());
+					builder.addListener((Listener<PircBotX>) Class.forName("net.staretta.modules." + module)
+							.newInstance());
 				}
 				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
 				{
@@ -65,7 +67,7 @@ public class RawrBot extends ListenerAdapter implements Listener
 				}
 			}
 
-			Configuration config = builder.buildConfiguration();
+			Configuration<PircBotX> config = builder.buildConfiguration();
 			manager.addBot(config);
 			logger.info("Added IRC bot to manager: " + setting.getServer());
 		}
