@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.staretta.RawrBot;
 import net.staretta.businesslogic.util.Json;
 import net.staretta.businesslogic.util.MiscUtil;
 import net.staretta.businesslogic.util.ircUtil;
@@ -18,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class Vimeo extends ListenerAdapter
 {
-	private Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
+	private Logger	logger	= LoggerFactory.getLogger(Vimeo.class);
 	private String	regex	= "(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*";
 	private Pattern	pattern	= Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 

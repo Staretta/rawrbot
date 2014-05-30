@@ -9,9 +9,9 @@ import org.pircbotx.hooks.events.UnknownEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RawrBotUtil extends ListenerAdapter
+public class RawrBotModule extends ListenerAdapter
 {
-	private Logger	logger	= LoggerFactory.getLogger(RawrBotUtil.class);
+	private Logger	logger	= LoggerFactory.getLogger(RawrBotModule.class);
 	private String	botOwner;
 	private String	ircChannel;
 	private String	botNickname;
