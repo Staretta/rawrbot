@@ -24,7 +24,7 @@ public class Settings implements Serializable
 	@Id
 	@SequenceGenerator(name = "generatorMySeq", sequenceName = "settings" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
-	private Long				id;
+	private long				id;
 	private String				nickname;
 	private String				username;
 	private String				version;
