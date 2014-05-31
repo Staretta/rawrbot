@@ -18,14 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class SettingsService
 {
 	@PersistenceContext
-	private EntityManager em;
-	
+	private EntityManager	em;
+
 	public List<Settings> getBotSettings()
 	{
 		Query q = getSession().createQuery("select s from Settings s");
 		return (List<Settings>) q.list();
 	}
-	
+
 	public void addChannel(String channel, String server)
 	{
 		Session s = getSession();
@@ -35,7 +35,7 @@ public class SettingsService
 		serverSettings.setChannels(channels);
 		s.saveOrUpdate(serverSettings);
 	}
-	
+
 	public void removeChannel(String channel, String server)
 	{
 		Session s = getSession();
@@ -45,21 +45,30 @@ public class SettingsService
 		serverSettings.setChannels(channels);
 		s.saveOrUpdate(serverSettings);
 	}
-	
+
+	@Deprecated
 	public List<String> getServerChannels(String server)
 	{
-		Query q = getSession().createQuery("select s.channels from Settings s where LOWER(s.server) = :server");
+		Query q = getSession().createQuery("select s.nickname from Settings s where s.server = :server");
 		q.setParameter("server", server.toLowerCase());
 		return (List<String>) q.list();
 	}
-	
+
 	public Settings getServerSettings(String server)
 	{
-		Query q = getSession().createQuery("select s from Settings s where LOWER(s.server) = :server");
-		q.setParameter("server", server);
+		Query q = getSession().createQuery("select s from Settings s where s.server = :server");
+		q.setParameter("server", server.toLowerCase());
 		return (Settings) q.uniqueResult();
 	}
-	
+
+	@Deprecated
+	public List<String> getServerModules(String server)
+	{
+		Query q = getSession().createQuery("select s.nickname from Settings s where s.server = :server");
+		q.setParameter("server", server.toLowerCase());
+		return (List<String>) q.list();
+	}
+
 	private Session getSession()
 	{
 		return em.unwrap(EntityManagerImpl.class).getSession();

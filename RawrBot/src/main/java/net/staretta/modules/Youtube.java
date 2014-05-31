@@ -36,6 +36,8 @@ public class Youtube extends ListenerAdapter
 	private HttpTransport	httpTransport	= new NetHttpTransport();
 	private JsonFactory		jsonFactory		= new JacksonFactory();
 	private YouTube			youtube;
+	public static String	help			= "";
+	public static String	helpCommand		= "";
 
 	class VideoDetails
 	{

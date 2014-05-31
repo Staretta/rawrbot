@@ -3,8 +3,6 @@ package net.staretta.businesslogic.util;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.staretta.RawrBot;
-
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -14,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public class ircUtil
 {
-	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
+	private static Logger	logger	= LoggerFactory.getLogger(ircUtil.class);
 
 	/**
 	 * Sends a message to a channel
@@ -221,5 +219,19 @@ public class ircUtil
 		}
 
 		return isOP;
+	}
+
+	public static boolean isCommand(MessageEvent event, String command)
+	{
+		if (event.getMessage().trim().toLowerCase().startsWith(command))
+			return true;
+		return false;
+	}
+
+	public static boolean isCommand(PrivateMessageEvent event, String command)
+	{
+		if (event.getMessage().trim().toLowerCase().startsWith(command))
+			return true;
+		return false;
 	}
 }

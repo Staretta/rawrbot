@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 
 public class RawrBotModule extends ListenerAdapter
 {
-	private Logger			logger	= LoggerFactory.getLogger(RawrBotModule.class);
+	private Logger			logger		= LoggerFactory.getLogger(RawrBotModule.class);
 	private SettingsService	settingsService;
+	public static String	help		= "";
+	public static String	helpCommand	= "";
 
 	public RawrBotModule()
 	{

@@ -2,7 +2,6 @@ package net.staretta.modules;
 
 import java.io.IOException;
 
-import net.staretta.RawrBot;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.Json;
 import net.staretta.businesslogic.util.ircUtil;
@@ -10,29 +9,26 @@ import net.staretta.businesslogic.util.ircUtil;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Quote extends ListenerAdapter
 {
-	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
+	public static String	help		= "!quote : Says a random quote from the iheartquotes.com Database.";
+	public static String	helpCommand	= "!quote";
 
 	public void onMessage(MessageEvent event) throws Exception
 	{
-		if (event.getMessage().trim().toLowerCase().startsWith("!quote"))
+		if (ircUtil.isCommand(event, "!quote"))
 		{
 			// If they are rate limited, then return.
 			if (RateLimiter.isRateLimited(event.getUser().getNick()))
 				return;
 
-			if (event.getMessage().trim().toLowerCase().endsWith("-help")
-					|| event.getMessage().trim().toLowerCase().endsWith("-h"))
+			if (ircUtil.isCommand(event, "-help") || ircUtil.isCommand(event, "-h"))
 			{
 				// If message ends with -help or -h, then send them help information
-				String quoteHelp = "!quote : Says a random quote from the iheartquotes.com Database.";
-				ircUtil.sendMessage(event, quoteHelp);
+				ircUtil.sendMessage(event, help);
 			}
 			else
 			{
@@ -42,23 +38,19 @@ public class Quote extends ListenerAdapter
 
 				// If it's not null, send them a quote
 				if (quote != null)
-				{
 					ircUtil.sendMessage(event, quote[0].toString());
-				}
 			}
 		}
 	}
 
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
-		if (event.getMessage().trim().toLowerCase().startsWith("!quote"))
+		if (ircUtil.isCommand(event, "!quote"))
 		{
-			if (event.getMessage().trim().toLowerCase().endsWith("-help")
-					|| event.getMessage().trim().toLowerCase().endsWith("-h"))
+			if (ircUtil.isCommand(event, "-help") || ircUtil.isCommand(event, "-h"))
 			{
 				// If message ends with -help or -h, then send them help information
-				String quoteHelp = "!quote : Says a random quote from the iheartquotes.com Database.";
-				ircUtil.sendMessage(event, quoteHelp);
+				ircUtil.sendMessage(event, help);
 			}
 			else
 			{
@@ -68,9 +60,7 @@ public class Quote extends ListenerAdapter
 
 				// If it's not null, send them a quote
 				if (quote != null)
-				{
 					ircUtil.sendMessage(event, quote[0].toString());
-				}
 			}
 		}
 	}
