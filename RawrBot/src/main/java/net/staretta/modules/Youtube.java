@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.util.MiscUtil;
 import net.staretta.businesslogic.util.ircUtil;
 
@@ -29,15 +30,21 @@ public class Youtube extends ListenerAdapter
 	// TODO: Add Duration, Uploader, and short description of youtube video.
 	// Probably requires making a new function for building http requests, and passing the list
 	// for snippets, and video details.
-	private static Logger	logger			= LoggerFactory.getLogger(Youtube.class);
-	private String			regex			= "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
-	private Pattern			pattern			= Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-	private String			apiKey			= "AIzaSyBrCQ6gcGeOsZF0BLAdX_K7j9CX8svrcBo";
-	private HttpTransport	httpTransport	= new NetHttpTransport();
-	private JsonFactory		jsonFactory		= new JacksonFactory();
-	private YouTube			youtube;
-	public static String	help			= "";
-	public static String	helpCommand		= "";
+	private static Logger		logger			= LoggerFactory.getLogger(Youtube.class);
+	public static ModuleInfo	moduleInfo;
+	private String				regex			= "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
+	private Pattern				pattern			= Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+	private String				apiKey			= "AIzaSyBrCQ6gcGeOsZF0BLAdX_K7j9CX8svrcBo";
+	private HttpTransport		httpTransport	= new NetHttpTransport();
+	private JsonFactory			jsonFactory		= new JacksonFactory();
+	private YouTube				youtube;
+
+	public Youtube()
+	{
+		moduleInfo = new ModuleInfo();
+		moduleInfo.setName("Youtube");
+		moduleInfo.setAuthor("Staretta");
+	}
 
 	class VideoDetails
 	{

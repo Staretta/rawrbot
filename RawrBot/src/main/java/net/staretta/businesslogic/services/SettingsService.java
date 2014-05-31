@@ -46,12 +46,9 @@ public class SettingsService
 		s.saveOrUpdate(serverSettings);
 	}
 
-	@Deprecated
 	public List<String> getServerChannels(String server)
 	{
-		Query q = getSession().createQuery("select s.nickname from Settings s where s.server = :server");
-		q.setParameter("server", server.toLowerCase());
-		return (List<String>) q.list();
+		return getServerSettings(server).getChannels();
 	}
 
 	public Settings getServerSettings(String server)
@@ -61,12 +58,9 @@ public class SettingsService
 		return (Settings) q.uniqueResult();
 	}
 
-	@Deprecated
 	public List<String> getServerModules(String server)
 	{
-		Query q = getSession().createQuery("select s.nickname from Settings s where s.server = :server");
-		q.setParameter("server", server.toLowerCase());
-		return (List<String>) q.list();
+		return getServerSettings(server).getModules();
 	}
 
 	private Session getSession()

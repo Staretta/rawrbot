@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.SettingsService;
 import net.staretta.businesslogic.util.ircUtil;
@@ -16,14 +17,17 @@ import org.slf4j.LoggerFactory;
 
 public class Help extends ListenerAdapter
 {
-	private static Logger	logger		= LoggerFactory.getLogger(Help.class);
-	private SettingsService	settingsService;
-	public static String	help		= "";
-	public static String	helpCommand	= "!help !commands";
+	private static Logger		logger	= LoggerFactory.getLogger(Help.class);
+	private SettingsService		settingsService;
+	public static ModuleInfo	moduleInfo;
 
 	public Help()
 	{
 		settingsService = RawrBot.applicationContext.getBean(SettingsService.class);
+		moduleInfo = new ModuleInfo();
+		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setHelpCommand("!help !commands");
+		moduleInfo.setName("Help");
 	}
 
 	@Override
@@ -52,18 +56,18 @@ public class Help extends ListenerAdapter
 	private String[] helpCommand(String server)
 	{
 		String commands = "";
-		List<String> modules = settingsService.getServerSettings(server).getModules();
+		List<String> modules = settingsService.getServerModules(server);
 		for (String mod : modules)
 		{
 			Field field;
-			String value;
+			ModuleInfo value;
 			try
 			{
 				Class clazz = Class.forName("net.staretta.modules." + mod);
-				field = clazz.getField("helpCommand");
-				value = (String) field.get(clazz);
-				if (!value.isEmpty())
-					commands += value.toString() + " ";
+				field = clazz.getField("moduleInfo");
+				value = (ModuleInfo) field.get(clazz);
+				if (!value.getHelpCommand().isEmpty())
+					commands += value.getHelpCommand() + " ";
 			}
 			catch (NoSuchFieldException | SecurityException | ClassNotFoundException | IllegalArgumentException
 					| IllegalAccessException e)

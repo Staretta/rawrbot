@@ -1,6 +1,7 @@
 package net.staretta.modules;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.services.SettingsService;
 
 import org.pircbotx.hooks.ListenerAdapter;
@@ -12,14 +13,16 @@ import org.slf4j.LoggerFactory;
 
 public class RawrBotModule extends ListenerAdapter
 {
-	private Logger			logger		= LoggerFactory.getLogger(RawrBotModule.class);
-	private SettingsService	settingsService;
-	public static String	help		= "";
-	public static String	helpCommand	= "";
+	private Logger				logger	= LoggerFactory.getLogger(RawrBotModule.class);
+	private SettingsService		settingsService;
+	public static ModuleInfo	moduleInfo;
 
 	public RawrBotModule()
 	{
 		settingsService = RawrBot.applicationContext.getBean(SettingsService.class);
+		moduleInfo = new ModuleInfo();
+		moduleInfo.setName("RawrBotModule");
+		moduleInfo.setAuthor("Staretta");
 	}
 
 	@Override

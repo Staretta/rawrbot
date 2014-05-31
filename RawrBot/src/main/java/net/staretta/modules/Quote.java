@@ -2,6 +2,7 @@ package net.staretta.modules;
 
 import java.io.IOException;
 
+import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.Json;
 import net.staretta.businesslogic.util.ircUtil;
@@ -14,8 +15,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class Quote extends ListenerAdapter
 {
-	public static String	help		= "!quote : Says a random quote from the iheartquotes.com Database.";
-	public static String	helpCommand	= "!quote";
+	public static ModuleInfo	moduleInfo;
+
+	public Quote()
+	{
+		moduleInfo = new ModuleInfo();
+		moduleInfo.setName("Quote");
+		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setHelpMessage("!quote : Says a random quote from the iheartquotes.com Database.");
+		moduleInfo.setHelpCommand("!quote");
+	}
 
 	public void onMessage(MessageEvent event) throws Exception
 	{
@@ -28,7 +37,7 @@ public class Quote extends ListenerAdapter
 			if (ircUtil.isCommand(event, "-help") || ircUtil.isCommand(event, "-h"))
 			{
 				// If message ends with -help or -h, then send them help information
-				ircUtil.sendMessage(event, help);
+				ircUtil.sendMessage(event, moduleInfo.getHelpMessage());
 			}
 			else
 			{
@@ -50,7 +59,7 @@ public class Quote extends ListenerAdapter
 			if (ircUtil.isCommand(event, "-help") || ircUtil.isCommand(event, "-h"))
 			{
 				// If message ends with -help or -h, then send them help information
-				ircUtil.sendMessage(event, help);
+				ircUtil.sendMessage(event, moduleInfo.getHelpMessage());
 			}
 			else
 			{

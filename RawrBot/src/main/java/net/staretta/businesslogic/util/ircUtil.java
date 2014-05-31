@@ -223,14 +223,14 @@ public class ircUtil
 
 	public static boolean isCommand(MessageEvent event, String command)
 	{
-		if (event.getMessage().trim().toLowerCase().startsWith(command))
+		if (event.getMessage().toLowerCase().startsWith(command))
 			return true;
 		return false;
 	}
 
 	public static boolean isCommand(PrivateMessageEvent event, String command)
 	{
-		if (event.getMessage().trim().toLowerCase().startsWith(command))
+		if (event.getMessage().toLowerCase().startsWith(command))
 			return true;
 		return false;
 	}
