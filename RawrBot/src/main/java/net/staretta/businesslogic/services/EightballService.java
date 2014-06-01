@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class EightballAnswersService
+public class EightballService
 {
 	@PersistenceContext
 	private EntityManager em;
@@ -28,7 +28,7 @@ public class EightballAnswersService
 	
 	public String getRandomAnswer()
 	{
-		Query q = getSession().createQuery("SELECT a.message FROM EightballAnswers a ORDER BY RANDOM()").setMaxResults(1);
+		Query q = getSession().createQuery("SELECT e.message FROM EightballEntity e ORDER BY RANDOM()").setMaxResults(1);
 		return q.uniqueResult().toString();
 	}
 	

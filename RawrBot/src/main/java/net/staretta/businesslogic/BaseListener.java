@@ -19,7 +19,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	protected abstract ModuleInfo setModuleInfo();
 	
 	@Override
-	public void onMessage(MessageEvent event)
+	public void onMessage(MessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		if (s.startsWith(moduleInfo.getHelpCommand()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
@@ -36,7 +36,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public abstract void OnMessage(MessageEvent event);
 	
 	@Override
-	public void onPrivateMessage(PrivateMessageEvent event)
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		if (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help"))

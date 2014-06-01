@@ -61,7 +61,6 @@ public class Dice extends BaseListener
 			// If we find a match to our regex, then roll whatever the regex finds!
 			else if (pattern.matcher(userMessage).find())
 			{
-				
 				Matcher match = pattern.matcher(userMessage);
 				String message = event.getUser().getNick() + " rolled ";
 				String rolled = "";
