@@ -4,52 +4,54 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.util.Json;
 import net.staretta.businesslogic.util.MiscUtil;
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class Vimeo extends ListenerAdapter
+public class Vimeo extends BaseListener
 {
-	private Logger				logger	= LoggerFactory.getLogger(Vimeo.class);
-	public static ModuleInfo	moduleInfo;
-	private String				regex	= "(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*";
-	private Pattern				pattern	= Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-
-	public Vimeo()
+	private Logger logger = LoggerFactory.getLogger(Vimeo.class);
+	private String regex = "(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*";
+	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+	
+	@Override
+	protected ModuleInfo setModuleInfo()
 	{
-		moduleInfo = new ModuleInfo();
+		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Vimeo");
 		moduleInfo.setAuthor("Staretta");
+		return moduleInfo;
 	}
-
+	
 	class VideoDetails
 	{
-		int		videoID;
-		String	title;
-		int		duration;
-		String	fDuration;
-		int		plays;
-		int		comments;
-		int		likes;
-		int		width;
-		int		height;
-		String	username;
-		String	uploadDate;
-		String	description;
-
+		int videoID;
+		String title;
+		int duration;
+		String fDuration;
+		int plays;
+		int comments;
+		int likes;
+		int width;
+		int height;
+		String username;
+		String uploadDate;
+		String description;
+		
 		VideoDetails()
 		{
 		}
 	}
-
+	
 	private boolean isVimeoURL(String message)
 	{
 		Matcher matcher = pattern.matcher(message);
@@ -57,7 +59,7 @@ public class Vimeo extends ListenerAdapter
 			return true;
 		return false;
 	}
-
+	
 	private String getVimeoVideoID(String message)
 	{
 		String video_id = null;
@@ -72,7 +74,7 @@ public class Vimeo extends ListenerAdapter
 		}
 		return video_id;
 	}
-
+	
 	private JsonNode getVimeoAPI(String ID) throws IOException
 	{
 		String jsonURL = "http://vimeo.com/api/v2/video/" + ID + ".json";
@@ -80,7 +82,7 @@ public class Vimeo extends ListenerAdapter
 		JsonNode json = jsonArray.get(0);
 		return json;
 	}
-
+	
 	private VideoDetails getVimeoVideoDetails(String link)
 	{
 		// Parse the ID from the URL, and if it's not null, then get the video information.
@@ -93,7 +95,7 @@ public class Vimeo extends ListenerAdapter
 				JsonNode json = getVimeoAPI(ID);
 				if (json == null)
 					return videoDetails;
-
+				
 				if (json.has("id"))
 					videoDetails.videoID = json.get("id").asInt();
 				if (json.has("title"))
@@ -119,7 +121,7 @@ public class Vimeo extends ListenerAdapter
 					videoDetails.username = json.get("user_name").asText();
 				if (json.has("upload_date"))
 					videoDetails.uploadDate = json.get("upload_date").asText();
-
+				
 				return videoDetails;
 			}
 			catch (Exception e)
@@ -129,8 +131,9 @@ public class Vimeo extends ListenerAdapter
 		}
 		return videoDetails;
 	}
-
-	public void onMessage(MessageEvent event) throws Exception
+	
+	@Override
+	public void OnMessage(MessageEvent event)
 	{
 		// If regex matches link in message, then message channel
 		if (isVimeoURL(event.getMessage()))
@@ -141,5 +144,10 @@ public class Vimeo extends ListenerAdapter
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);
 		}
+	}
+	
+	@Override
+	public void OnPrivateMessage(PrivateMessageEvent event)
+	{
 	}
 }

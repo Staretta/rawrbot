@@ -1,57 +1,59 @@
 package net.staretta.modules;
 
+import net.staretta.RawrBot;
+import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
-import net.staretta.businesslogic.util.FileUtil;
-import net.staretta.businesslogic.util.MiscUtil;
+import net.staretta.businesslogic.services.EightballAnswersService;
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Eightball extends ListenerAdapter
+public class Eightball extends BaseListener
 {
-	private static Logger	logger		= LoggerFactory.getLogger(Eightball.class);
-	private Config			cfg			= new Config("././config.properties");
-	private String			bot_owner	= cfg.getProperty("bot_owner");
-	private String			filename	= "data/eightball_answers.txt";
-	private String[]		answerList	= FileUtil.readLines(filename);
-
-	public void onMessage(MessageEvent event) throws Exception
+	private static Logger logger = LoggerFactory.getLogger(Eightball.class);
+	private EightballAnswersService eightballService;
+	
+	public Eightball()
 	{
-		if ((event.getMessage().trim().toLowerCase().startsWith("!8ball")
-				|| event.getMessage().trim().toLowerCase().startsWith("!eightball") || event.getMessage().trim()
-				.toLowerCase().startsWith("!8-ball"))
-				&& event.getMessage().trim().toLowerCase().endsWith("?")
-				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
+		eightballService = RawrBot.applicationContext.getBean(EightballAnswersService.class);
+	}
+	
+	@Override
+	protected ModuleInfo setModuleInfo()
+	{
+		ModuleInfo moduleInfo = new ModuleInfo();
+		moduleInfo.setName("Eightball");
+		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setHelpMessage("!eightball <question>?: Mystically queries the magic eightball for an answer to your question."
+				+ " Note: Question must end with a question mark. \"?\"");
+		moduleInfo.setHelpCommand("!eightball");
+		return moduleInfo;
+	}
+	
+	@Override
+	public void OnMessage(MessageEvent event)
+	{
+		if ((ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
+				&& event.getMessage().trim().toLowerCase().endsWith("?") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
-			// Check if message starts with !8ball or !eightball, and ends with "?", and if they are not rate limited
-
-			String answer = MiscUtil.randomSelection(answerList);
+			String answer = eightballService.getRandomAnswer();
 			ircUtil.sendMessage(event, answer);
 		}
 	}
-
-	public void onPrivateMessage(PrivateMessageEvent event)
+	
+	@Override
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if ((event.getMessage().trim().toLowerCase().startsWith("!8ball")
-				|| event.getMessage().trim().toLowerCase().startsWith("!eightball") || event.getMessage().trim()
-				.toLowerCase().startsWith("!8-ball"))
+		if ((ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
 				&& event.getMessage().trim().toLowerCase().endsWith("?"))
 		{
-			// Check if message starts with !8ball or !eightball and ends with "?"
-
-			String answer = MiscUtil.randomSelection(answerList);
+			String answer = eightballService.getRandomAnswer();
 			ircUtil.sendMessage(event, answer);
 		}
-		else if (event.getMessage().trim().toLowerCase().equalsIgnoreCase("!8ball -reload")
-				&& event.getUser().getNick().equalsIgnoreCase(bot_owner))
-		{
-			// If message equals !8ball reload
-			ircUtil.sendMessage(event, "Reloading 8ball reply list");
-			answerList = FileUtil.readLines(filename);
-		}
 	}
+	
 }

@@ -1,32 +1,61 @@
 package net.staretta.modules;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.services.SettingsService;
 
-import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RawrBotModule extends ListenerAdapter
+public class RawrBotModule extends BaseListener
 {
-	private Logger				logger	= LoggerFactory.getLogger(RawrBotModule.class);
-	private SettingsService		settingsService;
-	public static ModuleInfo	moduleInfo;
-
+	private Logger logger = LoggerFactory.getLogger(RawrBotModule.class);
+	private SettingsService settingsService;
+	
 	public RawrBotModule()
 	{
 		settingsService = RawrBot.applicationContext.getBean(SettingsService.class);
-		moduleInfo = new ModuleInfo();
+	}
+	
+	@Override
+	protected ModuleInfo setModuleInfo()
+	{
+		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("RawrBotModule");
 		moduleInfo.setAuthor("Staretta");
+		return moduleInfo;
 	}
-
+	
 	@Override
-	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
+	public void onQuit(QuitEvent event)
+	{
+		// If we see our default nickname quit, then rename our name to it.
+		if (event.getUser().getNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
+		{
+			event.getBot().sendIRC().changeNick(event.getBot().getConfiguration().getName());
+		}
+	}
+	
+	@Override
+	public void onUnknown(UnknownEvent event)
+	{
+		logger.debug("UNKNOWN EVENT: " + event.toString());
+	}
+	
+	@Override
+	public void OnMessage(MessageEvent event)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		logger.info(event.getBot().getConfiguration().getServerHostname());
 		// if ((event.getUser().getNick().equalsIgnoreCase(botOwner) || ircUtil.isOP(event, ircChannel))
@@ -45,21 +74,5 @@ public class RawrBotModule extends ListenerAdapter
 		// if (param.length != 1)
 		// event.getBot().sendIRC().joinChannel(param[1]);
 		// }
-	}
-
-	@Override
-	public void onQuit(QuitEvent event) throws Exception
-	{
-		// If we see our default nickname quit, then rename our name to it.
-		if (event.getUser().getNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
-		{
-			event.getBot().sendIRC().changeNick(event.getBot().getConfiguration().getName());
-		}
-	}
-
-	@Override
-	public void onUnknown(UnknownEvent event) throws Exception
-	{
-		logger.debug("UNKNOWN EVENT: " + event.toString());
 	}
 }

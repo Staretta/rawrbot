@@ -1,80 +1,56 @@
 package net.staretta.modules;
 
-import java.io.IOException;
-
+import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.Json;
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class Quote extends ListenerAdapter
+public class Quote extends BaseListener
 {
-	public static ModuleInfo	moduleInfo;
-
-	public Quote()
+	@Override
+	protected ModuleInfo setModuleInfo()
 	{
-		moduleInfo = new ModuleInfo();
+		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Quote");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setHelpMessage("!quote : Says a random quote from the iheartquotes.com Database.");
 		moduleInfo.setHelpCommand("!quote");
+		return moduleInfo;
 	}
-
-	public void onMessage(MessageEvent event) throws Exception
+	
+	@Override
+	public void OnMessage(MessageEvent event)
+	{
+		if (ircUtil.isCommand(event, "!quote") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		{
+			Object[] quote = null;
+			quote = getQuote();
+			
+			if (quote != null)
+				ircUtil.sendMessage(event, quote[0].toString());
+		}
+	}
+	
+	@Override
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (ircUtil.isCommand(event, "!quote"))
 		{
-			// If they are rate limited, then return.
-			if (RateLimiter.isRateLimited(event.getUser().getNick()))
-				return;
-
-			if (ircUtil.isCommand(event, "-help") || ircUtil.isCommand(event, "-h"))
-			{
-				// If message ends with -help or -h, then send them help information
-				ircUtil.sendMessage(event, moduleInfo.getHelpMessage());
-			}
-			else
-			{
-				// Throw it into a variable
-				Object[] quote = null;
-				quote = getQuote();
-
-				// If it's not null, send them a quote
-				if (quote != null)
-					ircUtil.sendMessage(event, quote[0].toString());
-			}
+			Object[] quote = null;
+			quote = getQuote();
+			
+			if (quote != null)
+				ircUtil.sendMessage(event, quote[0].toString());
 		}
 	}
-
-	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
-	{
-		if (ircUtil.isCommand(event, "!quote"))
-		{
-			if (ircUtil.isCommand(event, "-help") || ircUtil.isCommand(event, "-h"))
-			{
-				// If message ends with -help or -h, then send them help information
-				ircUtil.sendMessage(event, moduleInfo.getHelpMessage());
-			}
-			else
-			{
-				// Throw it into a variable
-				Object[] quote = null;
-				quote = getQuote();
-
-				// If it's not null, send them a quote
-				if (quote != null)
-					ircUtil.sendMessage(event, quote[0].toString());
-			}
-		}
-	}
-
-	private Object[] getQuote() throws IOException
+	
+	private Object[] getQuote()
 	{
 		// grabs JSONobject and stores it into json for us to read from
 		JsonNode json = Json.readJsonFromUrl("http://www.iheartquotes.com/api/v1/random?"

@@ -1,78 +1,67 @@
 package net.staretta.modules;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
-import net.staretta.RawrBot;
+import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
-import net.staretta.businesslogic.services.SettingsService;
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Help extends ListenerAdapter
-{
-	private static Logger		logger	= LoggerFactory.getLogger(Help.class);
-	private SettingsService		settingsService;
-	public static ModuleInfo	moduleInfo;
+import com.google.common.collect.ImmutableSet;
 
-	public Help()
+public class Help extends BaseListener
+{
+	private static Logger logger = LoggerFactory.getLogger(Help.class);
+	
+	@Override
+	protected ModuleInfo setModuleInfo()
 	{
-		settingsService = RawrBot.applicationContext.getBean(SettingsService.class);
-		moduleInfo = new ModuleInfo();
+		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setHelpCommand("!help !commands");
 		moduleInfo.setName("Help");
+		return moduleInfo;
 	}
-
+	
 	@Override
-	public void onMessage(MessageEvent event)
+	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!commands") || ircUtil.isCommand(event, "!help"))
+		if ((ircUtil.isCommand(event, "!commands") || ircUtil.isCommand(event, "!help"))
+				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
-			if (RateLimiter.isRateLimited(event.getUser().getNick()))
-				return;
-
-			for (String line : helpCommand(event.getBot().getConfiguration().getServerHostname()))
+			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+			for (String line : helpCommand(listeners))
 				ircUtil.sendMessage(event, line);
 		}
 	}
-
+	
 	@Override
-	public void onPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (ircUtil.isCommand(event, "!commands") || ircUtil.isCommand(event, "!help"))
 		{
-			for (String line : helpCommand(event.getBot().getConfiguration().getServerHostname()))
+			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+			for (String line : helpCommand(listeners))
 				ircUtil.sendMessage(event, line);
 		}
 	}
-
-	private String[] helpCommand(String server)
+	
+	private String[] helpCommand(ImmutableSet<Listener<PircBotX>> modules)
 	{
 		String commands = "";
-		List<String> modules = settingsService.getServerModules(server);
-		for (String mod : modules)
+		for (Listener<PircBotX> mod : modules)
 		{
-			Field field;
-			ModuleInfo value;
-			try
+			if (BaseListener.class.isAssignableFrom(mod.getClass()))
 			{
-				Class clazz = Class.forName("net.staretta.modules." + mod);
-				field = clazz.getField("moduleInfo");
-				value = (ModuleInfo) field.get(clazz);
-				if (!value.getHelpCommand().isEmpty())
-					commands += value.getHelpCommand() + " ";
-			}
-			catch (NoSuchFieldException | SecurityException | ClassNotFoundException | IllegalArgumentException
-					| IllegalAccessException e)
-			{
-				logger.error("Exception in Help.helpCommand: ", e);
+				BaseListener listener = (BaseListener) mod;
+				listener.moduleInfo.getHelpCommand();
+				if (!listener.moduleInfo.getHelpCommand().isEmpty())
+					commands += listener.moduleInfo.getHelpCommand() + " ";
 			}
 		}
 		String[] commandHelp = { "Commands: " + commands, "For command specific help, type \"-help\" after a command." };

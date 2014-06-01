@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.util.MiscUtil;
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,45 +25,45 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 
-public class Youtube extends ListenerAdapter
+public class Youtube extends BaseListener
 {
-	// TODO: Move clientID to properties file.
 	// TODO: Add Duration, Uploader, and short description of youtube video.
 	// Probably requires making a new function for building http requests, and passing the list
 	// for snippets, and video details.
-	private static Logger		logger			= LoggerFactory.getLogger(Youtube.class);
-	public static ModuleInfo	moduleInfo;
-	private String				regex			= "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
-	private Pattern				pattern			= Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-	private String				apiKey			= "AIzaSyBrCQ6gcGeOsZF0BLAdX_K7j9CX8svrcBo";
-	private HttpTransport		httpTransport	= new NetHttpTransport();
-	private JsonFactory			jsonFactory		= new JacksonFactory();
-	private YouTube				youtube;
-
-	public Youtube()
+	private static Logger logger = LoggerFactory.getLogger(Youtube.class);
+	private String regex = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
+	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+	private String apiKey = "AIzaSyBrCQ6gcGeOsZF0BLAdX_K7j9CX8svrcBo";
+	private HttpTransport httpTransport = new NetHttpTransport();
+	private JsonFactory jsonFactory = new JacksonFactory();
+	private YouTube youtube;
+	
+	@Override
+	protected ModuleInfo setModuleInfo()
 	{
-		moduleInfo = new ModuleInfo();
+		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Youtube");
 		moduleInfo.setAuthor("Staretta");
+		return moduleInfo;
 	}
-
+	
 	class VideoDetails
 	{
-		String	videoID;
-		String	title;
-		String	duration;
-		String	fDuration;
-		String	quality;
-		String	description;
-		String	channelTitle;
-		String	dimension;
-
+		String videoID;
+		String title;
+		String duration;
+		String fDuration;
+		String quality;
+		String description;
+		String channelTitle;
+		String dimension;
+		
 		VideoDetails()
 		{
-
+			
 		}
 	}
-
+	
 	/**
 	 * Checks if the message has a valid YouTube URL
 	 */
@@ -73,7 +74,7 @@ public class Youtube extends ListenerAdapter
 			return true;
 		return false;
 	}
-
+	
 	/**
 	 * Gets the YouTube video ID from the url<br>
 	 * <br>
@@ -92,7 +93,7 @@ public class Youtube extends ListenerAdapter
 		}
 		return video_id;
 	}
-
+	
 	private List<Video> getYouTubeAPI(String ID)
 	{
 		// Need to build our http request for Youtube's API
@@ -118,7 +119,7 @@ public class Youtube extends ListenerAdapter
 		}
 		return list;
 	}
-
+	
 	/**
 	 * Gets the YouTube Video info using Google's API and the ID
 	 */
@@ -127,7 +128,7 @@ public class Youtube extends ListenerAdapter
 		// Parse the ID from the URL, and if it's not null, then get the title.
 		String ID = getYouTubeVideoID(link);
 		VideoDetails videoDetails = new VideoDetails();
-
+		
 		if (ID != null)
 		{
 			List<Video> list = getYouTubeAPI(ID);
@@ -144,18 +145,24 @@ public class Youtube extends ListenerAdapter
 		}
 		return videoDetails;
 	}
-
-	public void onMessage(MessageEvent event) throws Exception
+	
+	@Override
+	public void OnMessage(MessageEvent event)
 	{
 		// If message is a youtube url and we have a youtube api key in the properties file.
 		if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage()))
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = "YouTube: " + videoDetails.title + " " + videoDetails.fDuration + "["
-					+ videoDetails.quality.toUpperCase() + "]";
+			String message = "YouTube: " + videoDetails.title + " " + videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase()
+					+ "]";
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);
 		}
+	}
+	
+	@Override
+	public void OnPrivateMessage(PrivateMessageEvent event)
+	{
 	}
 }

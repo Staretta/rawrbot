@@ -14,24 +14,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class EightballAnswersService
 {
 	@PersistenceContext
-	private EntityManager	em;
-
+	private EntityManager em;
+	
 	public void addAnswer()
 	{
-
+		
 	}
-
+	
 	public void removeAnswer()
 	{
-
+		
 	}
-
-	public void getRandomAnswer()
+	
+	public String getRandomAnswer()
 	{
-		Query q = getSession().createQuery("");
-
+		Query q = getSession().createQuery("SELECT a.message FROM EightballAnswers a ORDER BY RANDOM()").setMaxResults(1);
+		return q.uniqueResult().toString();
 	}
-
+	
 	private Session getSession()
 	{
 		return em.unwrap(EntityManagerImpl.class).getSession();
