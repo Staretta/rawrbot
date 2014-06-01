@@ -25,7 +25,7 @@ public class RawrBot
 		Logger logger = LoggerFactory.getLogger(RawrBot.class);
 		
 		logger.info("Initializing Spring context.");
-		applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
+		applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
 		logger.info("Spring context initialized.");
 		
 		SettingsService settingsService = applicationContext.getBean(SettingsService.class);

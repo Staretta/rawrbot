@@ -11,7 +11,7 @@
            http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
            http://www.springframework.org/schema/tx	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 				
-	<context:component-scan base-package="net.staretta" />
+	<context:component-scan base-package="/net.staretta" />
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
