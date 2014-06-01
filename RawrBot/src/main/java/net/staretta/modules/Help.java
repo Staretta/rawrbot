@@ -16,41 +16,44 @@ import com.google.common.collect.ImmutableSet;
 
 public class Help extends BaseListener
 {
-	private static Logger logger = LoggerFactory.getLogger(Help.class);
-	
+	private static Logger	logger	= LoggerFactory.getLogger(Help.class);
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setVersion("v2.0");
 		moduleInfo.setHelpCommand("!help !commands");
 		moduleInfo.setName("Help");
 		return moduleInfo;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
 		if ((ircUtil.isCommand(event, "!commands") || ircUtil.isCommand(event, "!help"))
 				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
-			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager()
+					.getListeners();
 			for (String line : helpCommand(listeners))
 				ircUtil.sendMessage(event, line);
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (ircUtil.isCommand(event, "!commands") || ircUtil.isCommand(event, "!help"))
 		{
-			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager()
+					.getListeners();
 			for (String line : helpCommand(listeners))
 				ircUtil.sendMessage(event, line);
 		}
 	}
-	
+
 	private String[] helpCommand(ImmutableSet<Listener<PircBotX>> modules)
 	{
 		String commands = "";

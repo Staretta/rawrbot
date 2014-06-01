@@ -29,6 +29,7 @@ public class Vimeo extends BaseListener
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Vimeo");
 		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setVersion("v1.2");
 		return moduleInfo;
 	}
 	

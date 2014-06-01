@@ -79,12 +79,12 @@ public class ModuleInfo
 		this.moduleUrl = moduleUrl;
 	}
 
-	public String getModuleVersion()
+	public String getVersion()
 	{
 		return moduleVersion;
 	}
 
-	public void setModuleVersion(String moduleVersion)
+	public void setVersion(String moduleVersion)
 	{
 		this.moduleVersion = moduleVersion;
 	}

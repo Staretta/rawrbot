@@ -19,6 +19,7 @@ public class Quote extends BaseListener
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Quote");
 		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setVersion("v1.2");
 		moduleInfo.setHelpMessage("!quote : Says a random quote from the iheartquotes.com Database.");
 		moduleInfo.setHelpCommand("!quote");
 		return moduleInfo;

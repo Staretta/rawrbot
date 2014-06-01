@@ -44,6 +44,7 @@ public class Youtube extends BaseListener
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Youtube");
 		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setVersion("v1.2");
 		return moduleInfo;
 	}
 	
