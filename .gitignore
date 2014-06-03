@@ -2,3 +2,6 @@ RawrBot/target
 RawrBot/logs
 RawrBot/data/*.db
 RawrBot/.classpath
+RawrBot/bin/*
+.e4css/*
+.metadata/*
