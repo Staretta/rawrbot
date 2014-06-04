@@ -36,7 +36,6 @@ public class MessageLogService
 		Session s = getSession();
 		MessageLogEntity log = new MessageLogEntity(nickname, username, hostmask, message, channel, server, role, messageType, date);
 		s.saveOrUpdate(log);
-		logger.info("Added log");
 	}
 	
 	private Session getSession()

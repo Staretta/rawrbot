@@ -36,6 +36,7 @@ public class MessageLogEntity implements Serializable
 	private Role role;
 	@Enumerated(EnumType.STRING)
 	private MessageType messageType;
+	@Column(name = "date", columnDefinition = "timestamp with time zone")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	

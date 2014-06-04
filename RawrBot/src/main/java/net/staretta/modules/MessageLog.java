@@ -115,20 +115,27 @@ public class MessageLog extends ListenerAdapter
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has left " + event.getChannel().getName() + ". (" + event.getReason() + ")";
 			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
-					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
-					getUserLevel(event.getChannel(), event.getUser()), MessageType.PART, date);
+					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.PART, date);
 		}
 	}
 	
 	@Override
 	public void onQuit(QuitEvent event) throws Exception
 	{
+		// String channels = "";
+		// for (Channel channel : event.getDaoSnapshot().getChannels(event.getUser()))
+		// {
+		// if (event.getBot().getConfiguration().getAutoJoinChannels().containsValue(channel.toString()))
+		// {
+		// channels += channel.toString() + " ";
+		// }
+		// }
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			Date date = new Date();
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has quit. " + " (" + event.getReason() + ")";
-			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, "UNKOWN", event
+			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, "UNKNOWN", event
 					.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.QUIT, date);
 		}
 	}
@@ -143,8 +150,7 @@ public class MessageLog extends ListenerAdapter
 	@Override
 	public void onNickChange(NickChangeEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onNickChange(event);
+		Date date = new Date();
 	}
 	
 	@Override
