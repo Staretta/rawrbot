@@ -3,9 +3,12 @@ package net.staretta.modules;
 import java.util.Date;
 
 import net.staretta.RawrBot;
-import net.staretta.businesslogic.entity.MessageLogEntity;
+import net.staretta.businesslogic.entity.MessageLogEntity.MessageType;
+import net.staretta.businesslogic.entity.MessageLogEntity.Role;
 import net.staretta.businesslogic.services.MessageLogService;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
@@ -36,14 +39,29 @@ public class MessageLog extends ListenerAdapter
 		service = RawrBot.applicationContext.getBean(MessageLogService.class);
 	}
 	
+	private Role getUserLevel(Channel channel, User user)
+	{
+		if (channel.isOwner(user))
+			return Role.OWNER;
+		else if (channel.isSuperOp(user))
+			return Role.SUPEROP;
+		else if (channel.isOp(user))
+			return Role.OP;
+		else if (channel.isHalfOp(user))
+			return Role.HALFOP;
+		else if (channel.hasVoice(user))
+			return Role.VOICE;
+		else
+			return Role.USER;
+	}
+	
 	@Override
 	public void onMessage(MessageEvent event) throws Exception
 	{
 		Date date = new Date();
-		logger.info(event.getUser().getUserLevels(event.getChannel()).toString());
 		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
-				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(), MessageLogEntity.Role.USER,
-				MessageLogEntity.MessageType.MESSAGE, date);
+				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+				getUserLevel(event.getChannel(), event.getUser()), MessageType.MESSAGE, date);
 	}
 	
 	@Override
@@ -56,36 +74,63 @@ public class MessageLog extends ListenerAdapter
 	@Override
 	public void onAction(ActionEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onAction(event);
+		Date date = new Date();
+		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
+				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+				getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION, date);
 	}
 	
 	@Override
 	public void onNotice(NoticeEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onNotice(event);
+		if (event.getChannel() != null) // Channel is somehow always null. Likely because a notice is a private message in some way.
+		{
+			Date date = new Date();
+			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
+					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+					getUserLevel(event.getChannel(), event.getUser()), MessageType.NOTICE, date);
+		}
 	}
 	
 	@Override
 	public void onJoin(JoinEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onJoin(event);
+		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
+		{
+			Date date = new Date();
+			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
+					+ ") has joined " + event.getChannel().getName();
+			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+					getUserLevel(event.getChannel(), event.getUser()), MessageType.JOIN, date);
+		}
 	}
 	
 	@Override
 	public void onPart(PartEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onPart(event);
+		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
+		{
+			Date date = new Date();
+			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
+					+ ") has left " + event.getChannel().getName() + ". (" + event.getReason() + ")";
+			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
+					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+					getUserLevel(event.getChannel(), event.getUser()), MessageType.PART, date);
+		}
 	}
 	
 	@Override
 	public void onQuit(QuitEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onQuit(event);
+		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
+		{
+			Date date = new Date();
+			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
+					+ ") has quit. " + " (" + event.getReason() + ")";
+			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, "UNKOWN", event
+					.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.QUIT, date);
+		}
 	}
 	
 	@Override

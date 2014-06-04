@@ -11,6 +11,8 @@ import net.staretta.businesslogic.entity.MessageLogEntity.Role;
 
 import org.hibernate.Session;
 import org.hibernate.jpa.internal.EntityManagerImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,8 @@ public class MessageLogService
 {
 	@PersistenceContext
 	private EntityManager em;
+	
+	Logger logger = LoggerFactory.getLogger(MessageLogService.class);
 	
 	public MessageLogService()
 	{
@@ -32,6 +36,7 @@ public class MessageLogService
 		Session s = getSession();
 		MessageLogEntity log = new MessageLogEntity(nickname, username, hostmask, message, channel, server, role, messageType, date);
 		s.saveOrUpdate(log);
+		logger.info("Added log");
 	}
 	
 	private Session getSession()
