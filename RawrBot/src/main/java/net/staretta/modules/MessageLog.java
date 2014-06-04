@@ -150,42 +150,63 @@ public class MessageLog extends ListenerAdapter
 	@Override
 	public void onNickChange(NickChangeEvent event) throws Exception
 	{
-		Date date = new Date();
+		if (event.getOldNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
+		{
+			Date date = new Date();
+			String message = event.getOldNick() + " changed nickname to " + event.getNewNick();
+			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, "UNKNOWN", event
+					.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.NICK, date);
+		}
 	}
 	
 	@Override
 	public void onOwner(OwnerEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onOwner(event);
+		Date date = new Date();
+		String message = event.getRecipient() + " became owner of channel " + event.getChannel().getName();
+		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
+				.getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+				MessageType.MESSAGE, date);
 	}
 	
 	@Override
 	public void onSuperOp(SuperOpEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onSuperOp(event);
+		Date date = new Date();
+		String message = event.getRecipient() + " became super operator of channel " + event.getChannel().getName();
+		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
+				.getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+				MessageType.MESSAGE, date);
 	}
 	
 	@Override
 	public void onOp(OpEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onOp(event);
+		Date date = new Date();
+		String message = event.getRecipient() + " became operator of channel " + event.getChannel().getName();
+		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
+				.getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+				MessageType.MESSAGE, date);
 	}
 	
 	@Override
 	public void onHalfOp(HalfOpEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onHalfOp(event);
+		Date date = new Date();
+		String message = event.getRecipient() + " became half operator of channel " + event.getChannel().getName();
+		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
+				.getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+				MessageType.MESSAGE, date);
 	}
 	
 	@Override
 	public void onVoice(VoiceEvent event) throws Exception
 	{
-		// TODO Auto-generated method stub
-		super.onVoice(event);
+		Date date = new Date();
+		String message = event.getRecipient() + " became voiced for channel " + event.getChannel().getName();
+		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
+				.getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+				MessageType.MESSAGE, date);
 	}
 	
 	@Override
