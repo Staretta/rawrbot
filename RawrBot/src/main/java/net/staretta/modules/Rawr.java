@@ -69,11 +69,11 @@ public class Rawr extends BaseListener
 			// We want nyan to be weighted more than any other command. So we add more requests to their queue.
 			RateLimiter.addRequest(event.getUser().getNick(), 4);
 			// @formatter:off
-				String[] nyan = { 
-						"...,__,......,__,.....____________", 
-						"`Â·.,Â¸,.Â·*Â¯`Â·.,Â¸,.Â·*Â¯..|::::::/\\:_|/\\",
-						"`Â·.,Â¸,.Â·*Â¯`Â·.,Â¸,.Â·*Â¯.<|:::::(  o wo )", 
-						"-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
+			String[] nyan = { 
+					"...,__,......,__,.....____________", 
+					"`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
+					"`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )", 
+					"-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
 				// @formatter:on
 			for (String line : nyan)
 				ircUtil.sendMessage(event, line);
