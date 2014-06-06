@@ -31,8 +31,10 @@ public class Rawr extends BaseListener
 		moduleInfo.setName("Rawr");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.4");
-		moduleInfo.setHelpMessage("!rawr: Rawr. :3");
-		moduleInfo.setHelpCommand("!rawr !meow !nyan !woosh");
+		moduleInfo.addCommandInfo("!rawr", "!rawr: Rawr. :3");
+		moduleInfo.addCommandInfo("!meow", "!meow : Meow! :3");
+		moduleInfo.addCommandInfo("!nyan", "!nyan : Nyan! :3");
+		moduleInfo.addCommandInfo("!woosh", "!woosh : Woosh! :3");
 		return moduleInfo;
 	}
 	

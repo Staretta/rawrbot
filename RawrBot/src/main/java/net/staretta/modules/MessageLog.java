@@ -17,7 +17,6 @@ import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
-import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.events.PartEvent;
@@ -78,18 +77,6 @@ public class MessageLog extends ListenerAdapter
 		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
 				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
 				getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION, date);
-	}
-	
-	@Override
-	public void onNotice(NoticeEvent event) throws Exception
-	{
-		if (event.getChannel() != null) // Channel is somehow always null. Likely because a notice is a private message in some way.
-		{
-			Date date = new Date();
-			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
-					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
-					getUserLevel(event.getChannel(), event.getUser()), MessageType.NOTICE, date);
-		}
 	}
 	
 	@Override

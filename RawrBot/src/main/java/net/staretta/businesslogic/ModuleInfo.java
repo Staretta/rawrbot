@@ -1,89 +1,69 @@
 package net.staretta.businesslogic;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.javatuples.Pair;
+
 public class ModuleInfo
 {
-	private String	moduleName		= "";
-	private String	moduleAuthor	= "";
-	private String	moduleUrl		= "";
-	private String	moduleVersion	= "";
-	private String	helpMessage		= "";
-	private String	helpCommand		= "";
-
+	private String moduleName = "";
+	private String moduleAuthor = "";
+	private String moduleUrl = "";
+	private String moduleVersion = "";
+	private List<Pair<String, String>> commandList = new ArrayList<Pair<String, String>>();
+	
 	public ModuleInfo()
 	{
-
+		
 	}
-
-	public ModuleInfo(String moduleName, String helpMessage, String helpCommand)
+	
+	public void addCommandInfo(String command, String commandHelp)
 	{
-		this.moduleName = moduleName;
-		this.helpMessage = helpMessage;
-		this.helpCommand = helpCommand;
+		Pair<String, String> pair = Pair.with(command, commandHelp);
+		this.commandList.add(pair);
 	}
-
-	public ModuleInfo(String moduleName, String helpMessage, String helpCommand, String moduleAuthor)
+	
+	public List<Pair<String, String>> getCommands()
 	{
-		this.moduleName = moduleName;
-		this.helpMessage = helpMessage;
-		this.helpCommand = helpCommand;
-		this.moduleAuthor = moduleAuthor;
+		return commandList;
 	}
-
+	
 	public String getName()
 	{
 		return moduleName;
 	}
-
+	
 	public void setName(String moduleName)
 	{
 		this.moduleName = moduleName;
 	}
-
-	public String getHelpMessage()
-	{
-		return helpMessage;
-	}
-
-	public void setHelpMessage(String helpMessage)
-	{
-		this.helpMessage = helpMessage;
-	}
-
-	public String getHelpCommand()
-	{
-		return helpCommand;
-	}
-
-	public void setHelpCommand(String helpCommand)
-	{
-		this.helpCommand = helpCommand;
-	}
-
+	
 	public String getAuthor()
 	{
 		return moduleAuthor;
 	}
-
+	
 	public void setAuthor(String moduleAuthor)
 	{
 		this.moduleAuthor = moduleAuthor;
 	}
-
+	
 	public String getUrl()
 	{
 		return moduleUrl;
 	}
-
+	
 	public void setUrl(String moduleUrl)
 	{
 		this.moduleUrl = moduleUrl;
 	}
-
+	
 	public String getVersion()
 	{
 		return moduleVersion;
 	}
-
+	
 	public void setVersion(String moduleVersion)
 	{
 		this.moduleVersion = moduleVersion;

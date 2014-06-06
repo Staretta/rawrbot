@@ -129,6 +129,13 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+<!-- JAVATUPLES -->
+	    <dependency>
+	        <groupId>org.javatuples</groupId>
+	        <artifactId>javatuples</artifactId>
+	        <version>1.2</version>
+	        <scope>compile</scope>
+	    </dependency>
 	</dependencies>
 	<repositories>
         <repository>

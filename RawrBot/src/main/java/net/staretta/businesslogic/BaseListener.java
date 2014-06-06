@@ -1,7 +1,10 @@
 package net.staretta.businesslogic;
 
+import java.util.List;
+
 import net.staretta.businesslogic.util.ircUtil;
 
+import org.javatuples.Pair;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -22,15 +25,20 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onMessage(MessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		if (s.startsWith(moduleInfo.getHelpCommand()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+		List<Pair<String, String>> commandList = moduleInfo.getCommands();
+		for (Pair<String, String> command : commandList)
 		{
-			if (!moduleInfo.getHelpMessage().isEmpty())
-				ircUtil.sendMessage(event, moduleInfo.getHelpMessage());
+			if (s.startsWith(command.getValue0()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			{
+				if (!command.getValue1().isEmpty())
+				{
+					ircUtil.sendMessage(event, command.getValue1());
+					return;
+				}
+				
+			}
 		}
-		else
-		{
-			OnMessage(event);
-		}
+		OnMessage(event);
 	}
 	
 	public abstract void OnMessage(MessageEvent event);
@@ -39,15 +47,20 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		if (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help"))
+		List<Pair<String, String>> commandList = moduleInfo.getCommands();
+		for (Pair<String, String> command : commandList)
 		{
-			if (!moduleInfo.getHelpMessage().isEmpty())
-				ircUtil.sendMessage(event, moduleInfo.getHelpMessage());
+			if (s.startsWith(command.getValue0()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			{
+				if (!command.getValue1().isEmpty())
+				{
+					ircUtil.sendMessage(event, command.getValue1());
+					return;
+				}
+				
+			}
 		}
-		else
-		{
-			OnPrivateMessage(event);
-		}
+		OnPrivateMessage(event);
 	}
 	
 	public abstract void OnPrivateMessage(PrivateMessageEvent event);
