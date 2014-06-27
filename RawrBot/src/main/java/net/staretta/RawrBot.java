@@ -46,7 +46,8 @@ public class RawrBot
 				.setIdentServerEnabled(false)
 				.setServerHostname(setting.getServer())
 				.setServerPort(setting.getPort())
-				.setNickservPassword(setting.getPassword());
+				.setNickservPassword(setting.getPassword())
+				.setAutoReconnect(true);
 			// @formatter:on
 			if (setting.isSsl())
 				builder.setSocketFactory(new UtilSSLSocketFactory().trustAllCertificates());
