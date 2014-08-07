@@ -1,5 +1,7 @@
 package net.staretta;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.staretta.businesslogic.entity.Settings;
@@ -10,11 +12,14 @@ import org.pircbotx.Configuration.Builder;
 import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.google.common.collect.ImmutableSortedSet;
 
 public class RawrBot
 {
@@ -49,6 +54,7 @@ public class RawrBot
 				.setNickservPassword(setting.getPassword())
 				.setAutoReconnect(true);
 			// @formatter:on
+			
 			if (setting.isSsl())
 				builder.setSocketFactory(new UtilSSLSocketFactory().trustAllCertificates());
 			
@@ -63,7 +69,7 @@ public class RawrBot
 				}
 				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
 				{
-					logger.error("Exception in RawrBot.main ", e);
+					logger.error("Exception in RawrBot.main: ", e);
 				}
 			}
 			
@@ -73,5 +79,31 @@ public class RawrBot
 		}
 		logger.info("Starting IRC bots.");
 		manager.start();
+		
+		
+		// Bot monitoring
+		// The bots throw an exception when they get disconnected from a server, and never reconnect.
+		ImmutableSortedSet<PircBotX> bots = manager.getBots();
+		List<Integer> botIdList = new ArrayList<Integer>();
+		for (PircBotX bot : bots)
+		{
+			botIdList.add(bot.getBotId());
+		}
+		
+		while (true)
+		{
+			for (Integer id : botIdList)
+			{
+				PircBotX bot = manager.getBotById(id);
+				if (!bot.isConnected())
+				{
+					try {
+						bot.startBot();
+					} catch (IOException | IrcException e) {
+						logger.error("Exception in RawrBot.main.Monitor" + e);
+					}
+				}
+			}
+		}
 	}
 }
