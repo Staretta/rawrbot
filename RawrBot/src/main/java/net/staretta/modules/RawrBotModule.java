@@ -36,9 +36,8 @@ public class RawrBotModule extends BaseListener
 	{
 		// If we see our default nickname quit, then rename our name to it.
 		if (event.getUser().getNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
-		{
-			event.getBot().sendIRC().changeNick(event.getBot().getConfiguration().getName());
-		}
+			if (event.getBot().isConnected())
+				event.getBot().sendIRC().changeNick(event.getBot().getConfiguration().getName());
 	}
 	
 	@Override
