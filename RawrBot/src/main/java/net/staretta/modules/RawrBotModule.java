@@ -56,7 +56,7 @@ public class RawrBotModule extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		logger.info(event.getBot().getConfiguration().getServerHostname());
+		// logger.info(event.getBot().getConfiguration().getServerHostname());
 		// if ((event.getUser().getNick().equalsIgnoreCase(botOwner) || ircUtil.isOP(event, ircChannel))
 		// && event.getMessage().equalsIgnoreCase("!quit"))
 		// {

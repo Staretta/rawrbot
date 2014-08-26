@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.staretta.RawrBot;
-
 import org.pircbotx.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RateLimiter extends ListenerAdapter
 {
-	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	private static Logger logger = LoggerFactory.getLogger(RateLimiter.class);
 	private static int timeout = 600000; // Milliseconds
 	private static volatile Map<String, List> userRequests = new HashMap<String, List>();
 	

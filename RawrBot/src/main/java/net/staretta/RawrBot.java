@@ -21,19 +21,19 @@ import com.google.common.collect.ImmutableSortedSet;
 public class RawrBot
 {
 	public static ApplicationContext applicationContext;
-
+	
 	public static void main(String[] args)
 	{
 		Logger logger = LoggerFactory.getLogger(RawrBot.class);
-
+		
 		logger.info("Initializing Spring context.");
 		applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
 		logger.info("Spring context initialized.");
-
+		
 		SettingsService settingsService = applicationContext.getBean(SettingsService.class);
 		List<Settings> serverSettings = settingsService.getBotSettings();
 		logger.info("Bot Settings Loaded.");
-
+		
 		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
 		for (Settings setting : serverSettings)
 		{
@@ -51,33 +51,32 @@ public class RawrBot
 				.setNickservPassword(setting.getPassword())
 				.setAutoReconnect(true);
 			// @formatter:on
-
+			
 			if (setting.isSsl())
 				builder.setSocketFactory(new UtilSSLSocketFactory().trustAllCertificates());
-
+			
 			for (String channel : setting.getChannels())
 				builder.addAutoJoinChannel(channel);
-
+			
 			for (String module : setting.getModules())
 			{
 				try
 				{
-					builder.addListener((Listener<PircBotX>) Class.forName("net.staretta.modules." + module)
-							.newInstance());
+					builder.addListener((Listener<PircBotX>) Class.forName("net.staretta.modules." + module).newInstance());
 				}
 				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
 				{
 					logger.error("Exception in RawrBot.main: ", e);
 				}
 			}
-
+			
 			Configuration<PircBotX> config = builder.buildConfiguration();
 			manager.addBot(config);
 			logger.info("Added IRC bot to manager: " + setting.getServer());
 		}
 		logger.info("Starting IRC bots.");
 		manager.start();
-
+		
 		// Bot monitoring
 		// The bots throw an exception when they get disconnected from a server, and never reconnect.
 		ImmutableSortedSet<PircBotX> bots = manager.getBots();

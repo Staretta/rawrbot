@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Json
 {
-	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
-
+	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	
 	/**
 	 * Gets the HTTP Page URL, and returns as a string.
 	 * 
@@ -37,11 +37,11 @@ public class Json
 		}
 		catch (Exception e)
 		{
-			logger.info("Exception: Could not get or parse " + url);
+			logger.info("Exception in Json.getHttpJson: Could not get or parse " + url);
 		}
 		return node;
 	}
-
+	
 	private static JsonNode getFileJson(String location)
 	{
 		ObjectMapper m = new ObjectMapper();
@@ -52,12 +52,12 @@ public class Json
 		}
 		catch (Exception e)
 		{
-			logger.info("Exception: Could not get or parse " + location);
+			logger.info("Exception in Json.getFileJson: Could not get or parse " + location);
 			e.printStackTrace();
 		}
 		return node;
 	}
-
+	
 	/**
 	 * Converts URL Connection response to a JSON Object
 	 * 
@@ -70,7 +70,7 @@ public class Json
 		json = getHttpJson(url);
 		return json;
 	}
-
+	
 	public static JsonNode readJsonFromFile(String location)
 	{
 		JsonNode json = new ObjectMapper().createObjectNode();

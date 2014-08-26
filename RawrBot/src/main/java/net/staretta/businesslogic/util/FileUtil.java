@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 public class FileUtil
 {
-	private static Logger	logger	= LoggerFactory.getLogger(RawrBot.class);
-
+	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	
 	public static String[] readLines(String filename)
 	{
 		// Reads the lines from the text file and returns a list
@@ -31,9 +31,9 @@ public class FileUtil
 			bufferedReader.close();
 			return lines.toArray(new String[lines.size()]);
 		}
-		catch (IOException ex)
+		catch (IOException e)
 		{
-			logger.error(ex.toString());
+			logger.error("Exception in FileUtil.readLines: " + e);
 		}
 		return null;
 	}

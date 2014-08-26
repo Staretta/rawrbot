@@ -127,7 +127,7 @@ public class Vimeo extends BaseListener
 			}
 			catch (Exception e)
 			{
-				logger.error("Exception in Vimeo.getVimeoVideoDetails: " + e.toString());
+				logger.error("Exception in Vimeo.getVimeoVideoDetails: " + e);
 			}
 		}
 		return videoDetails;

@@ -116,7 +116,7 @@ public class Youtube extends BaseListener
 		}
 		catch (IOException e)
 		{
-			logger.info("IOException in YouTube.getYouTubeAPI: " + e.toString());
+			logger.info("IOException in YouTube.getYouTubeAPI: " + e);
 		}
 		return list;
 	}
