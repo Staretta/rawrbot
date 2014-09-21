@@ -80,18 +80,25 @@ public class RawrBot
 		// Bot monitoring
 		// The bots throw an exception when they get disconnected from a server, and never reconnect.
 		ImmutableSortedSet<PircBotX> bots = manager.getBots();
-		long startTime = System.currentTimeMillis();
 		while (true)
 		{
-			if ((System.currentTimeMillis() - startTime) > 60000)
+			try
 			{
-				startTime = System.currentTimeMillis();
-				for (PircBotX bot : bots)
+				Thread.sleep(300000);
+			}
+			catch (InterruptedException e)
+			{
+				logger.info("Exception: " + e);
+			}
+			logger.info("Bot Monitor Check");
+			for (PircBotX bot : bots)
+			{
+				logger.info("Bot Monitor Check -> Checking Bot: " + bot.getNick() + "@" + bot.getConfiguration().getServerHostname());
+				if (!bot.isConnected() || bot.getState().equals(PircBotX.State.DISCONNECTED))
 				{
-					if (!bot.isConnected())
-					{
-						manager.addBot(bot);
-					}
+					logger.info("Bot Monitor Check -> Bot Offline: " + bot.getNick() + "@" + bot.getConfiguration().getServerHostname());
+					manager.addBot(bot);
+					logger.info("Bot Monitor Check -> Restarting Bot: " + bot.getNick() + "@" + bot.getConfiguration().getServerHostname());
 				}
 			}
 		}
