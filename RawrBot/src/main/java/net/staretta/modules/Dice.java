@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 
 public class Dice extends BaseListener
 {
-	// Logger shit
-	private static Logger logger = LoggerFactory.getLogger(Dice.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	private int maxNumberDies = 20;
 	private int maxDieSize = 1000;
 	private int defaultNumberDies = 1;

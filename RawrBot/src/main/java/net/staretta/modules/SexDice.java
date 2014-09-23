@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class SexDice extends BaseListener
 {
-	private static Logger logger = LoggerFactory.getLogger(SexDice.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SexDiceService service;
 	
 	public SexDice()

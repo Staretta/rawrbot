@@ -30,7 +30,7 @@ public class Youtube extends BaseListener
 	// TODO: Add Duration, Uploader, and short description of youtube video.
 	// Probably requires making a new function for building http requests, and passing the list
 	// for snippets, and video details.
-	private static Logger logger = LoggerFactory.getLogger(Youtube.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String regex = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
 	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	private String apiKey = "AIzaSyBrCQ6gcGeOsZF0BLAdX_K7j9CX8svrcBo";

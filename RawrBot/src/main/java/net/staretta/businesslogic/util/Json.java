@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import net.staretta.RawrBot;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Json
 {
-	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	private static Logger logger = LoggerFactory.getLogger(Json.class);
 	
 	/**
 	 * Gets the HTTP Page URL, and returns as a string.

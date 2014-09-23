@@ -23,7 +23,7 @@ public class MessageLogService
 	@PersistenceContext
 	private EntityManager em;
 	
-	Logger logger = LoggerFactory.getLogger(MessageLogService.class);
+	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	public MessageLogService()
 	{

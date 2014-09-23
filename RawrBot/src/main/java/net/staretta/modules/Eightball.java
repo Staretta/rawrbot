@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class Eightball extends BaseListener
 {
-	private static Logger logger = LoggerFactory.getLogger(Eightball.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private EightballService eightballService;
 	
 	public Eightball()

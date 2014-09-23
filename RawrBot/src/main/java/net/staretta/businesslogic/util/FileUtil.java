@@ -6,16 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.staretta.RawrBot;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FileUtil
 {
-	private static Logger logger = LoggerFactory.getLogger(RawrBot.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	public static String[] readLines(String filename)
+	public String[] readLines(String filename)
 	{
 		// Reads the lines from the text file and returns a list
 		try

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class Rawr extends BaseListener
 {
-	private static Logger logger = LoggerFactory.getLogger(Rawr.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private RawrService service;
 	
 	public Rawr()

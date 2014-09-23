@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class Help extends BaseListener
 {
-	private static Logger logger = LoggerFactory.getLogger(Help.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Override
 	protected ModuleInfo setModuleInfo()

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class Vimeo extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(Vimeo.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String regex = "(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*";
 	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	
