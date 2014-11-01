@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -38,6 +39,19 @@ public class ircUtil
 	public static void sendMessage(PrivateMessageEvent event, String message)
 	{
 		event.getUser().send().message(message);
+	}
+	
+	/**
+	 * Sends a message to a channel
+	 * 
+	 * @param event
+	 *            ActionEvent
+	 * @param message
+	 *            we want to send
+	 */
+	public static void sendMessage(ActionEvent event, String message)
+	{
+		event.getChannel().send().message(message);
 	}
 	
 	/**

@@ -7,9 +7,12 @@ import java.util.regex.Pattern;
 
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.util.Colors;
 import net.staretta.businesslogic.util.MiscUtil;
 import net.staretta.businesslogic.util.ircUtil;
 
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -155,8 +158,25 @@ public class Youtube extends BaseListener
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = "YouTube: " + videoDetails.title + " " + videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase()
-					+ "]";
+			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
+					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
+					+ videoDetails.quality.toUpperCase() + "]";
+			if (videoDetails.title != null)
+				ircUtil.sendMessage(event, message);
+		}
+	}
+	
+	@Override
+	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	{
+		// If message is a youtube url and we have a youtube api key in the properties file.
+		if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage()))
+		{
+			// Get the title of the video, and message the channel.
+			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
+			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
+					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
+					+ videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
 				ircUtil.sendMessage(event, message);
 		}
