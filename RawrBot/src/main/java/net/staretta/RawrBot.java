@@ -79,6 +79,7 @@ public class RawrBot
 		
 		// Bot monitoring
 		// The bots throw an exception when they get disconnected from a server, and never reconnect.
+		// This is a stopgap measure at best, sometimes it works, sometimes it doesn't.
 		ImmutableSortedSet<PircBotX> bots = manager.getBots();
 		while (true)
 		{

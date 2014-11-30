@@ -29,10 +29,10 @@ public class Eightball extends BaseListener
 		moduleInfo.setName("Eightball");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.1");
-		moduleInfo.addCommandInfo("!eightball",
+		moduleInfo.addCommand("!eightball",
 				"!eightball <question>?: Mystically queries the magic eightball for an answer to your question."
 						+ " Note: Question must end with a question mark. \"?\"");
-		moduleInfo.addCommandInfo("!8ball", "!8ball <question>?: Mystically queries the magic eightball for an answer to your question."
+		moduleInfo.addCommand("!8ball", "!8ball <question>?: Mystically queries the magic eightball for an answer to your question."
 				+ " Note: Question must end with a question mark. \"?\"");
 		return moduleInfo;
 	}

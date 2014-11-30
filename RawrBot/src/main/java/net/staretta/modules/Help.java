@@ -1,13 +1,13 @@
 package net.staretta.modules;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.javatuples.Pair;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -26,9 +26,9 @@ public class Help extends BaseListener
 	{
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setAuthor("Staretta");
-		moduleInfo.setVersion("v2.0");
-		moduleInfo.addCommandInfo("!help", "");
-		moduleInfo.addCommandInfo("!commands", "");
+		moduleInfo.setVersion("v2.1");
+		moduleInfo.addCommand("!help");
+		moduleInfo.addCommand("!commands");
 		moduleInfo.setName("Help");
 		return moduleInfo;
 	}
@@ -65,15 +65,15 @@ public class Help extends BaseListener
 			{
 				BaseListener listener = (BaseListener) mod;
 				
-				List<Pair<String, String>> commandList = listener.moduleInfo.getCommands();
-				for (Pair<String, String> commandInfo : commandList)
+				HashMap<String, String> commandList = listener.moduleInfo.getCommands();
+				for (Entry<String, String> commandInfo : commandList.entrySet())
 				{
-					if (!commandInfo.getValue0().isEmpty())
-						commands += commandInfo.getValue0() + " ";
+					if (!commandInfo.getKey().isEmpty())
+						commands += commandInfo.getKey() + " ";
 				}
 			}
 		}
-		String[] commandHelp = { "Commands: " + commands, "For command specific help, type \"-help\" after a command." };
+		String[] commandHelp = { "Commands: " + commands, "For command specific help, type \"-help\" or \"-h\" after a command." };
 		return commandHelp;
 	}
 }

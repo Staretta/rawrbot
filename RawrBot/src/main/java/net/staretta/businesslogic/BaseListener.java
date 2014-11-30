@@ -1,10 +1,10 @@
 package net.staretta.businesslogic;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import net.staretta.businesslogic.util.ircUtil;
 
-import org.javatuples.Pair;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -25,17 +25,16 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onMessage(MessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		List<Pair<String, String>> commandList = moduleInfo.getCommands();
-		for (Pair<String, String> command : commandList)
+		HashMap<String, String> commandList = moduleInfo.getCommands();
+		for (Entry<String, String> command : commandList.entrySet())
 		{
-			if (s.startsWith(command.getValue0()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (s.startsWith(command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
-				if (!command.getValue1().isEmpty())
+				if (!command.getValue().isEmpty())
 				{
-					ircUtil.sendMessage(event, command.getValue1());
+					ircUtil.sendMessage(event, command.getValue());
 					return;
 				}
-				
 			}
 		}
 		OnMessage(event);
@@ -47,17 +46,16 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		List<Pair<String, String>> commandList = moduleInfo.getCommands();
-		for (Pair<String, String> command : commandList)
+		HashMap<String, String> commandList = moduleInfo.getCommands();
+		for (Entry<String, String> command : commandList.entrySet())
 		{
-			if (s.startsWith(command.getValue0()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (s.startsWith(command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
-				if (!command.getValue1().isEmpty())
+				if (!command.getValue().isEmpty())
 				{
-					ircUtil.sendMessage(event, command.getValue1());
+					ircUtil.sendMessage(event, command.getValue());
 					return;
 				}
-				
 			}
 		}
 		OnPrivateMessage(event);

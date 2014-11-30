@@ -20,7 +20,7 @@ public class Quote extends BaseListener
 		moduleInfo.setName("Quote");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.2");
-		moduleInfo.addCommandInfo("!quote", "!quote : Says a random quote from the iheartquotes.com Database.");
+		moduleInfo.addCommand("!quote", "!quote : Says a random quote from the iheartquotes.com Database.");
 		return moduleInfo;
 	}
 	

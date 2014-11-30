@@ -19,7 +19,7 @@ public class Tea extends BaseListener
 		moduleInfo.setName("Tea");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
-		moduleInfo.addCommandInfo("!tea", "!tea [user] : Gives you, or the user, some tea. [Command idea by GothicEmily]");
+		moduleInfo.addCommand("!tea", "!tea [user] : Gives you, or the user, some tea. [Command idea by GothicEmily]");
 		return moduleInfo;
 	}
 	

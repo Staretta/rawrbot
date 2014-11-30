@@ -28,7 +28,7 @@ public class SexDice extends BaseListener
 		moduleInfo.setName("SexDice");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.1");
-		moduleInfo.addCommandInfo("!sexdice", "!sexdice: Displays an action and a location for various erotic fantasies. "
+		moduleInfo.addCommand("!sexdice", "!sexdice: Displays an action and a location for various erotic fantasies. "
 				+ "You can also specify an !action or a !bodypart seperately.");
 		return moduleInfo;
 	}

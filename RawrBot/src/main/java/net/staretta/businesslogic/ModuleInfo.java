@@ -1,9 +1,6 @@
 package net.staretta.businesslogic;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.javatuples.Pair;
+import java.util.HashMap;
 
 public class ModuleInfo
 {
@@ -11,20 +8,24 @@ public class ModuleInfo
 	private String moduleAuthor = "";
 	private String moduleUrl = "";
 	private String moduleVersion = "";
-	private List<Pair<String, String>> commandList = new ArrayList<Pair<String, String>>();
+	private HashMap<String, String> commandList = new HashMap<String, String>();
 	
 	public ModuleInfo()
 	{
 		
 	}
 	
-	public void addCommandInfo(String command, String commandHelp)
+	public void addCommand(String command)
 	{
-		Pair<String, String> pair = Pair.with(command, commandHelp);
-		this.commandList.add(pair);
+		this.commandList.put(command, "");
 	}
 	
-	public List<Pair<String, String>> getCommands()
+	public void addCommand(String command, String commandHelp)
+	{
+		this.commandList.put(command, commandHelp);
+	}
+	
+	public HashMap<String, String> getCommands()
 	{
 		return commandList;
 	}
