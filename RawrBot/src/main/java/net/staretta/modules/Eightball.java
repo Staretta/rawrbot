@@ -1,5 +1,8 @@
 package net.staretta.modules;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
@@ -15,11 +18,11 @@ import org.slf4j.LoggerFactory;
 public class Eightball extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	private EightballService eightballService;
+	private EightballService service;
 	
 	public Eightball()
 	{
-		eightballService = RawrBot.applicationContext.getBean(EightballService.class);
+		service = RawrBot.applicationContext.getBean(EightballService.class);
 	}
 	
 	@Override
@@ -43,7 +46,7 @@ public class Eightball extends BaseListener
 		if ((ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
 				&& event.getMessage().trim().toLowerCase().endsWith("?") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
-			String answer = eightballService.getRandomAnswer();
+			String answer = service.getRandomAnswer();
 			ircUtil.sendMessage(event, answer);
 		}
 	}
@@ -51,12 +54,24 @@ public class Eightball extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if ((ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
-				&& event.getMessage().trim().toLowerCase().endsWith("?"))
+		if (ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
 		{
-			String answer = eightballService.getRandomAnswer();
-			ircUtil.sendMessage(event, answer);
+			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().trim().split("\\s")));
+			
+			if (params.size() >= 3 && (params.get(1).equals("-add") || params.get(1).equals("-a"))
+					&& event.getUser().getNick().equals("Staretta"))
+			{
+				StringBuilder sb = new StringBuilder();
+				for (int i = 2; i < params.size(); i++)
+					sb.append(params.get(i) + " ");
+				service.addAnswer(sb.toString().trim());
+				ircUtil.sendMessage(event, "Successfully added new 8ball answer.");
+			}
+			else if (event.getMessage().trim().toLowerCase().endsWith("?"))
+			{
+				String answer = service.getRandomAnswer();
+				ircUtil.sendMessage(event, answer);
+			}
 		}
 	}
-	
 }

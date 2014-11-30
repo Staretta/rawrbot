@@ -28,6 +28,16 @@ public class EightballEntity implements Serializable
 		
 	}
 	
+	public EightballEntity(String message)
+	{
+		this.message = message;
+	}
+	
+	public void setMessage(String message)
+	{
+		this.message = message;
+	}
+	
 	public String getMessage()
 	{
 		return message;

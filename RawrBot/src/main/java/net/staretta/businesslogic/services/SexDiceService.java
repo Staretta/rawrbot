@@ -44,7 +44,7 @@ public class SexDiceService
 	
 	public String getRandomSexDice()
 	{
-		return getRandomAction() + " " + getRandomBodypart();
+		return getRandomAction() + " " + getRandomBodypart() + " " + getRandomLocation();
 	}
 	
 	public Session getSession()
