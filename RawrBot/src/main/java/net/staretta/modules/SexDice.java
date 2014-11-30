@@ -29,7 +29,7 @@ public class SexDice extends BaseListener
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.1");
 		moduleInfo.addCommand("!sexdice", "!sexdice: Displays an action and a location for various erotic fantasies. "
-				+ "You can also specify an !action or a !bodypart seperately.");
+				+ "You can also specify an !action !bodypart or !location seperately.");
 		return moduleInfo;
 	}
 	
@@ -44,9 +44,13 @@ public class SexDice extends BaseListener
 		{
 			ircUtil.sendMessage(event, service.getRandomAction());
 		}
-		else if (ircUtil.isCommand(event, "!bodypart") || ircUtil.isCommand(event, "!location"))
+		else if (ircUtil.isCommand(event, "!bodypart"))
 		{
 			ircUtil.sendMessage(event, service.getRandomBodypart());
+		}
+		else if (ircUtil.isCommand(event, "!location"))
+		{
+			ircUtil.sendMessage(event, service.getRandomLocation());
 		}
 	}
 	
