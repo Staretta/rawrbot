@@ -28,7 +28,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String> commandList = moduleInfo.getCommands();
 		for (Entry<String, String> command : commandList.entrySet())
 		{
-			if (s.startsWith(command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (ircUtil.isCommand(event, command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (!command.getValue().isEmpty())
 				{
@@ -49,7 +49,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String> commandList = moduleInfo.getCommands();
 		for (Entry<String, String> command : commandList.entrySet())
 		{
-			if (s.startsWith(command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (ircUtil.isCommand(event, command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (!command.getValue().isEmpty())
 				{

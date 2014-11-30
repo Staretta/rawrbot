@@ -47,7 +47,7 @@ public class Dice extends BaseListener
 	{
 		String userMessage = event.getMessage().trim().toLowerCase();
 		if (!RateLimiter.isRateLimited(event.getUser().getNick(), 20)
-				&& (userMessage.startsWith("!dice") || userMessage.startsWith("!roll")))
+				&& (ircUtil.isCommand(event, "!dice") || ircUtil.isCommand(event, "!roll")))
 		{
 			int numberDies = defaultNumberDies;
 			int dieSize = defaultDieSize;

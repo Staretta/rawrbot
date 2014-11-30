@@ -237,15 +237,27 @@ public class ircUtil
 	
 	public static boolean isCommand(MessageEvent event, String command)
 	{
-		if (event.getMessage().toLowerCase().startsWith(command))
-			return true;
+		String[] params = event.getMessage().split("\\s");
+		if (params.length >= 1)
+		{
+			if (params[0].equals(command))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 	
 	public static boolean isCommand(PrivateMessageEvent event, String command)
 	{
-		if (event.getMessage().toLowerCase().startsWith(command))
-			return true;
+		String[] params = event.getMessage().split("\\s");
+		if (params.length >= 1)
+		{
+			if (params[0].equals(command))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 }
