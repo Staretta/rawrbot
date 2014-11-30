@@ -36,6 +36,12 @@ public class SexDiceEntity implements Serializable
 		
 	}
 	
+	public SexDiceEntity(DiceType diceType, String message)
+	{
+		this.diceType = diceType;
+		this.message = message;
+	}
+	
 	public long getId()
 	{
 		return id;

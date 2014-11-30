@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.staretta.businesslogic.entity.SexDiceEntity;
+import net.staretta.businesslogic.entity.SexDiceEntity.DiceType;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,6 +18,27 @@ public class SexDiceService
 {
 	@PersistenceContext
 	private EntityManager em;
+	
+	public void addAction(String action)
+	{
+		Session session = getSession();
+		SexDiceEntity entity = new SexDiceEntity(DiceType.ACTION, action);
+		session.saveOrUpdate(entity);
+	}
+	
+	public void addBodypart(String bodypart)
+	{
+		Session session = getSession();
+		SexDiceEntity entity = new SexDiceEntity(DiceType.BODYPART, bodypart);
+		session.saveOrUpdate(entity);
+	}
+	
+	public void addLocation(String location)
+	{
+		Session session = getSession();
+		SexDiceEntity entity = new SexDiceEntity(DiceType.LOCATION, location);
+		session.saveOrUpdate(entity);
+	}
 	
 	public String getRandomAction()
 	{
