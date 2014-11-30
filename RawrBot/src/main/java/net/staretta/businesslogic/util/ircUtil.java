@@ -1,5 +1,7 @@
 package net.staretta.businesslogic.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -237,10 +239,10 @@ public class ircUtil
 	
 	public static boolean isCommand(MessageEvent event, String command)
 	{
-		String[] params = event.getMessage().split("\\s");
-		if (params.length >= 1)
+		ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
+		if (params.size() >= 1)
 		{
-			if (params[0].equals(command))
+			if (params.get(0).equals(command))
 			{
 				return true;
 			}
@@ -250,10 +252,10 @@ public class ircUtil
 	
 	public static boolean isCommand(PrivateMessageEvent event, String command)
 	{
-		String[] params = event.getMessage().split("\\s");
-		if (params.length >= 1)
+		ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
+		if (params.size() >= 1)
 		{
-			if (params[0].equals(command))
+			if (params.get(0).equals(command))
 			{
 				return true;
 			}

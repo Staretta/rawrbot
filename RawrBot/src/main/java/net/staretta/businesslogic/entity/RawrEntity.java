@@ -17,7 +17,7 @@ public class RawrEntity implements Serializable
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "eightball" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "rawr" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	@Column(length = 1000)
