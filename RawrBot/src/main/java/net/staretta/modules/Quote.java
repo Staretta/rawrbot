@@ -4,7 +4,6 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.Json;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -23,33 +22,33 @@ public class Quote extends BaseListener
 		moduleInfo.addCommand("!quote", "!quote : Says a random quote from the iheartquotes.com Database.");
 		return moduleInfo;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!quote") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if (isCommand(event.getMessage(), "!quote") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			Object[] quote = null;
 			quote = getQuote();
-			
+
 			if (quote != null)
 				event.getChannel().send().message(quote[0].toString());
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!quote"))
+		if (isCommand(event.getMessage(), "!quote"))
 		{
 			Object[] quote = null;
 			quote = getQuote();
-			
+
 			if (quote != null)
 				event.getUser().send().message(quote[0].toString());
 		}
 	}
-	
+
 	private Object[] getQuote()
 	{
 		// grabs JSONobject and stores it into json for us to read from

@@ -9,7 +9,6 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.entity.TellEntity;
 import net.staretta.businesslogic.services.TellService;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -68,7 +67,7 @@ public class Tell extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!tell"))
+		if (isCommand(event.getMessage(), "!tell"))
 		{
 			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
 			if (params.size() > 2)
@@ -88,7 +87,7 @@ public class Tell extends BaseListener
 				event.getChannel().send().message(moduleInfo.getCommands().get("!tell"));
 			}
 		}
-		else if (ircUtil.isCommand(event, "!told"))
+		else if (isCommand(event.getMessage(), "!told"))
 		{
 			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
 			if (params.size() > 1)
@@ -105,7 +104,7 @@ public class Tell extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!tell"))
+		if (isCommand(event.getMessage(), "!tell"))
 		{
 			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
 			if (params.size() > 2)
@@ -125,7 +124,7 @@ public class Tell extends BaseListener
 				event.getUser().send().message(moduleInfo.getCommands().get("!tell"));
 			}
 		}
-		else if (ircUtil.isCommand(event, "!told"))
+		else if (isCommand(event.getMessage(), "!told"))
 		{
 
 		}

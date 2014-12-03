@@ -7,7 +7,6 @@ import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.services.SexDiceService;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -39,19 +38,19 @@ public class SexDice extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!sexdice"))
+		if (isCommand(event.getMessage(), "!sexdice"))
 		{
 			event.getChannel().send().message(service.getRandomSexDice());
 		}
-		else if (ircUtil.isCommand(event, "!action"))
+		else if (isCommand(event.getMessage(), "!action"))
 		{
 			event.getChannel().send().message(service.getRandomAction());
 		}
-		else if (ircUtil.isCommand(event, "!bodypart"))
+		else if (isCommand(event.getMessage(), "!bodypart"))
 		{
 			event.getChannel().send().message(service.getRandomBodypart());
 		}
-		else if (ircUtil.isCommand(event, "!location"))
+		else if (isCommand(event.getMessage(), "!location"))
 		{
 			event.getChannel().send().message(service.getRandomLocation());
 		}
@@ -60,7 +59,7 @@ public class SexDice extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!sexdice"))
+		if (isCommand(event.getMessage(), "!sexdice"))
 		{
 			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().trim().split("\\s")));
 			if (params.size() >= 3 && event.getUser().getNick().equals("Staretta"))

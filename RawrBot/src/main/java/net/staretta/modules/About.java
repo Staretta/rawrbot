@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -29,7 +28,7 @@ public class About extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!about"))
+		if (isCommand(event.getMessage(), "!about"))
 		{
 			ArrayList<String> about = new ArrayList<String>();
 			about.add(event.getBot().getNick()
@@ -43,7 +42,7 @@ public class About extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!about"))
+		if (isCommand(event.getMessage(), "!about"))
 		{
 			ArrayList<String> about = new ArrayList<String>();
 			about.add(event.getBot().getNick()

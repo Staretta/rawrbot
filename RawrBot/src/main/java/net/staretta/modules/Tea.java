@@ -3,7 +3,6 @@ package net.staretta.modules;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -26,7 +25,7 @@ public class Tea extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!tea") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if (isCommand(event.getMessage(), "!tea") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			String[] param = event.getMessage().trim().split("\\s");
 			if (param.length == 1)

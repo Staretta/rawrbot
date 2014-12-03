@@ -7,7 +7,6 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.RawrService;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -41,7 +40,7 @@ public class Rawr extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!rawr") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if (isCommand(event.getMessage(), "!rawr") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			if (event.getMessage().trim().startsWith("!RAWR"))
 			{
@@ -52,7 +51,7 @@ public class Rawr extends BaseListener
 				event.getChannel().send().message(service.getRandomRawr());
 			}
 		} // Check if message starts with !meow, and if they are rate limited
-		else if (ircUtil.isCommand(event, "!meow") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		else if (isCommand(event.getMessage(), "!meow") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			if (event.getMessage().trim().startsWith("!MEOW"))
 			{
@@ -66,7 +65,7 @@ public class Rawr extends BaseListener
 				event.getChannel().send().message(meow);
 			}
 		} // Check if message starts with !nyan, and if they are rate limited
-		else if (ircUtil.isCommand(event, "!nyan") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		else if (isCommand(event.getMessage(), "!nyan") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			// We want nyan to be weighted more than any other command. So we add more requests to their queue.
 			RateLimiter.addRequest(event.getUser().getNick(), 4);
@@ -80,7 +79,7 @@ public class Rawr extends BaseListener
 			for (String line : nyan)
 				event.getChannel().send().message(line);
 		}
-		else if (ircUtil.isCommand(event, "!woosh") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		else if (isCommand(event.getMessage(), "!woosh") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			Random random = new Random();
 			String msg = "woo";

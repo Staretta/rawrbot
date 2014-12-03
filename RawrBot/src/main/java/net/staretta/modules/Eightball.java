@@ -8,7 +8,6 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.EightballService;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -19,12 +18,12 @@ public class Eightball extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private EightballService service;
-	
+
 	public Eightball()
 	{
 		service = RawrBot.applicationContext.getBean(EightballService.class);
 	}
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -35,29 +34,33 @@ public class Eightball extends BaseListener
 		moduleInfo.addCommand("!eightball",
 				"!eightball <question>?: Mystically queries the magic eightball for an answer to your question."
 						+ " Note: Question must end with a question mark. \"?\"");
-		moduleInfo.addCommand("!8ball", "!8ball <question>?: Mystically queries the magic eightball for an answer to your question."
-				+ " Note: Question must end with a question mark. \"?\"");
+		moduleInfo.addCommand("!8ball",
+				"!8ball <question>?: Mystically queries the magic eightball for an answer to your question."
+						+ " Note: Question must end with a question mark. \"?\"");
 		return moduleInfo;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
-		if ((ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
-				&& event.getMessage().trim().toLowerCase().endsWith("?") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if ((isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball") || isCommand(
+				event.getMessage(), "!8-ball"))
+				&& event.getMessage().trim().toLowerCase().endsWith("?")
+				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			String answer = service.getRandomAnswer();
 			event.getChannel().send().message(answer);
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		if (ircUtil.isCommand(event, "!8ball") || ircUtil.isCommand(event, "!eightball") || ircUtil.isCommand(event, "!8-ball"))
+		if (isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball")
+				|| isCommand(event.getMessage(), "!8-ball"))
 		{
 			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().trim().split("\\s")));
-			
+
 			if (params.size() >= 3 && (params.get(1).equals("-add") || params.get(1).equals("-a"))
 					&& event.getUser().getNick().equals("Staretta"))
 			{

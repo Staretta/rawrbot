@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.staretta.businesslogic.util.ircUtil;
-
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -30,7 +28,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String> commandList = moduleInfo.getCommands();
 		for (Entry<String, String> command : commandList.entrySet())
 		{
-			if (ircUtil.isCommand(event, command.getKey())
+			if (isCommand(event.getMessage(), command.getKey())
 					&& (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (!command.getValue().isEmpty())
@@ -52,7 +50,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String> commandList = moduleInfo.getCommands();
 		for (Entry<String, String> command : commandList.entrySet())
 		{
-			if (ircUtil.isCommand(event, command.getKey())
+			if (isCommand(event.getMessage(), command.getKey())
 					&& (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (!command.getValue().isEmpty())
@@ -67,22 +65,9 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 
 	public abstract void OnPrivateMessage(PrivateMessageEvent event);
 
-	public static boolean isCommand(MessageEvent event, String command)
+	public boolean isCommand(String message, String command)
 	{
-		ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
-		if (params.size() >= 1)
-		{
-			if (params.get(0).equals(command))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean isCommand(PrivateMessageEvent event, String command)
-	{
-		ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
+		ArrayList<String> params = new ArrayList<String>(Arrays.asList(message.split("\\s")));
 		if (params.size() >= 1)
 		{
 			if (params.get(0).equals(command))
