@@ -31,11 +31,11 @@ public class TellService
 		
 	}
 	
-	public boolean addTell(String toNickname, User user, String message, String server)
+	public boolean addTell(User user, String toNickname, String message, String server)
 	{
 		Date date = new Date();
 		Session s = getSession();
-		TellEntity tell = new TellEntity(toNickname, user.getNick(), user.getRealName(), user.getHostmask(), message, server, date);
+		TellEntity tell = new TellEntity(user.getNick(), user.getRealName(), user.getHostmask(), toNickname, message, server, date);
 		s.save(tell);
 		return true;
 	}
@@ -44,7 +44,7 @@ public class TellService
 	public ArrayList<TellEntity> getTells(String nickname, String server)
 	{
 		Query q = getSession().createQuery(
-				"SELECT t FROM TellEntity t WHERE t.toNickname LIKE :toNickname AND t.told = false AND t.server = :server");
+				"from TellEntity as tell where lower(tell.toNickname) = lower(:toNickname) and tell.told = false and tell.server = :server");
 		q.setParameter("toNickname", nickname);
 		q.setParameter("server", server);
 		return (ArrayList<TellEntity>) q.list();
@@ -53,6 +53,16 @@ public class TellService
 	public void setTold(TellEntity entity)
 	{
 		getSession().saveOrUpdate(entity);
+	}
+	
+	public ArrayList<TellEntity> getTolds(String nickname, String server)
+	{
+		return getTolds(nickname, server, 5);
+	}
+	
+	public ArrayList<TellEntity> getTolds(String nickname, String server, int amount)
+	{
+		return null;
 	}
 	
 	private Session getSession()

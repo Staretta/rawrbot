@@ -45,7 +45,7 @@ public class TellEntity implements Serializable
 		
 	}
 	
-	public TellEntity(String toNickname, String fromNickname, String fromUsername, String fromHostmask, String message, String server,
+	public TellEntity(String fromNickname, String fromUsername, String fromHostmask, String toNickname, String message, String server,
 			Date date)
 	{
 		this.toNickname = toNickname;

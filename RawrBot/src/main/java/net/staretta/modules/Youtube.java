@@ -9,7 +9,6 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.util.Colors;
 import net.staretta.businesslogic.util.MiscUtil;
-import net.staretta.businesslogic.util.ircUtil;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -40,7 +39,7 @@ public class Youtube extends BaseListener
 	private HttpTransport httpTransport = new NetHttpTransport();
 	private JsonFactory jsonFactory = new JacksonFactory();
 	private YouTube youtube;
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -50,7 +49,7 @@ public class Youtube extends BaseListener
 		moduleInfo.setVersion("v1.2");
 		return moduleInfo;
 	}
-	
+
 	class VideoDetails
 	{
 		String videoID;
@@ -61,13 +60,13 @@ public class Youtube extends BaseListener
 		String description;
 		String channelTitle;
 		String dimension;
-		
+
 		VideoDetails()
 		{
-			
+
 		}
 	}
-	
+
 	/**
 	 * Checks if the message has a valid YouTube URL
 	 */
@@ -78,7 +77,7 @@ public class Youtube extends BaseListener
 			return true;
 		return false;
 	}
-	
+
 	/**
 	 * Gets the YouTube video ID from the url<br>
 	 * <br>
@@ -97,7 +96,7 @@ public class Youtube extends BaseListener
 		}
 		return video_id;
 	}
-	
+
 	private List<Video> getYouTubeAPI(String ID)
 	{
 		// Need to build our http request for Youtube's API
@@ -123,7 +122,7 @@ public class Youtube extends BaseListener
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Gets the YouTube Video info using Google's API and the ID
 	 */
@@ -132,7 +131,7 @@ public class Youtube extends BaseListener
 		// Parse the ID from the URL, and if it's not null, then get the title.
 		String ID = getYouTubeVideoID(link);
 		VideoDetails videoDetails = new VideoDetails();
-		
+
 		if (ID != null)
 		{
 			List<Video> list = getYouTubeAPI(ID);
@@ -149,7 +148,7 @@ public class Youtube extends BaseListener
 		}
 		return videoDetails;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
@@ -158,14 +157,14 @@ public class Youtube extends BaseListener
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
-					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
-					+ videoDetails.quality.toUpperCase() + "]";
+			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You"
+					+ Colors.add(Colors.WHITE, Colors.RED_BG) + "Tube" + Colors.NORMAL + ": " + videoDetails.title
+					+ " " + videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
-				ircUtil.sendMessage(event, message);
+				event.getChannel().send().message(message);
 		}
 	}
-	
+
 	@Override
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
@@ -174,14 +173,14 @@ public class Youtube extends BaseListener
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
-					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
-					+ videoDetails.quality.toUpperCase() + "]";
+			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You"
+					+ Colors.add(Colors.WHITE, Colors.RED_BG) + "Tube" + Colors.NORMAL + ": " + videoDetails.title
+					+ " " + videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
-				ircUtil.sendMessage(event, message);
+				event.getChannel().send().message(message);
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{

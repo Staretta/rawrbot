@@ -40,8 +40,8 @@ public class Help extends BaseListener
 				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
-			for (String line : helpCommand(listeners))
-				ircUtil.sendMessage(event, line);
+			for (String message : helpCommand(listeners))
+				event.getChannel().send().message( message);
 		}
 	}
 	
@@ -51,8 +51,8 @@ public class Help extends BaseListener
 		if (ircUtil.isCommand(event, "!commands") || ircUtil.isCommand(event, "!help"))
 		{
 			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
-			for (String line : helpCommand(listeners))
-				ircUtil.sendPrivateMessage(event, line);
+			for (String message : helpCommand(listeners))
+				event.getUser().send().message(message);
 		}
 	}
 	

@@ -8,8 +8,9 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.util.Json;
 import net.staretta.businesslogic.util.MiscUtil;
-import net.staretta.businesslogic.util.ircUtil;
 
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class Vimeo extends BaseListener
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String regex = "(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*";
 	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -32,7 +33,7 @@ public class Vimeo extends BaseListener
 		moduleInfo.setVersion("v1.2");
 		return moduleInfo;
 	}
-	
+
 	class VideoDetails
 	{
 		int videoID;
@@ -47,12 +48,12 @@ public class Vimeo extends BaseListener
 		String username;
 		String uploadDate;
 		String description;
-		
+
 		VideoDetails()
 		{
 		}
 	}
-	
+
 	private boolean isVimeoURL(String message)
 	{
 		Matcher matcher = pattern.matcher(message);
@@ -60,7 +61,7 @@ public class Vimeo extends BaseListener
 			return true;
 		return false;
 	}
-	
+
 	private String getVimeoVideoID(String message)
 	{
 		String video_id = null;
@@ -75,7 +76,7 @@ public class Vimeo extends BaseListener
 		}
 		return video_id;
 	}
-	
+
 	private JsonNode getVimeoAPI(String ID) throws IOException
 	{
 		String jsonURL = "http://vimeo.com/api/v2/video/" + ID + ".json";
@@ -83,7 +84,7 @@ public class Vimeo extends BaseListener
 		JsonNode json = jsonArray.get(0);
 		return json;
 	}
-	
+
 	private VideoDetails getVimeoVideoDetails(String link)
 	{
 		// Parse the ID from the URL, and if it's not null, then get the video information.
@@ -96,7 +97,7 @@ public class Vimeo extends BaseListener
 				JsonNode json = getVimeoAPI(ID);
 				if (json == null)
 					return videoDetails;
-				
+
 				if (json.has("id"))
 					videoDetails.videoID = json.get("id").asInt();
 				if (json.has("title"))
@@ -122,7 +123,7 @@ public class Vimeo extends BaseListener
 					videoDetails.username = json.get("user_name").asText();
 				if (json.has("upload_date"))
 					videoDetails.uploadDate = json.get("upload_date").asText();
-				
+
 				return videoDetails;
 			}
 			catch (Exception e)
@@ -132,7 +133,7 @@ public class Vimeo extends BaseListener
 		}
 		return videoDetails;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
@@ -143,10 +144,24 @@ public class Vimeo extends BaseListener
 			String videoSize = "[" + videoDetails.width + "x" + videoDetails.height + "]";
 			String message = "Vimeo: " + videoDetails.title + " " + videoDetails.fDuration + videoSize;
 			if (videoDetails.title != null)
-				ircUtil.sendMessage(event, message);
+				event.getChannel().send().message(message);
 		}
 	}
-	
+
+	@Override
+	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	{
+		// If regex matches link in message, then message channel
+		if (isVimeoURL(event.getMessage()))
+		{
+			VideoDetails videoDetails = getVimeoVideoDetails(event.getMessage());
+			String videoSize = "[" + videoDetails.width + "x" + videoDetails.height + "]";
+			String message = "Vimeo: " + videoDetails.title + " " + videoDetails.fDuration + videoSize;
+			if (videoDetails.title != null)
+				event.getChannel().send().message(message);
+		}
+	}
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{

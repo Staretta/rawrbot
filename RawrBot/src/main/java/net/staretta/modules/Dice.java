@@ -56,7 +56,7 @@ public class Dice extends BaseListener
 			if (userMessage.equalsIgnoreCase("!dice") || userMessage.equalsIgnoreCase("!roll"))
 			{
 				String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = " + randomNumber(dieSize);
-				ircUtil.sendMessage(event, defaultRoll);
+				event.getChannel().send().message(defaultRoll);
 			}
 			// If we find a match to our regex, then roll whatever the regex finds!
 			else if (pattern.matcher(userMessage).find())
@@ -183,18 +183,18 @@ public class Dice extends BaseListener
 				{
 					String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
 							+ randomNumber(dieSize);
-					ircUtil.sendMessage(event, defaultRoll);
+					event.getChannel().send().message(defaultRoll);
 				}
 				else
 				{
-					ircUtil.sendMessage(event, message + rolled + " = " + total);
+					event.getChannel().send().message(message + rolled + " = " + total);
 				}
 			}
 			// If the regex doesn't find anything, then just roll a standard 1d20
 			else
 			{
 				String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = " + randomNumber(dieSize);
-				ircUtil.sendMessage(event, defaultRoll);
+				event.getChannel().send().message(defaultRoll);
 			}
 		}
 	}

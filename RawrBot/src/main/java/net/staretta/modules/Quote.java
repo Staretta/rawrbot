@@ -33,7 +33,7 @@ public class Quote extends BaseListener
 			quote = getQuote();
 			
 			if (quote != null)
-				ircUtil.sendMessage(event, quote[0].toString());
+				event.getChannel().send().message(quote[0].toString());
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class Quote extends BaseListener
 			quote = getQuote();
 			
 			if (quote != null)
-				ircUtil.sendPrivateMessage(event, quote[0].toString());
+				event.getUser().send().message(quote[0].toString());
 		}
 	}
 	

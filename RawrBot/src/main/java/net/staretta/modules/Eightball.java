@@ -47,7 +47,7 @@ public class Eightball extends BaseListener
 				&& event.getMessage().trim().toLowerCase().endsWith("?") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
 			String answer = service.getRandomAnswer();
-			ircUtil.sendMessage(event, answer);
+			event.getChannel().send().message(answer);
 		}
 	}
 	
@@ -65,12 +65,12 @@ public class Eightball extends BaseListener
 				for (int i = 2; i < params.size(); i++)
 					sb.append(params.get(i) + " ");
 				service.addAnswer(sb.toString().trim());
-				ircUtil.sendPrivateMessage(event, "Successfully added new 8ball answer.");
+				event.getUser().send().message("Successfully added new 8ball answer.");
 			}
 			else if (event.getMessage().trim().toLowerCase().endsWith("?"))
 			{
 				String answer = service.getRandomAnswer();
-				ircUtil.sendPrivateMessage(event, answer);
+				event.getUser().send().message(answer);
 			}
 		}
 	}

@@ -11,7 +11,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 public class Tea extends BaseListener
 {
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -22,7 +22,7 @@ public class Tea extends BaseListener
 		moduleInfo.addCommand("!tea", "!tea [user] : Gives you, or the user, some tea. [Command idea by GothicEmily]");
 		return moduleInfo;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
@@ -31,7 +31,10 @@ public class Tea extends BaseListener
 			String[] param = event.getMessage().trim().split("\\s");
 			if (param.length == 1)
 			{
-				ircUtil.sendAction(event, "pours " + event.getUser().getNick() + " a liquid almost, but not quite, entirely unlike tea.");
+				event.getChannel()
+						.send()
+						.action("pours " + event.getUser().getNick()
+								+ " a liquid almost, but not quite, entirely unlike tea.");
 			}
 			else if (param.length == 2)
 			{
@@ -39,13 +42,16 @@ public class Tea extends BaseListener
 				{
 					if (param[1].toLowerCase().equals(user.getNick().toLowerCase()))
 					{
-						ircUtil.sendAction(event, "pours " + user.getNick() + " a liquid almost, but not quite, entirely unlike tea.");
+						event.getChannel()
+								.send()
+								.action("pours " + user.getNick()
+										+ " a liquid almost, but not quite, entirely unlike tea.");
 					}
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{

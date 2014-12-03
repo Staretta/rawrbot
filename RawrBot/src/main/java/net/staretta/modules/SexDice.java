@@ -18,12 +18,12 @@ public class SexDice extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SexDiceService service;
-	
+
 	public SexDice()
 	{
 		service = RawrBot.applicationContext.getBean(SexDiceService.class);
 	}
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -35,28 +35,28 @@ public class SexDice extends BaseListener
 				+ "You can also specify an !action !bodypart or !location seperately.");
 		return moduleInfo;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
 		if (ircUtil.isCommand(event, "!sexdice"))
 		{
-			ircUtil.sendMessage(event, service.getRandomSexDice());
+			event.getChannel().send().message(service.getRandomSexDice());
 		}
 		else if (ircUtil.isCommand(event, "!action"))
 		{
-			ircUtil.sendMessage(event, service.getRandomAction());
+			event.getChannel().send().message(service.getRandomAction());
 		}
 		else if (ircUtil.isCommand(event, "!bodypart"))
 		{
-			ircUtil.sendMessage(event, service.getRandomBodypart());
+			event.getChannel().send().message(service.getRandomBodypart());
 		}
 		else if (ircUtil.isCommand(event, "!location"))
 		{
-			ircUtil.sendMessage(event, service.getRandomLocation());
+			event.getChannel().send().message(service.getRandomLocation());
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
@@ -74,7 +74,7 @@ public class SexDice extends BaseListener
 					service.addBodypart(sb.toString().trim());
 				else if (params.get(1).equals("-addLocation") || params.get(1).equals("-aL"))
 					service.addLocation(sb.toString().trim());
-				ircUtil.sendPrivateMessage(event, "Successfully added sexdice.");
+				event.getUser().send().message("Successfully added sexdice.");
 			}
 		}
 	}

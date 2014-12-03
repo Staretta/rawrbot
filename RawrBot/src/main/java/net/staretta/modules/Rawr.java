@@ -18,12 +18,12 @@ public class Rawr extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private RawrService service;
-	
+
 	public Rawr()
 	{
 		service = RawrBot.applicationContext.getBean(RawrService.class);
 	}
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -37,7 +37,7 @@ public class Rawr extends BaseListener
 		moduleInfo.addCommand("!woosh", "!woosh : Woosh! :3");
 		return moduleInfo;
 	}
-	
+
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
@@ -45,11 +45,11 @@ public class Rawr extends BaseListener
 		{
 			if (event.getMessage().trim().startsWith("!RAWR"))
 			{
-				ircUtil.sendMessage(event, service.getRandomRawr().toUpperCase());
+				event.getChannel().send().message(service.getRandomRawr().toUpperCase());
 			}
 			else
 			{
-				ircUtil.sendMessage(event, service.getRandomRawr());
+				event.getChannel().send().message(service.getRandomRawr());
 			}
 		} // Check if message starts with !meow, and if they are rate limited
 		else if (ircUtil.isCommand(event, "!meow") && !RateLimiter.isRateLimited(event.getUser().getNick()))
@@ -57,13 +57,13 @@ public class Rawr extends BaseListener
 			if (event.getMessage().trim().startsWith("!MEOW"))
 			{
 				String meow = meowReplace(service.getRandomRawr());
-				ircUtil.sendMessage(event, meow.toUpperCase());
+				event.getChannel().send().message(meow.toUpperCase());
 			}
 			else
 			{
 				// If command starts with !meow.
 				String meow = meowReplace(service.getRandomRawr());
-				ircUtil.sendMessage(event, meow);
+				event.getChannel().send().message(meow);
 			}
 		} // Check if message starts with !nyan, and if they are rate limited
 		else if (ircUtil.isCommand(event, "!nyan") && !RateLimiter.isRateLimited(event.getUser().getNick()))
@@ -78,7 +78,7 @@ public class Rawr extends BaseListener
 					"-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
 				// @formatter:on
 			for (String line : nyan)
-				ircUtil.sendMessage(event, line);
+				event.getChannel().send().message(line);
 		}
 		else if (ircUtil.isCommand(event, "!woosh") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
@@ -87,16 +87,16 @@ public class Rawr extends BaseListener
 			for (int i = 1; i < random.nextInt(20); i++)
 				msg += "o";
 			msg += "shes!";
-			ircUtil.sendAction(event, msg);
+			event.getChannel().send().message(msg);
 		}
 	}
-	
+
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
-		
+
 	}
-	
+
 	/**
 	 * Replaces Rawr with Meow.<br>
 	 * <br>
@@ -128,7 +128,7 @@ public class Rawr extends BaseListener
 			word = word.replace("R", "W").replace("r", "w");
 			message += word + " ";
 		}
-		
+
 		return message;
 	}
 }
