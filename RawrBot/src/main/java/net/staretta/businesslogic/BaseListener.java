@@ -53,7 +53,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 			{
 				if (!command.getValue().isEmpty())
 				{
-					ircUtil.sendMessage(event, command.getValue());
+					ircUtil.sendPrivateMessage(event, command.getValue());
 					return;
 				}
 			}

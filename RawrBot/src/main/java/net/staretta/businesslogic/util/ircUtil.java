@@ -8,6 +8,7 @@ import java.util.Set;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.ActionEvent;
+import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -31,16 +32,44 @@ public class ircUtil
 	}
 	
 	/**
-	 * Sends a Private Message to a user
+	 * Sends a Private Message to the user who sent the message
 	 * 
 	 * @param event
 	 *            PrivateMessageEvent
 	 * @param message
 	 *            we want to send
 	 */
-	public static void sendMessage(PrivateMessageEvent event, String message)
+	public static void sendPrivateMessage(MessageEvent event, String message)
 	{
 		event.getUser().send().message(message);
+	}
+	
+	/**
+	 * Sends a Private Message to the user who sent the message
+	 * 
+	 * @param event
+	 *            PrivateMessageEvent
+	 * @param message
+	 *            we want to send
+	 */
+	public static void sendPrivateMessage(PrivateMessageEvent event, String message)
+	{
+		event.getUser().send().message(message);
+	}
+	
+	/**
+	 * Sends a Private Message to the a specific user
+	 * 
+	 * @param event
+	 *            PrivateMessageEvent
+	 * @param message
+	 *            we want to send
+	 * @param target
+	 *            who we want to sent it to
+	 */
+	public static void sendPrivateMessage(PrivateMessageEvent event, String message, String target)
+	{
+		event.getBot().sendIRC().message(target, message);
 	}
 	
 	/**
@@ -66,9 +95,9 @@ public class ircUtil
 	 * @param message
 	 *            we want to send
 	 */
-	public static void sendNotice(MessageEvent event, String message)
+	public static void sendNotice(MessageEvent event, String message, String target)
 	{
-		event.getUser().send().notice(message);
+		event.getBot().sendIRC().notice(target, message);
 	}
 	
 	/**
@@ -81,7 +110,22 @@ public class ircUtil
 	 * @param message
 	 *            we want to send
 	 */
-	public static void sendNotice(PrivateMessageEvent event, String target, String message)
+	public static void sendNotice(PrivateMessageEvent event, String message, String target)
+	{
+		event.getBot().sendIRC().notice(target, message);
+	}
+	
+	/**
+	 * Sends a notice message to target user
+	 * 
+	 * @param event
+	 *            MessageEvent
+	 * @param target
+	 *            who to send the message to
+	 * @param message
+	 *            we want to send
+	 */
+	public static void sendNotice(JoinEvent event, String message)
 	{
 		event.getUser().send().notice(message);
 	}

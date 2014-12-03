@@ -65,12 +65,12 @@ public class Eightball extends BaseListener
 				for (int i = 2; i < params.size(); i++)
 					sb.append(params.get(i) + " ");
 				service.addAnswer(sb.toString().trim());
-				ircUtil.sendMessage(event, "Successfully added new 8ball answer.");
+				ircUtil.sendPrivateMessage(event, "Successfully added new 8ball answer.");
 			}
 			else if (event.getMessage().trim().toLowerCase().endsWith("?"))
 			{
 				String answer = service.getRandomAnswer();
-				ircUtil.sendMessage(event, answer);
+				ircUtil.sendPrivateMessage(event, answer);
 			}
 		}
 	}

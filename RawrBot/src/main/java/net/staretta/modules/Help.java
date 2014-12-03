@@ -52,7 +52,7 @@ public class Help extends BaseListener
 		{
 			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
 			for (String line : helpCommand(listeners))
-				ircUtil.sendMessage(event, line);
+				ircUtil.sendPrivateMessage(event, line);
 		}
 	}
 	

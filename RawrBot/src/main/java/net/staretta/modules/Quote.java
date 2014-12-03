@@ -46,7 +46,7 @@ public class Quote extends BaseListener
 			quote = getQuote();
 			
 			if (quote != null)
-				ircUtil.sendMessage(event, quote[0].toString());
+				ircUtil.sendPrivateMessage(event, quote[0].toString());
 		}
 	}
 	

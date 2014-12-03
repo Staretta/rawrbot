@@ -74,7 +74,7 @@ public class SexDice extends BaseListener
 					service.addBodypart(sb.toString().trim());
 				else if (params.get(1).equals("-addLocation") || params.get(1).equals("-aL"))
 					service.addLocation(sb.toString().trim());
-				ircUtil.sendMessage(event, "Successfully added sexdice.");
+				ircUtil.sendPrivateMessage(event, "Successfully added sexdice.");
 			}
 		}
 	}
