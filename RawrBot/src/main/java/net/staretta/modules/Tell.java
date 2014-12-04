@@ -92,7 +92,20 @@ public class Tell extends BaseListener
 			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().split("\\s")));
 			if (params.size() > 1)
 			{
+				String toNickname = params.get(1);
 
+				ArrayList<TellEntity> tolds = service.getTolds(event.getUser().getNick(), toNickname, event.getBot()
+						.getConfiguration().getServerHostname());
+				if (tolds != null)
+				{
+					for (TellEntity told : tolds)
+					{
+						String message = told.isTold() + " ["
+								+ new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate()) + "] <"
+								+ told.getToNickname() + "> " + told.getMessage();
+						event.getUser().send().message(message);
+					}
+				}
 			}
 			else
 			{
