@@ -118,13 +118,12 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-<!-- JAVATUPLES -->
-	    <dependency>
-	        <groupId>org.javatuples</groupId>
-	        <artifactId>javatuples</artifactId>
-	        <version>1.2</version>
-	        <scope>compile</scope>
-	    </dependency>
+<!-- jopt-simple - option parser -->
+		<dependency>
+			<groupId>net.sf.jopt-simple</groupId>
+			<artifactId>jopt-simple</artifactId>
+			<version>4.8</version>
+		</dependency>
 	</dependencies>
 	<repositories>
         <repository>
