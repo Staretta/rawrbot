@@ -70,7 +70,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		ArrayList<String> params = new ArrayList<String>(Arrays.asList(message.split("\\s")));
 		if (params.size() >= 1)
 		{
-			if (params.get(0).equals(command))
+			if (params.get(0).toLowerCase().equals(command))
 			{
 				return true;
 			}
