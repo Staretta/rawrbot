@@ -31,7 +31,7 @@ public class TellEntity implements Serializable
 	private String fromNickname;
 	private String fromUsername;
 	private String fromHostmask;
-	private boolean fromRegistered = false;
+	private boolean fromIdentified = false;
 	
 	private String server;
 	
@@ -72,6 +72,16 @@ public class TellEntity implements Serializable
 		this.id = id;
 	}
 	
+	public boolean isFromIdentified()
+	{
+		return fromIdentified;
+	}
+	
+	public void setFromIdentified(boolean fromIdentified)
+	{
+		this.fromIdentified = fromIdentified;
+	}
+	
 	public boolean isTold()
 	{
 		return told;
@@ -105,16 +115,6 @@ public class TellEntity implements Serializable
 	public void setDate(Date date)
 	{
 		this.date = date;
-	}
-	
-	public boolean isFromRegistered()
-	{
-		return fromRegistered;
-	}
-	
-	public void setFromRegistered(boolean fromRegistered)
-	{
-		this.fromRegistered = fromRegistered;
 	}
 	
 	public void setTold(boolean told)
