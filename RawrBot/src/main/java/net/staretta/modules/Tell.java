@@ -23,14 +23,14 @@ import org.slf4j.LoggerFactory;
 public class Tell extends BaseListener
 {
 	TellService service;
-
+	
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
+	
 	public Tell()
 	{
 		service = RawrBot.applicationContext.getBean(TellService.class);
 	}
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -40,22 +40,21 @@ public class Tell extends BaseListener
 		moduleInfo.setVersion("v1.0");
 		moduleInfo.addCommand("!tell", "!tell <Nickname> <Message> : Tells the user the message, "
 				+ "if they are offline, they will be notified of the message when they join channel.");
-		moduleInfo
-				.addCommand("!told",
-						"!told [Nickname] : Displays messages to a user, or all users, and if a user has received the messages");
+		moduleInfo.addCommand("!told",
+				"!told [Nickname] : Displays messages to a user, or all users, and if a user has received the messages");
 		// moduleInfo.addCommand("!note", "!note <Nickname> : Gives a note to a user");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void onJoin(JoinEvent<PircBotX> event) throws Exception
 	{
 		super.onJoin(event);
-
+		
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
-			ArrayList<TellEntity> tells = service.getTells(event.getUser().getNick(), event.getBot().getConfiguration()
-					.getServerHostname());
+			ArrayList<TellEntity> tells = service
+					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -63,14 +62,14 @@ public class Tell extends BaseListener
 					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
 					event.getUser().send().notice(message);
-
+					
 					tell.setTold(true);
 					service.setTold(tell);
 				}
 			}
 		}
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent event)
 	{
@@ -84,9 +83,8 @@ public class Tell extends BaseListener
 					sb.append(params[i] + " ");
 				String message = sb.toString().trim();
 				String toNickname = params[0];
-
-				if (service.addTell(event.getUser(), toNickname, message, event.getBot().getConfiguration()
-						.getServerHostname()))
+				
+				if (service.addTell(event.getUser(), toNickname, message, event.getBot().getConfiguration().getServerHostname()))
 					event.getChannel().send().message(toNickname + " will be told: " + message);
 			}
 			else
@@ -96,33 +94,41 @@ public class Tell extends BaseListener
 		}
 		else if (isCommand(event.getMessage(), "!told"))
 		{
-			String[] params = event.getMessage().replaceFirst("!told", "").trim().split("\\s");
-			ArrayList<TellEntity> tolds;
-			if (params[0].equals("-a") || params[0].equals("-all") || params[0].equals(""))
+			if (!event.getUser().isVerified()
+					&& service.isVerified(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname()))
 			{
-				tolds = service.getAllTolds(event.getUser().getNick(), event.getBot().getConfiguration()
-						.getServerHostname());
+				event.getUser()
+						.send()
+						.message(
+								"You need to be identified with NickServ to access this !told information. \"/msg NickServ identify <password>\"");
 			}
 			else
 			{
-				String toNickname = params[0];
-				tolds = service.getTolds(event.getUser().getNick(), toNickname, event.getBot().getConfiguration()
-						.getServerHostname());
-			}
-
-			if (tolds != null)
-			{
-				for (TellEntity told : tolds)
+				String[] params = event.getMessage().replaceFirst("!told", "").trim().split("\\s");
+				ArrayList<TellEntity> tolds;
+				if (params[0].equals("-a") || params[0].equals("-all") || params[0].equals(""))
 				{
-					String message = "Told:" + told.isTold() + " ["
-							+ new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate()) + "] <"
-							+ told.getToNickname() + "> " + told.getMessage();
-					event.getUser().send().message(message);
+					tolds = service.getAllTolds(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+				}
+				else
+				{
+					String toNickname = params[0];
+					tolds = service.getTolds(event.getUser().getNick(), toNickname, event.getBot().getConfiguration().getServerHostname());
+				}
+				
+				if (tolds != null)
+				{
+					for (TellEntity told : tolds)
+					{
+						String message = "Told:" + told.isTold() + " [" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate())
+								+ "] <" + told.getToNickname() + "> " + told.getMessage();
+						event.getUser().send().message(message);
+					}
 				}
 			}
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
@@ -136,9 +142,8 @@ public class Tell extends BaseListener
 					sb.append(params[i] + " ");
 				String message = sb.toString().trim();
 				String toNickname = params[0];
-
-				if (service.addTell(event.getUser(), toNickname, message, event.getBot().getConfiguration()
-						.getServerHostname()))
+				
+				if (service.addTell(event.getUser(), toNickname, message, event.getBot().getConfiguration().getServerHostname()))
 					event.getUser().send().message(toNickname + " will be told: " + message);
 			}
 			else
@@ -148,31 +153,38 @@ public class Tell extends BaseListener
 		}
 		else if (isCommand(event.getMessage(), "!told"))
 		{
-			String[] params = event.getMessage().replaceFirst("!told", "").trim().split("\\s");
-			ArrayList<TellEntity> tolds;
-			if (params[0].equals("-a") || params[0].equals("-all") || params[0].equals(""))
+			
+			if (!event.getUser().isVerified()
+					&& service.isVerified(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname()))
 			{
-				tolds = service.getAllTolds(event.getUser().getNick(), event.getBot().getConfiguration()
-						.getServerHostname());
+				event.getUser().send()
+						.message("You need to be identified to access this !told information. \"/msg nickserv identify <password>\"");
 			}
 			else
 			{
-				String toNickname = params[0];
-				tolds = service.getTolds(event.getUser().getNick(), toNickname, event.getBot().getConfiguration()
-						.getServerHostname());
-			}
-
-			if (tolds != null)
-			{
-				for (TellEntity told : tolds)
+				String[] params = event.getMessage().replaceFirst("!told", "").trim().split("\\s");
+				ArrayList<TellEntity> tolds;
+				if (params[0].equals("-a") || params[0].equals("-all") || params[0].equals(""))
 				{
-					String message = "Told:" + told.isTold() + " ["
-							+ new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate()) + "] <"
-							+ told.getToNickname() + "> " + told.getMessage();
-					event.getUser().send().message(message);
+					tolds = service.getAllTolds(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+				}
+				else
+				{
+					String toNickname = params[0];
+					tolds = service.getTolds(event.getUser().getNick(), toNickname, event.getBot().getConfiguration().getServerHostname());
+				}
+				
+				if (tolds != null)
+				{
+					for (TellEntity told : tolds)
+					{
+						String message = "Told:" + told.isTold() + " [" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate())
+								+ "] <" + told.getToNickname() + "> " + told.getMessage();
+						event.getUser().send().message(message);
+					}
 				}
 			}
-
+			
 			// OptionParser parser = new OptionParser();
 			// parser.acceptsAll(Arrays.asList("a", "all"));
 			// parser.acceptsAll(Arrays.asList("n", "nick", "nickname")).withRequiredArg();
