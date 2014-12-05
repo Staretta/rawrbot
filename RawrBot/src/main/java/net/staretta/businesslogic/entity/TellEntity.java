@@ -40,6 +40,10 @@ public class TellEntity implements Serializable
 
 	private boolean told = false;
 
+	@Column(name = "tolddate", columnDefinition = "timestamp with time zone")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date toldDate;
+
 	public TellEntity()
 	{
 
