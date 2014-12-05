@@ -16,6 +16,10 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Add parameters to told, allowing for finer control over date ranges, filter true tolds, limits to the amount of
+// history to display to the user. Use jopt-simple.
+// TODO: Add told date, and display the date they were told when using !told command.
+// TODO: Add syntax to !tell to allow for specifying multiple users in a tell message.
 public class Tell extends BaseListener
 {
 	TellService service;
@@ -110,7 +114,7 @@ public class Tell extends BaseListener
 			{
 				for (TellEntity told : tolds)
 				{
-					String message = told.isTold() + " ["
+					String message = "Told:" + told.isTold() + " ["
 							+ new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate()) + "] <"
 							+ told.getToNickname() + "> " + told.getMessage();
 					event.getUser().send().message(message);
@@ -162,7 +166,7 @@ public class Tell extends BaseListener
 			{
 				for (TellEntity told : tolds)
 				{
-					String message = told.isTold() + " ["
+					String message = "Told:" + told.isTold() + " ["
 							+ new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(told.getDate()) + "] <"
 							+ told.getToNickname() + "> " + told.getMessage();
 					event.getUser().send().message(message);
