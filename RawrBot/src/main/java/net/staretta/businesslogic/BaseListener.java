@@ -1,7 +1,5 @@
 package net.staretta.businesslogic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -67,10 +65,10 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 
 	public boolean isCommand(String message, String command)
 	{
-		ArrayList<String> params = new ArrayList<String>(Arrays.asList(message.split("\\s")));
-		if (params.size() >= 1)
+		String[] params = message.trim().split("\\s");
+		if (params.length >= 1)
 		{
-			if (params.get(0).toLowerCase().equals(command))
+			if (params[0].toLowerCase().equals(command))
 			{
 				return true;
 			}
