@@ -78,6 +78,32 @@ public class TellService
 	}
 
 	@SuppressWarnings("unchecked")
+	public ArrayList<TellEntity> getTolds(String fromNickname, String toNickname, String server, int amount,
+			Date[] dates)
+	{
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("from TellEntity as tell where lower(tell.fromNickname) = lower(:fromNickname) ");
+
+		if (toNickname != null)
+			queryBuilder.append("and lower(tell.toNickname) = lower(:toNickname)");
+
+		if (dates != null)
+		{
+
+		}
+
+		queryBuilder.append("and tell.server = :server order by tell.id desc");
+
+		Query q = getSession().createQuery(queryBuilder.toString());
+		if (toNickname != null)
+			q.setParameter("toNickname", toNickname);
+		q.setParameter("server", server);
+		q.setParameter("fromNickname", fromNickname);
+		q.setMaxResults(amount);
+		return (ArrayList<TellEntity>) q.list();
+	}
+
+	@SuppressWarnings("unchecked")
 	public ArrayList<TellEntity> getAllTolds(String fromNickname, String server)
 	{
 		Query q = getSession().createQuery(

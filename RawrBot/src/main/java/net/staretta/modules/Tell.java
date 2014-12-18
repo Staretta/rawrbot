@@ -1,5 +1,6 @@
 package net.staretta.modules;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,56 +164,31 @@ public class Tell extends BaseListener
 				event.getUser()
 						.send()
 						.message(
-								"You need to be identified with NickServ to access this !told information. \"/msg NickServ identify <password>\"");
+								"You need to be identified with NickServ to access this "
+										+ "!told information. \"/msg NickServ identify <password>\"");
 			}
 			else
 			{
 				String[] params = event.getMessage().replaceFirst("!told", "").trim().split("\\s");
-				ArrayList<TellEntity> tolds;
 				OptionSet options;
+				ArrayList<TellEntity> tolds = null;
 
 				try
 				{
 					options = parser.parse(params);
-
-					// If there are no options, then all they entered was !told, or if it's -all switch
-					if (!options.hasOptions() || options.has("all"))
-					{
-						String toNickname = params[0];
-						tolds = service.getTolds(event.getUser().getNick(), toNickname, event.getBot()
-								.getConfiguration().getServerHostname());
-
-						tolds = service.getAllTolds(event.getUser().getNick(), event.getBot().getConfiguration()
-								.getServerHostname());
-					}
-					else
-					{
-						String[] nicknames = null;
-						if (options.hasArgument("nick"))
-						{
-							nicknames = options.valueOf("nick").toString().split(",");
-						}
-
-						int limit = 5;
-						if (options.hasArgument("limit"))
-						{
-							limit = (int) options.valueOf("limit");
-						}
-
-						Date date = null;
-						if (options.hasArgument("date"))
-						{
-
-						}
-
-						tolds = null;
-					}
+					tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot()
+							.getConfiguration().getServerHostname());
 				}
 				catch (NullPointerException | OptionException e)
 				{
-					tolds = null;
+					// message user about invalid options
+				}
+				catch (ParseException e)
+				{
+					// message user with invalid date
 				}
 
+				// If there are tolds available in the database, then send them to the user that requested them.
 				if (tolds != null)
 				{
 					for (TellEntity told : tolds)
@@ -225,6 +201,56 @@ public class Tell extends BaseListener
 				}
 			}
 		}
+	}
+
+	private ArrayList<TellEntity> getTolds(String[] params, OptionSet options, ArrayList<TellEntity> tolds,
+			String fromNickname, String server) throws ParseException
+	{
+		// If there are no options, then all they entered was !told, or if it's -all switch
+		if (!options.hasOptions() || options.has("all"))
+		{
+			String toNickname = params[0];
+			tolds = service.getTolds(fromNickname, toNickname, server);
+
+			tolds = service.getAllTolds(fromNickname, server);
+		}
+		else
+		{
+			String[] nicknames = null;
+			if (options.hasArgument("nick"))
+			{
+				nicknames = options.valueOf("nick").toString().split(",");
+			}
+
+			int limit = 5;
+			if (options.hasArgument("limit"))
+			{
+				limit = (int) options.valueOf("limit");
+			}
+
+			Date[] dates = null;
+			if (options.hasArgument("date"))
+			{
+				String[] inputDate = options.valueOf("date").toString().split(",");
+				SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy");
+				if (inputDate.length == 2)
+				{
+					dates = new Date[2];
+					dates[0] = format.parse(inputDate[0]);
+					dates[1] = format.parse(inputDate[1]);
+				}
+				else
+				{
+					dates = new Date[1];
+					dates[0] = format.parse(inputDate[0]);
+				}
+			}
+
+			// Get tolds using parameters that have been set. We'll check the parameters in the tell service
+			// we're calling to see if any of them are null and not include them.
+			tolds = null;
+		}
+		return tolds;
 	}
 
 	@Override
