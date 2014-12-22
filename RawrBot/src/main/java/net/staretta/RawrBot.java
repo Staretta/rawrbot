@@ -45,6 +45,8 @@ public class RawrBot
 				.setAutoNickChange(true)
 				.setAutoReconnect(true)
 				.setCapEnabled(true)
+				//.addCapHandler(new EnableCapHandler("identify-msg", true))
+				//.addCapHandler(new EnableCapHandler("account-notify", true))
 				.setIdentServerEnabled(false)
 				.setServerHostname(setting.getServer())
 				.setServerPort(setting.getPort())
