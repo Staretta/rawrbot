@@ -139,9 +139,13 @@ public class Tell extends BaseListener
 			}
 		}
 
-		if (isCommand(event.getMessage(), "!tell"))
+		if (isCommand(event.getMessage(), "!tell") || isCommand(event.getMessage(), "!note"))
 		{
-			String[] params = event.getMessage().replace("!tell", "").trim().split("\\s");
+			String[] params = null;
+			if (isCommand(event.getMessage(), "!tell"))
+				params = event.getMessage().replace("!tell", "").trim().split("\\s");
+			else
+				params = event.getMessage().replace("!note", "").trim().split("\\s");
 
 			// If params contains a nickname and a message, the length should be greater than 1.
 			if (params.length > 1)
@@ -302,9 +306,13 @@ public class Tell extends BaseListener
 			}
 		}
 
-		if (isCommand(event.getMessage(), "!tell"))
+		if (isCommand(event.getMessage(), "!tell") || isCommand(event.getMessage(), "!note"))
 		{
-			String[] params = event.getMessage().replace("!tell", "").trim().split("\\s");
+			String[] params = null;
+			if (isCommand(event.getMessage(), "!tell"))
+				params = event.getMessage().replace("!tell", "").trim().split("\\s");
+			else
+				params = event.getMessage().replace("!note", "").trim().split("\\s");
 
 			// If params contains a nickname and a message, the length should be greater than 1.
 			if (params.length > 1)
