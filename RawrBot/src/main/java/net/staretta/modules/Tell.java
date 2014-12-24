@@ -87,7 +87,11 @@ public class Tell extends BaseListener
 				{
 					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
-					event.getUser().send().notice(message);
+
+					if (!tell.getChannel().isEmpty())
+						event.getBot().sendIRC().message(event.getUser().getNick() + ": " + tell.getChannel(), message);
+					else
+						event.getUser().send().message(message);
 
 					tell.setTold(true);
 					service.setTold(tell);
@@ -109,7 +113,11 @@ public class Tell extends BaseListener
 				{
 					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
-					event.getUser().send().notice(message);
+
+					if (!tell.getChannel().isEmpty())
+						event.getBot().sendIRC().message(event.getUser().getNick() + ": " + tell.getChannel(), message);
+					else
+						event.getUser().send().message(message);
 
 					tell.setTold(true);
 					service.setTold(tell);
@@ -131,7 +139,11 @@ public class Tell extends BaseListener
 				{
 					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
-					event.getUser().send().notice(message);
+
+					if (!tell.getChannel().isEmpty())
+						event.getBot().sendIRC().message(event.getUser().getNick() + ": " + tell.getChannel(), message);
+					else
+						event.getUser().send().message(message);
 
 					tell.setTold(true);
 					service.setTold(tell);
@@ -168,7 +180,7 @@ public class Tell extends BaseListener
 				for (String nick : nicknames)
 				{
 					if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration()
-							.getServerHostname()))
+							.getServerHostname(), event.getChannel().getName()))
 					{
 						event.getUser().send().message(nick + " will be told: " + message);
 					}
@@ -335,7 +347,7 @@ public class Tell extends BaseListener
 				for (String nick : nicknames)
 				{
 					if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration()
-							.getServerHostname()))
+							.getServerHostname(), ""))
 					{
 						event.getUser().send().message(nick + " will be told: " + message);
 					}

@@ -31,12 +31,12 @@ public class TellService
 
 	}
 
-	public boolean addTell(User user, String toNickname, String message, String server)
+	public boolean addTell(User user, String toNickname, String message, String server, String channel)
 	{
 		Date date = new Date();
 		Session s = getSession();
-		TellEntity tell = new TellEntity(user.getNick(), user.getRealName(), user.getHostmask(), toNickname, message,
-				server, date);
+		TellEntity tell = new TellEntity(user.getNick(), user.getLogin(), user.getHostmask(), toNickname, message,
+				server, date, channel);
 		s.save(tell);
 		return true;
 	}
