@@ -8,7 +8,7 @@ public class ModuleInfo
 	private String moduleAuthor = "";
 	private String moduleUrl = "";
 	private String moduleVersion = "";
-	private HashMap<String, String> commandList = new HashMap<String, String>();
+	private HashMap<String, String[]> commandList = new HashMap<String, String[]>();
 	
 	public ModuleInfo()
 	{
@@ -17,15 +17,20 @@ public class ModuleInfo
 	
 	public void addCommand(String command)
 	{
-		this.commandList.put(command, "");
+		this.commandList.put(command, new String[] {});
 	}
 	
 	public void addCommand(String command, String commandHelp)
 	{
+		this.commandList.put(command, new String[] { commandHelp });
+	}
+	
+	public void addCommand(String command, String[] commandHelp)
+	{
 		this.commandList.put(command, commandHelp);
 	}
 	
-	public HashMap<String, String> getCommands()
+	public HashMap<String, String[]> getCommands()
 	{
 		return commandList;
 	}
