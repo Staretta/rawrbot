@@ -45,7 +45,7 @@ public class Tell extends BaseListener
 		parser.acceptsAll(Arrays.asList("a", "all"));
 		parser.acceptsAll(Arrays.asList("n", "nick", "nickname")).withRequiredArg();
 		parser.acceptsAll(Arrays.asList("l", "limit")).withRequiredArg().ofType(Integer.class);
-		parser.acceptsAll(Arrays.asList("d", "date")).withRequiredArg();
+		parser.acceptsAll(Arrays.asList("d", "date", "dates")).withRequiredArg();
 	}
 	
 	@Override
@@ -58,8 +58,10 @@ public class Tell extends BaseListener
 		moduleInfo.addCommand("!tell",
 				"!tell <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
 						+ "If they are offline, they will be told the message when they join channel.");
-		moduleInfo.addCommand("!told",
-				"!told [Nickname] : Displays messages sent to a nickname, or all nicknames, and if a nickname has received the messages.");
+		moduleInfo.addCommand("!told", new String[] {
+				"!told [Nickname] : Displays messages sent to a nickname, or all nicknames, and if a nickname has received the messages.",
+				"!told [-n|-nick <Nickname>] [-d|-date <mm-dd-yy|mm-dd-yy,mm-dd-yy>] [-l|-limit <Number>] : Optional Parameters, "
+						+ "Example \"!told -n Staretta -d 12-12-12 -l 20\"" });
 		moduleInfo.addCommand("!note",
 				"!note <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
 						+ "If they are offline, they will be told the message when they join channel.");
@@ -168,8 +170,7 @@ public class Tell extends BaseListener
 				}
 				else
 				{
-					nicknames = new String[1];
-					nicknames[0] = params[0];
+					nicknames = new String[] { params[0] };
 				}
 				
 				String message = StringUtils.join(params, " ", 1, params.length);
@@ -179,13 +180,16 @@ public class Tell extends BaseListener
 					if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration().getServerHostname(), event
 							.getChannel().getName()))
 					{
-						event.getUser().send().message(nick + " will be told: " + message);
+						event.getChannel().send().message(nick + " will be told: " + message);
 					}
 				}
 			}
 			else
 			{
-				event.getUser().send().message(moduleInfo.getCommands().get("!tell"));
+				for (String message : moduleInfo.getCommands().get("!tell"))
+				{
+					event.getChannel().send().message(message);
+				}
 			}
 		}
 		else if (isCommand(event.getMessage(), "!told"))
@@ -281,8 +285,7 @@ public class Tell extends BaseListener
 				}
 				else
 				{
-					nicknames = new String[1];
-					nicknames[0] = params[0];
+					nicknames = new String[] { params[0] };
 				}
 				
 				String message = StringUtils.join(params, " ", 1, params.length);
@@ -297,7 +300,10 @@ public class Tell extends BaseListener
 			}
 			else
 			{
-				event.getUser().send().message(moduleInfo.getCommands().get("!tell"));
+				for (String message : moduleInfo.getCommands().get("!tell"))
+				{
+					event.getUser().send().message(message);
+				}
 			}
 		}
 		else if (isCommand(event.getMessage(), "!told"))
