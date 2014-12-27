@@ -58,10 +58,16 @@ public class Tell extends BaseListener
 		moduleInfo.addCommand("!tell",
 				"!tell <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
 						+ "If they are offline, they will be told the message when they join channel.");
-		moduleInfo.addCommand("!told", new String[] {
-				"!told [Nickname] : Displays messages sent to a nickname, or all nicknames, and if a nickname has received the messages.",
-				"!told [-n|-nick <Nickname>] [-d|-date <mm-dd-yy|mm-dd-yy,mm-dd-yy>] [-l|-limit <Number>] : Optional Parameters, "
-						+ "Example \"!told -n Staretta -d 12-12-12 -l 20\"" });
+		moduleInfo
+				.addCommand(
+						"!told",
+						new String[] {
+								"!told [Nickname] : Displays messages sent to a nickname, or all nicknames, and if a nickname has received the messages."
+										+ " The reply will always be sent as a Private Message.",
+								"!told [-n|-nick <Nickname>] [-d|-date <mm-dd-yy|mm-dd-yy,mm-dd-yy>] [-l|-limit <Number>] : Displays messages based on optional filters. ",
+								"Nickname will filter results based on the person you sent a message to. Date will filter based on a single day, or a range of days."
+										+ " Limit, will display results up to the limit.",
+								"Examples: \"!told -n Staretta -d 12-12-12 -l 20\" or \"!told -n Staretta -d 12-12-12,1-12-13 -l 50\"" });
 		moduleInfo.addCommand("!note",
 				"!note <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
 						+ "If they are offline, they will be told the message when they join channel.");
