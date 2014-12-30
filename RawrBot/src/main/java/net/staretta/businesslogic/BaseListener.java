@@ -11,22 +11,23 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 public abstract class BaseListener extends ListenerAdapter<PircBotX>
 {
 	public ModuleInfo moduleInfo;
-	
+
 	public BaseListener()
 	{
 		moduleInfo = setModuleInfo();
 	}
-	
+
 	protected abstract ModuleInfo setModuleInfo();
-	
+
 	@Override
-	public void onMessage(MessageEvent event) throws Exception
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
 		for (Entry<String, String[]> command : commandList.entrySet())
 		{
-			if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (isCommand(event.getMessage(), command.getKey())
+					&& (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (command.getValue().length > 0)
 				{
@@ -40,17 +41,18 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		}
 		OnMessage(event);
 	}
-	
-	public abstract void OnMessage(MessageEvent event);
-	
+
+	public abstract void OnMessage(MessageEvent<PircBotX> event);
+
 	@Override
-	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
+	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
 		for (Entry<String, String[]> command : commandList.entrySet())
 		{
-			if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (isCommand(event.getMessage(), command.getKey())
+					&& (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (command.getValue().length > 0)
 				{
@@ -64,9 +66,9 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		}
 		OnPrivateMessage(event);
 	}
-	
-	public abstract void OnPrivateMessage(PrivateMessageEvent event);
-	
+
+	public abstract void OnPrivateMessage(PrivateMessageEvent<PircBotX> event);
+
 	public boolean isCommand(String message, String command)
 	{
 		String[] params = message.trim().split("\\s");
