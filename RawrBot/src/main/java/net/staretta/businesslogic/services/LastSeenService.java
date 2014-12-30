@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import net.staretta.businesslogic.entity.LastSeenEntity;
 
@@ -21,14 +22,14 @@ public class LastSeenService
 {
 	@PersistenceContext
 	private EntityManager em;
-
+	
 	Logger logger = LoggerFactory.getLogger(getClass());
-
+	
 	public LastSeenService()
 	{
-
+		
 	}
-
+	
 	public boolean addLastSeen(User user, String message, String server, String channel)
 	{
 		Date date = new Date();
@@ -44,7 +45,16 @@ public class LastSeenService
 		s.save(seen);
 		return true;
 	}
-
+	
+	public LastSeenEntity getLastSeen(String nickname, String server)
+	{
+		TypedQuery<LastSeenEntity> query = em.createQuery("from LastSeen as seen where lower(seen.nickname) = lower(:nickname) "
+				+ "and seen.server = :server order by seen.id desc", LastSeenEntity.class);
+		query.setParameter("nickname", nickname);
+		query.setParameter("server", server);
+		return query.getSingleResult();
+	}
+	
 	private Session getSession()
 	{
 		return em.unwrap(EntityManagerImpl.class).getSession();
