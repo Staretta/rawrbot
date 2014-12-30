@@ -51,67 +51,19 @@ public class TellEntity implements Serializable
 		
 	}
 	
-	public TellEntity(String fromNickname, String fromUsername, String fromHostmask, String toNickname, String message, String server,
-			Date date, String channel)
+	public long getId()
 	{
-		this.toNickname = toNickname;
-		this.fromNickname = fromNickname;
-		this.fromUsername = fromUsername;
-		this.fromHostmask = fromHostmask;
-		this.message = message;
-		this.server = server;
-		this.date = date;
-		this.channel = channel;
-	}
-	
-	public Date getToldDate()
-	{
-		return toldDate;
-	}
-	
-	public void setToldDate(Date toldDate)
-	{
-		this.toldDate = toldDate;
-	}
-	
-	public String getChannel()
-	{
-		return channel;
-	}
-	
-	public boolean isFromIdentified()
-	{
-		return fromIdentified;
-	}
-	
-	public boolean isTold()
-	{
-		return told;
-	}
-	
-	public void setTold(boolean told)
-	{
-		this.told = told;
-	}
-	
-	public String getMessage()
-	{
-		return message;
-	}
-	
-	public String getServer()
-	{
-		return server;
-	}
-	
-	public Date getDate()
-	{
-		return date;
+		return id;
 	}
 	
 	public String getToNickname()
 	{
 		return toNickname;
+	}
+	
+	public String getMessage()
+	{
+		return message;
 	}
 	
 	public String getFromNickname()
@@ -127,5 +79,95 @@ public class TellEntity implements Serializable
 	public String getFromHostmask()
 	{
 		return fromHostmask;
+	}
+	
+	public boolean isFromIdentified()
+	{
+		return fromIdentified;
+	}
+	
+	public String getChannel()
+	{
+		return channel;
+	}
+	
+	public String getServer()
+	{
+		return server;
+	}
+	
+	public Date getDate()
+	{
+		return date;
+	}
+	
+	public boolean isTold()
+	{
+		return told;
+	}
+	
+	public Date getToldDate()
+	{
+		return toldDate;
+	}
+	
+	public void setId(long id)
+	{
+		this.id = id;
+	}
+	
+	public void setToNickname(String toNickname)
+	{
+		this.toNickname = toNickname;
+	}
+	
+	public void setMessage(String message)
+	{
+		this.message = message;
+	}
+	
+	public void setFromNickname(String fromNickname)
+	{
+		this.fromNickname = fromNickname;
+	}
+	
+	public void setFromUsername(String fromUsername)
+	{
+		this.fromUsername = fromUsername;
+	}
+	
+	public void setFromHostmask(String fromHostmask)
+	{
+		this.fromHostmask = fromHostmask;
+	}
+	
+	public void setFromIdentified(boolean fromIdentified)
+	{
+		this.fromIdentified = fromIdentified;
+	}
+	
+	public void setChannel(String channel)
+	{
+		this.channel = channel;
+	}
+	
+	public void setServer(String server)
+	{
+		this.server = server;
+	}
+	
+	public void setDate(Date date)
+	{
+		this.date = date;
+	}
+	
+	public void setTold(boolean told)
+	{
+		this.told = told;
+	}
+	
+	public void setToldDate(Date toldDate)
+	{
+		this.toldDate = toldDate;
 	}
 }
