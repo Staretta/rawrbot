@@ -151,7 +151,7 @@ public class MiscUtil
 	 *            Time since the bot/system has been started in seconds.
 	 * @return a formatted string like this: "N days, N hours, N minutes, N seconds"
 	 */
-	public static String uptimeFormat(long total_seconds) throws Exception
+	public static String uptimeFormat(long total_seconds)
 	{
 		// Helper variables.
 		int MINUTE = 60;

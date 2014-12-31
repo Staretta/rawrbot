@@ -4,10 +4,11 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import net.staretta.businesslogic.entity.LastSeenEntity;
+import net.staretta.businesslogic.entity.LastSeenEntity.MessageType;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.pircbotx.User;
@@ -30,9 +31,8 @@ public class LastSeenService
 
 	}
 
-	public boolean addLastSeen(User user, String message, String server, String channel)
+	public boolean addLastSeen(User user, String message, String server, String channel, MessageType messageType)
 	{
-		Date date = new Date();
 		Session s = getSession();
 		LastSeenEntity seen = new LastSeenEntity();
 		seen.setNickname(user.getNick());
@@ -41,23 +41,25 @@ public class LastSeenService
 		seen.setMessage(message);
 		seen.setServer(server);
 		seen.setChannel(channel);
-		seen.setDate(date);
+		seen.setDate(new Date());
+		seen.setMessageType(messageType);
 		s.save(seen);
 		return true;
 	}
 
-	public boolean updateLastSeen(User user, String message, String server, String channel)
+	public boolean updateLastSeen(LastSeenEntity seen)
 	{
+		getSession().update(seen);
 		return true;
 	}
 
 	public LastSeenEntity getLastSeen(String nickname, String server)
 	{
-		TypedQuery<LastSeenEntity> query = em.createQuery("from LastSeen as seen where lower(seen.nickname) = lower(:nickname) "
-				+ "and seen.server = :server order by seen.id desc", LastSeenEntity.class);
+		Query query = getSession().createQuery(
+				"from LastSeenEntity as seen where lower(seen.nickname) = lower(:nickname) and seen.server = :server");
 		query.setParameter("nickname", nickname);
 		query.setParameter("server", server);
-		return query.getSingleResult();
+		return (LastSeenEntity) query.uniqueResult();
 	}
 
 	private Session getSession()

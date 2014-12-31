@@ -112,7 +112,7 @@ public class Tell extends BaseListener
 			{
 				for (TellEntity tell : tells)
 				{
-					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
+					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss z").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
 
 					if (!tell.getChannel().isEmpty())
@@ -140,7 +140,7 @@ public class Tell extends BaseListener
 			{
 				for (TellEntity tell : tells)
 				{
-					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
+					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss z").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
 
 					if (!tell.getChannel().isEmpty())
@@ -236,7 +236,7 @@ public class Tell extends BaseListener
 				{
 					for (TellEntity told : tolds)
 					{
-						SimpleDateFormat date = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+						SimpleDateFormat date = new SimpleDateFormat("MM/dd/yy HH:mm:ss z");
 						StringBuilder sb = new StringBuilder();
 						if (told.isTold())
 							sb.append("Notified: [" + date.format(told.getToldDate()) + "]");
@@ -263,7 +263,7 @@ public class Tell extends BaseListener
 			{
 				for (TellEntity tell : tells)
 				{
-					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
+					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss z").format(tell.getDate()) + "]";
 					String message = date + "<" + tell.getFromNickname() + "> " + tell.getMessage();
 
 					event.getUser().send().message(message);
@@ -354,7 +354,7 @@ public class Tell extends BaseListener
 				{
 					for (TellEntity told : tolds)
 					{
-						SimpleDateFormat date = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+						SimpleDateFormat date = new SimpleDateFormat("MM/dd/yy HH:mm:ss z");
 						StringBuilder sb = new StringBuilder();
 						if (told.isTold())
 							sb.append("Notified: [" + date.format(told.getToldDate()) + "]");
