@@ -46,21 +46,24 @@ public class LastSeen extends BaseListener
 	@Override
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
-		LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+		if (!event.getUser().getNick().equals(event.getBot().getNick())) // Need to make sure not our bot.
+		{
+			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
 
-		if (seen != null)
-		{
-			seen.setUsername(event.getUser().getLogin());
-			seen.setHostmask(event.getUser().getHostmask());
-			seen.setDate(new Date());
-			seen.setMessage(event.getMessage());
-			seen.setMessageType(MessageType.ACTION);
-			service.updateLastSeen(seen);
-		}
-		else
-		{
-			service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getConfiguration().getServerHostname(), event
-					.getChannel().getName(), MessageType.MESSAGE);
+			if (seen != null)
+			{
+				seen.setUsername(event.getUser().getLogin());
+				seen.setHostmask(event.getUser().getHostmask());
+				seen.setDate(new Date());
+				seen.setMessage(event.getMessage());
+				seen.setMessageType(MessageType.ACTION);
+				service.updateLastSeen(seen);
+			}
+			else
+			{
+				service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getConfiguration().getServerHostname(), event
+						.getChannel().getName(), MessageType.MESSAGE);
+			}
 		}
 	}
 
