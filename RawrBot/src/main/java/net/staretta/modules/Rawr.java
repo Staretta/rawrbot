@@ -7,7 +7,9 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.RawrService;
+import net.staretta.businesslogic.util.Colors;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -38,7 +40,7 @@ public class Rawr extends BaseListener
 	}
 
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!rawr") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
@@ -69,13 +71,21 @@ public class Rawr extends BaseListener
 		{
 			// We want nyan to be weighted more than any other command. So we add more requests to their queue.
 			RateLimiter.addRequest(event.getUser().getNick(), 4);
-			// @formatter:off
-			String[] nyan = { 
-					"...,__,......,__,.....____________", 
-					"`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
-					"`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )", 
-					"-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
-				// @formatter:on
+
+			// String[] nyan = {
+			// "...,__,......,__,.....____________",
+			// "`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
+			// "`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )",
+			// "-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
+			String line1 = Colors.add(Colors.RED) + "...,__,......,__,....." + Colors.add(Colors.MAGENTA) + "____________";
+			String line2 = Colors.add(Colors.OLIVE) + "`·.,¸,.·*¯`·.,¸,.·*¯.." + Colors.add(Colors.MAGENTA) + "|::::::"
+					+ Colors.add(Colors.LIGHT_GRAY) + "/\\" + Colors.add(Colors.MAGENTA) + ":" + Colors.add(Colors.LIGHT_GRAY) + "_"
+					+ Colors.add(Colors.MAGENTA) + "|" + Colors.add(Colors.LIGHT_GRAY) + "/\\";
+			String line3 = Colors.add(Colors.BLUE) + "`·.,¸,.·*¯`·.,¸,.·*¯." + Colors.add(Colors.LIGHT_GRAY) + "<"
+					+ Colors.add(Colors.MAGENTA) + "|:::::" + Colors.add(Colors.LIGHT_GRAY) + "(  o wo )";
+			String line4 = Colors.add(Colors.PURPLE) + "-.......-\"\"-.......--¯" + Colors.add(Colors.LIGHT_GRAY) + "\"u\"''''u''''u\"";
+			String[] nyan = { line1, line2, line3, line4 };
+
 			for (String line : nyan)
 				event.getChannel().send().message(line);
 		}
@@ -91,7 +101,7 @@ public class Rawr extends BaseListener
 	}
 
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 
 	}

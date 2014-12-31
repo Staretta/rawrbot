@@ -196,14 +196,14 @@ public final class Colors
 	 * Light Gray coloured background. Must be used with a regular color, or use the Colors.add method.
 	 */
 	public static final String LIGHT_GRAY_BG = ",15";
-	
+
 	/**
 	 * This class should not be constructed.
 	 */
 	private Colors()
 	{
 	}
-	
+
 	/**
 	 * Add color to text
 	 */
@@ -213,7 +213,7 @@ public final class Colors
 			return NORMAL;
 		return color;
 	}
-	
+
 	/**
 	 * Add color and background color to text
 	 */
@@ -221,12 +221,12 @@ public final class Colors
 	{
 		return color + bgColor;
 	}
-	
+
 	public static String add(String color, String bgColor, String option)
 	{
 		return color + bgColor + option;
 	}
-	
+
 	/**
 	 * Removes all colours from a line of IRC text.
 	 *
@@ -303,7 +303,7 @@ public final class Colors
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Remove formatting from a line of IRC text.
 	 *
@@ -327,7 +327,7 @@ public final class Colors
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Removes all formatting and colours from a line of IRC text.
 	 *

@@ -14,8 +14,8 @@ public class MiscUtil
 {
 
 	// URL Regex matching
-	static String	regex	= "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
-	static Pattern	pattern	= Pattern.compile(regex);
+	static String regex = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
+	static Pattern pattern = Pattern.compile(regex);
 
 	/**
 	 * Chooses a random number based on the length of a list.
@@ -213,19 +213,4 @@ public class MiscUtil
 	{
 		return (int) (System.currentTimeMillis() / 1000);
 	}
-
-	public static int parseInt(String integer)
-	{
-		int parsedInteger = (Integer) null;
-		try
-		{
-			parsedInteger = Integer.parseInt(integer);
-		}
-		catch (NumberFormatException e)
-		{
-		}
-
-		return parsedInteger;
-	}
-
 }
