@@ -5,6 +5,7 @@ import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.Json;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 
@@ -24,7 +25,7 @@ public class Quote extends BaseListener
 	}
 
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!quote") && !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
@@ -37,7 +38,7 @@ public class Quote extends BaseListener
 	}
 
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!quote"))
 		{

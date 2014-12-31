@@ -7,6 +7,7 @@ import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.EightballService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -16,12 +17,12 @@ public class Eightball extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private EightballService service;
-	
+
 	public Eightball()
 	{
 		service = RawrBot.applicationContext.getBean(EightballService.class);
 	}
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -36,9 +37,9 @@ public class Eightball extends BaseListener
 				+ " Note: Question must end with a question mark. \"?\"");
 		return moduleInfo;
 	}
-	
+
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if ((isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball") || isCommand(event.getMessage(),
 				"!8-ball"))
@@ -49,15 +50,15 @@ public class Eightball extends BaseListener
 			event.getChannel().send().message(answer);
 		}
 	}
-	
+
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball")
 				|| isCommand(event.getMessage(), "!8-ball"))
 		{
 			String[] params = event.getMessage().trim().split("\\s");
-			
+
 			if (params.length >= 3 && (params[1].equals("-add") || params[1].equals("-a")) && event.getUser().getNick().equals("Staretta"))
 			{
 				logger.info(StringUtils.join(params, " ", 2, params.length));

@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableSet;
 public class Help extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -31,9 +31,9 @@ public class Help extends BaseListener
 		moduleInfo.setName("Help");
 		return moduleInfo;
 	}
-	
+
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if ((isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
 				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
@@ -43,9 +43,9 @@ public class Help extends BaseListener
 				event.getChannel().send().message(message);
 		}
 	}
-	
+
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
 		{
@@ -54,7 +54,7 @@ public class Help extends BaseListener
 				event.getUser().send().message(message);
 		}
 	}
-	
+
 	private String[] helpCommand(ImmutableSet<Listener<PircBotX>> modules)
 	{
 		String commands = "";
@@ -63,7 +63,7 @@ public class Help extends BaseListener
 			if (BaseListener.class.isAssignableFrom(mod.getClass()))
 			{
 				BaseListener listener = (BaseListener) mod;
-				
+
 				HashMap<String, String[]> commandList = listener.moduleInfo.getCommands();
 				for (Entry<String, String[]> commandInfo : commandList.entrySet())
 				{

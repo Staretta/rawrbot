@@ -8,6 +8,7 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -36,15 +37,13 @@ public class Dice extends BaseListener
 		moduleInfo.setName("Dice");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
-		moduleInfo.addCommand("!dice", "!dice [dice notation] : Throws some dice and displays the result. "
-				+ "Example: 1d20+10 or 3d6-2");
-		moduleInfo.addCommand("!roll", "!roll [dice notation] : Throws some dice and displays the result. "
-				+ "Example: 1d20+10 or 3d6-2");
+		moduleInfo.addCommand("!dice", "!dice [dice notation] : Throws some dice and displays the result. " + "Example: 1d20+10 or 3d6-2");
+		moduleInfo.addCommand("!roll", "!roll [dice notation] : Throws some dice and displays the result. " + "Example: 1d20+10 or 3d6-2");
 		return moduleInfo;
 	}
 
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		String userMessage = event.getMessage().trim().toLowerCase();
 		if (!RateLimiter.isRateLimited(event.getUser().getNick(), 20)
@@ -56,8 +55,7 @@ public class Dice extends BaseListener
 			// If the message only consists of !dice or !roll, throw a standard 1d20
 			if (userMessage.equalsIgnoreCase("!dice") || userMessage.equalsIgnoreCase("!roll"))
 			{
-				String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
-						+ randomNumber(dieSize);
+				String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = " + randomNumber(dieSize);
 				event.getChannel().send().message(defaultRoll);
 			}
 			// If we find a match to our regex, then roll whatever the regex finds!
@@ -195,15 +193,14 @@ public class Dice extends BaseListener
 			// If the regex doesn't find anything, then just roll a standard 1d20
 			else
 			{
-				String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
-						+ randomNumber(dieSize);
+				String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = " + randomNumber(dieSize);
 				event.getChannel().send().message(defaultRoll);
 			}
 		}
 	}
 
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 	}
 
@@ -216,7 +213,6 @@ public class Dice extends BaseListener
 
 	private int randomNumber(int numberDies, int dieSize)
 	{
-		Random random = new Random();
 		int n = 0;
 
 		for (int i = 1; i <= numberDies; i++)

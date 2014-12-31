@@ -22,14 +22,14 @@ public class LastSeenService
 {
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	public LastSeenService()
 	{
-		
+
 	}
-	
+
 	public boolean addLastSeen(User user, String message, String server, String channel)
 	{
 		Date date = new Date();
@@ -45,7 +45,12 @@ public class LastSeenService
 		s.save(seen);
 		return true;
 	}
-	
+
+	public boolean updateLastSeen(User user, String message, String server, String channel)
+	{
+		return true;
+	}
+
 	public LastSeenEntity getLastSeen(String nickname, String server)
 	{
 		TypedQuery<LastSeenEntity> query = em.createQuery("from LastSeen as seen where lower(seen.nickname) = lower(:nickname) "
@@ -54,7 +59,7 @@ public class LastSeenService
 		query.setParameter("server", server);
 		return query.getSingleResult();
 	}
-	
+
 	private Session getSession()
 	{
 		return em.unwrap(EntityManagerImpl.class).getSession();

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
@@ -26,13 +27,12 @@ public class About extends BaseListener
 	}
 
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!about"))
 		{
 			ArrayList<String> about = new ArrayList<String>();
-			about.add(event.getBot().getNick()
-					+ " was created by Staretta. Programmed in Java, using the PircBotX Library. ");
+			about.add(event.getBot().getNick() + " was created by Staretta. Programmed in Java, using the PircBotX Library. ");
 			about.add("Want a new feature? Message Staretta on IRC or send her an email at requests@staretta.net");
 			for (String message : about)
 				event.getChannel().send().message(message);
@@ -40,13 +40,12 @@ public class About extends BaseListener
 	}
 
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		if (isCommand(event.getMessage(), "!about"))
 		{
 			ArrayList<String> about = new ArrayList<String>();
-			about.add(event.getBot().getNick()
-					+ " was created by Staretta. Programmed in Java, using the PircBotX Library. ");
+			about.add(event.getBot().getNick() + " was created by Staretta. Programmed in Java, using the PircBotX Library. ");
 			about.add("Want a new feature? Message Staretta on IRC or send her an email at requests@staretta.net");
 			for (String message : about)
 				event.getUser().send().message(message);

@@ -150,16 +150,16 @@ public class Youtube extends BaseListener
 	}
 
 	@Override
-	public void OnMessage(MessageEvent event)
+	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		// If message is a youtube url and we have a youtube api key in the properties file.
 		if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage()))
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You"
-					+ Colors.add(Colors.WHITE, Colors.RED_BG) + "Tube" + Colors.NORMAL + ": " + videoDetails.title
-					+ " " + videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase() + "]";
+			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
+					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
+					+ videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
 				event.getChannel().send().message(message);
 		}
@@ -173,16 +173,16 @@ public class Youtube extends BaseListener
 		{
 			// Get the title of the video, and message the channel.
 			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You"
-					+ Colors.add(Colors.WHITE, Colors.RED_BG) + "Tube" + Colors.NORMAL + ": " + videoDetails.title
-					+ " " + videoDetails.fDuration + "[" + videoDetails.quality.toUpperCase() + "]";
+			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
+					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
+					+ videoDetails.quality.toUpperCase() + "]";
 			if (videoDetails.title != null)
 				event.getChannel().send().message(message);
 		}
 	}
 
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent event)
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 	}
 }

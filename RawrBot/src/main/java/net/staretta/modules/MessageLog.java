@@ -10,6 +10,7 @@ import net.staretta.businesslogic.entity.MessageLogEntity.Role;
 import net.staretta.businesslogic.services.MessageLogService;
 
 import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -23,19 +24,19 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSortedSet;
 
-public class MessageLog extends ListenerAdapter
+public class MessageLog extends ListenerAdapter<PircBotX>
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private MessageLogService service;
-	
+
 	private Map<String, ImmutableSortedSet<Channel>> userMap = new HashMap<String, ImmutableSortedSet<Channel>>();
-	
+
 	public MessageLog()
 	{
 		service = RawrBot.applicationContext.getBean(MessageLogService.class);
 	}
-	
+
 	private Role getUserLevel(Channel channel, User user)
 	{
 		if (channel.isOwner(user))
@@ -51,9 +52,9 @@ public class MessageLog extends ListenerAdapter
 		else
 			return Role.USER;
 	}
-	
+
 	@Override
-	public void onMessage(MessageEvent event) throws Exception
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		userMap.put(event.getUser().getNick(), event.getUser().getChannels());
 		Date date = new Date();
@@ -61,16 +62,16 @@ public class MessageLog extends ListenerAdapter
 				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
 				getUserLevel(event.getChannel(), event.getUser()), MessageType.MESSAGE, date);
 	}
-	
+
 	// @Override
 	// public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	// {
 	// // TODO Auto-generated method stub
 	// super.onPrivateMessage(event);
 	// }
-	
+
 	@Override
-	public void onAction(ActionEvent event) throws Exception
+	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
 		userMap.put(event.getUser().getNick(), event.getUser().getChannels());
 		Date date = new Date();
@@ -78,11 +79,11 @@ public class MessageLog extends ListenerAdapter
 				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
 				getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION, date);
 	}
-	
+
 	@Override
-	public void onJoin(JoinEvent event) throws Exception
+	public void onJoin(JoinEvent<PircBotX> event) throws Exception
 	{
-		
+
 		if (event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			for (User user : event.getChannel().getUsers())
@@ -101,9 +102,9 @@ public class MessageLog extends ListenerAdapter
 					getUserLevel(event.getChannel(), event.getUser()), MessageType.JOIN, date);
 		}
 	}
-	
+
 	@Override
-	public void onPart(PartEvent event) throws Exception
+	public void onPart(PartEvent<PircBotX> event) throws Exception
 	{
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
@@ -115,9 +116,9 @@ public class MessageLog extends ListenerAdapter
 					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.PART, date);
 		}
 	}
-	
+
 	@Override
-	public void onQuit(QuitEvent event) throws Exception
+	public void onQuit(QuitEvent<PircBotX> event) throws Exception
 	{
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
@@ -130,7 +131,7 @@ public class MessageLog extends ListenerAdapter
 				}
 			}
 			channels = channels.trim();
-			
+
 			Date date = new Date();
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has quit. " + " (" + event.getReason() + ")";
@@ -138,7 +139,7 @@ public class MessageLog extends ListenerAdapter
 					.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.QUIT, date);
 		}
 	}
-	
+
 	//
 	// @Override
 	// public void onKick(KickEvent event) throws Exception
@@ -147,9 +148,9 @@ public class MessageLog extends ListenerAdapter
 	// super.onKick(event);
 	// }
 	//
-	
+
 	@Override
-	public void onNickChange(NickChangeEvent event) throws Exception
+	public void onNickChange(NickChangeEvent<PircBotX> event) throws Exception
 	{
 		if (!event.getOldNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
 		{
@@ -175,7 +176,7 @@ public class MessageLog extends ListenerAdapter
 				}
 			}
 			channels = channels.trim();
-			
+
 			Date date = new Date();
 			String message = event.getOldNick() + " changed nickname to " + event.getNewNick();
 			service.addLog(event.getOldNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, channels, event.getBot()
