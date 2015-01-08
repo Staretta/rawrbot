@@ -55,9 +55,10 @@ public class Tell extends BaseListener
 		moduleInfo.setName("Tell");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.1");
-		moduleInfo.addCommand("!tell", "!tell <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames,"
-				+ " the message when they say something in channel. If they are offline,"
-				+ " they will be told the message when they join channel.");
+		moduleInfo.addCommand("!tell",
+				"!tell <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames,"
+						+ " the message when they say something in channel. If they are offline,"
+						+ " they will be told the message when they join channel.");
 		moduleInfo
 				.addCommand(
 						"!told",
@@ -68,9 +69,11 @@ public class Tell extends BaseListener
 										+ "Nickname will filter results based on the person you sent a message to. Date will filter based on a single day, or a range of days. "
 										+ "Limit, will display results up to the limit.",
 								"Examples: \"!told -n Staretta -d 12-12-12 -l 20\" or \"!told -n Staretta -d 12-12-12,1-12-13 -l 50\"" });
-		moduleInfo.addCommand("!note",
-				"!note <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
-						+ "If they are offline, they will be told the message when they join channel.");
+		moduleInfo
+				.addCommand(
+						"!note",
+						"!note <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
+								+ "If they are offline, they will be told the message when they join channel.");
 		return moduleInfo;
 	}
 
@@ -79,13 +82,13 @@ public class Tell extends BaseListener
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
-			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+			ArrayList<TellEntity> tells = service.getTells(event.getUser().getNick(), event.getBot().getConfiguration()
+					.getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
 				{
-					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(tell.getDate()) + "]";
+					String date = "[" + new SimpleDateFormat("MM/dd/yy HH:mm:ss z").format(tell.getDate()) + "]";
 					String message = date + " <" + tell.getFromNickname() + "> " + tell.getMessage();
 
 					if (!tell.getChannel().isEmpty())
@@ -106,8 +109,8 @@ public class Tell extends BaseListener
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
-			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+			ArrayList<TellEntity> tells = service.getTells(event.getUser().getNick(), event.getBot().getConfiguration()
+					.getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -134,8 +137,8 @@ public class Tell extends BaseListener
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
 			// Check to see if the user has anything we need to tell them
-			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+			ArrayList<TellEntity> tells = service.getTells(event.getUser().getNick(), event.getBot().getConfiguration()
+					.getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -185,8 +188,8 @@ public class Tell extends BaseListener
 					// APPARENTLY WE NEED TO CHECK IF THE NICKNAME IS THE BOT, AND DISCARD IT. BECAUSE USERS.
 					if (!nick.toLowerCase().equals(event.getBot().getNick().toLowerCase()))
 					{
-						if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration().getServerHostname(), event
-								.getChannel().getName()))
+						if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration()
+								.getServerHostname(), event.getChannel().getName()))
 						{
 							event.getChannel().send().message(nick + " will be told: " + message);
 						}
@@ -218,7 +221,8 @@ public class Tell extends BaseListener
 			try
 			{
 				options = parser.parse(params);
-				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getConfiguration()
+						.getServerHostname());
 			}
 			catch (NullPointerException | OptionException e)
 			{
@@ -242,8 +246,8 @@ public class Tell extends BaseListener
 							sb.append("Notified: [" + date.format(told.getToldDate()) + "]");
 						else
 							sb.append("Notified: False");
-						sb.append(" | Message: [" + date.format(told.getDate()) + "] " + "<" + told.getToNickname() + "> "
-								+ told.getMessage());
+						sb.append(" | Message: [" + date.format(told.getDate()) + "] " + "<" + told.getToNickname()
+								+ "> " + told.getMessage());
 						event.getUser().send().message(sb.toString());
 					}
 				}
@@ -257,8 +261,8 @@ public class Tell extends BaseListener
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
 			// Check to see if the user has anything we need to tell them
-			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+			ArrayList<TellEntity> tells = service.getTells(event.getUser().getNick(), event.getBot().getConfiguration()
+					.getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -305,7 +309,8 @@ public class Tell extends BaseListener
 					// APPARENTLY WE NEED TO CHECK IF THE NICKNAME IS THE BOT, AND DISCARD IT. BECAUSE USERS.
 					if (!nick.toLowerCase().equals(event.getBot().getNick().toLowerCase()))
 					{
-						if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration().getServerHostname(), ""))
+						if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration()
+								.getServerHostname(), ""))
 						{
 							event.getUser().send().message(nick + " will be told: " + message);
 						}
@@ -336,7 +341,8 @@ public class Tell extends BaseListener
 			try
 			{
 				options = parser.parse(params);
-				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getConfiguration()
+						.getServerHostname());
 			}
 			catch (NullPointerException | OptionException e)
 			{
@@ -360,8 +366,8 @@ public class Tell extends BaseListener
 							sb.append("Notified: [" + date.format(told.getToldDate()) + "]");
 						else
 							sb.append("Notified: False");
-						sb.append(" | Message: [" + date.format(told.getDate()) + "] " + "<" + told.getToNickname() + "> "
-								+ told.getMessage());
+						sb.append(" | Message: [" + date.format(told.getDate()) + "] " + "<" + told.getToNickname()
+								+ "> " + told.getMessage());
 						event.getUser().send().message(sb.toString());
 					}
 				}
@@ -373,8 +379,8 @@ public class Tell extends BaseListener
 	 * Gets who has been told what based on a specific set of filters.
 	 * 
 	 */
-	private ArrayList<TellEntity> getTolds(String[] params, OptionSet options, ArrayList<TellEntity> tolds, String fromNickname,
-			String server) throws ParseException
+	private ArrayList<TellEntity> getTolds(String[] params, OptionSet options, ArrayList<TellEntity> tolds,
+			String fromNickname, String server) throws ParseException
 	{
 		// If there are no options, then all they entered was !told, or if it's -all switch
 		if (!options.hasOptions() || options.has("all"))
