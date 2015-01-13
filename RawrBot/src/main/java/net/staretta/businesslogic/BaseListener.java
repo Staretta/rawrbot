@@ -26,8 +26,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
 		for (Entry<String, String[]> command : commandList.entrySet())
 		{
-			if (isCommand(event.getMessage(), command.getKey())
-					&& (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (command.getValue().length > 0)
 				{
@@ -51,8 +50,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
 		for (Entry<String, String[]> command : commandList.entrySet())
 		{
-			if (isCommand(event.getMessage(), command.getKey())
-					&& (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 			{
 				if (command.getValue().length > 0)
 				{
@@ -71,6 +69,8 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 
 	public boolean isCommand(String message, String command)
 	{
+		// Doing it this way versus just using .startswith because we want to be sure the command is actually the correct command.
+		// To stop people from doing !rawretta when it should only work for !rawr
 		String[] params = message.trim().split("\\s");
 		if (params.length >= 1)
 		{
@@ -80,5 +80,22 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 			}
 		}
 		return false;
+	}
+
+	public String removeCommand(String command, String message)
+	{
+		return removeCommands(new String[] { command }, message);
+	}
+
+	public String removeCommands(String[] commands, String message)
+	{
+		for (String command : commands)
+		{
+			if (isCommand(command, message))
+			{
+				return message.replaceFirst("(?i)" + command, "");
+			}
+		}
+		return message;
 	}
 }
