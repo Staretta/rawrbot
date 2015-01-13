@@ -24,6 +24,7 @@ public class LastSeen extends BaseListener
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	// TODO: Set and filter by channel
+	// TODO: LIKE Search results, get 3 results by default.
 	public LastSeen()
 	{
 		service = RawrBot.applicationContext.getBean(LastSeenService.class);
@@ -91,7 +92,7 @@ public class LastSeen extends BaseListener
 
 			if (isCommand(event.getMessage(), "!seen") || isCommand(event.getMessage(), "!lastseen"))
 			{
-				String[] params = event.getMessage().trim().split("\\s");
+				String[] params = removeCommands(new String[] { "!seen", "!lastseen" }, event.getMessage()).split("\\s");
 				if (params.length > 1)
 				{
 					LastSeenEntity lastSeen = service.getLastSeen(params[1], event.getBot().getConfiguration().getServerHostname());
@@ -114,7 +115,7 @@ public class LastSeen extends BaseListener
 	{
 		if (isCommand(event.getMessage(), "!seen") || isCommand(event.getMessage(), "!lastseen"))
 		{
-			String[] params = event.getMessage().trim().split("\\s");
+			String[] params = removeCommands(new String[] { "!seen", "!lastseen" }, event.getMessage()).split("\\s");
 			if (params.length > 1)
 			{
 				LastSeenEntity lastSeen = service.getLastSeen(params[1], event.getBot().getConfiguration().getServerHostname());

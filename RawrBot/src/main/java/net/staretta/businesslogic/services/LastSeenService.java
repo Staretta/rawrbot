@@ -1,5 +1,6 @@
 package net.staretta.businesslogic.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -60,6 +61,16 @@ public class LastSeenService
 		query.setParameter("nickname", nickname);
 		query.setParameter("server", server);
 		return (LastSeenEntity) query.uniqueResult();
+	}
+
+	public ArrayList<LastSeenEntity> getLastSeenLike(String nickname, String server)
+	{
+		Query query = getSession().createQuery(
+				"from LastSeenEntity as seen where lower(seen.nickname) = lower(:nickname) and seen.server = :server");
+		query.setParameter("nickname", "%" + nickname + "%");
+		query.setParameter("server", server);
+		query.setMaxResults(3);
+		return (ArrayList<LastSeenEntity>) query.list();
 	}
 
 	private Session getSession()
