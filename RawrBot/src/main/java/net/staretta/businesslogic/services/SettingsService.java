@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.staretta.businesslogic.entity.ChannelEntity;
 import net.staretta.businesslogic.entity.Settings;
 
 import org.hibernate.Query;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SettingsService
 {
 	@PersistenceContext
-	private EntityManager	em;
+	private EntityManager em;
 
 	public List<Settings> getBotSettings()
 	{
@@ -26,27 +27,27 @@ public class SettingsService
 		return (List<Settings>) q.list();
 	}
 
-	public void addChannel(String channel, String server)
-	{
-		Session s = getSession();
-		Settings serverSettings = getServerSettings(server);
-		List<String> channels = serverSettings.getChannels();
-		channels.add(channel);
-		serverSettings.setChannels(channels);
-		s.saveOrUpdate(serverSettings);
-	}
+	// public void addChannel(String channel, String server)
+	// {
+	// Session s = getSession();
+	// Settings serverSettings = getServerSettings(server);
+	// List<String> channels = serverSettings.getChannels();
+	// channels.add(channel);
+	// serverSettings.setChannels(channels);
+	// s.saveOrUpdate(serverSettings);
+	// }
+	//
+	// public void removeChannel(String channel, String server)
+	// {
+	// Session s = getSession();
+	// Settings serverSettings = getServerSettings(server);
+	// List<String> channels = serverSettings.getChannels();
+	// channels.remove(channel);
+	// serverSettings.setChannels(channels);
+	// s.saveOrUpdate(serverSettings);
+	// }
 
-	public void removeChannel(String channel, String server)
-	{
-		Session s = getSession();
-		Settings serverSettings = getServerSettings(server);
-		List<String> channels = serverSettings.getChannels();
-		channels.remove(channel);
-		serverSettings.setChannels(channels);
-		s.saveOrUpdate(serverSettings);
-	}
-
-	public List<String> getServerChannels(String server)
+	public List<ChannelEntity> getServerChannels(String server)
 	{
 		return getServerSettings(server).getChannels();
 	}
@@ -58,10 +59,10 @@ public class SettingsService
 		return (Settings) q.uniqueResult();
 	}
 
-	public List<String> getServerModules(String server)
-	{
-		return getServerSettings(server).getModules();
-	}
+	// public List<String> getServerModules(String server)
+	// {
+	// return getServerSettings(server).getModules();
+	// }
 
 	private Session getSession()
 	{
