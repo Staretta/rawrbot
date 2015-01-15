@@ -47,6 +47,37 @@ public class SettingsService
 	// s.saveOrUpdate(serverSettings);
 	// }
 
+	public boolean hasChannelModule(String server, String channel, String module)
+	{
+		List<String> modules = getChannelModules(server, channel);
+		for (String m : modules)
+		{
+			if (m.equalsIgnoreCase(module))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<String> getChannelModules(String server, String channel)
+	{
+		return getServerChannel(server, channel).getModules();
+	}
+
+	public ChannelEntity getServerChannel(String server, String channel)
+	{
+		List<ChannelEntity> channels = getServerChannels(server);
+		for (ChannelEntity chan : channels)
+		{
+			if (chan.getChannel().equalsIgnoreCase(channel))
+			{
+				return chan;
+			}
+		}
+		return null;
+	}
+
 	public List<ChannelEntity> getServerChannels(String server)
 	{
 		return getServerSettings(server).getChannels();
@@ -54,15 +85,10 @@ public class SettingsService
 
 	public Settings getServerSettings(String server)
 	{
-		Query q = getSession().createQuery("select s from Settings s where s.server = :server");
+		Query q = getSession().createQuery("from Settings as s where s.server = :server");
 		q.setParameter("server", server.toLowerCase());
 		return (Settings) q.uniqueResult();
 	}
-
-	// public List<String> getServerModules(String server)
-	// {
-	// return getServerSettings(server).getModules();
-	// }
 
 	private Session getSession()
 	{

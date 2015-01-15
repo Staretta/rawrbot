@@ -29,15 +29,8 @@ public class Settings implements Serializable
 	private String version;
 	private String server;
 	private int port;
-	// @ElementCollection(fetch = FetchType.EAGER)
-	// @CollectionTable(name = "channels", joinColumns = @JoinColumn(name = "id"))
-	// @Column(name = "channels")
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "settings")
 	private List<ChannelEntity> channels;
-	// @ElementCollection(fetch = FetchType.EAGER)
-	// @CollectionTable(name = "modules", joinColumns = @JoinColumn(name = "id"))
-	// @Column(name = "modules")
-	// private List<String> modules;
 	private String password;
 	private boolean ssl;
 
@@ -45,16 +38,6 @@ public class Settings implements Serializable
 	{
 
 	}
-
-	// public List<String> getModules()
-	// {
-	// return modules;
-	// }
-	//
-	// public void setModules(List<String> modules)
-	// {
-	// this.modules = modules;
-	// }
 
 	public List<ChannelEntity> getChannels()
 	{

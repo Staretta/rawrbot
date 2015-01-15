@@ -52,8 +52,6 @@ public class RawrBot
 				.setAutoNickChange(true)
 				.setAutoReconnect(true)
 				.setCapEnabled(true)
-				//.addCapHandler(new EnableCapHandler("identify-msg", true))
-				//.addCapHandler(new EnableCapHandler("account-notify", true))
 				.setIdentServerEnabled(false)
 				.setServerHostname(setting.getServer())
 				.setServerPort(setting.getPort())
@@ -67,6 +65,7 @@ public class RawrBot
 			for (ChannelEntity channel : setting.getChannels())
 				builder.addAutoJoinChannel(channel.getChannel());
 
+			// Find all the modules in net.staretta.modules, and we'll sort out whether they should be used in BaseListener
 			final ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
 			provider.addIncludeFilter(new RegexPatternTypeFilter(Pattern.compile(".*")));
 			final Set<BeanDefinition> classes = provider.findCandidateComponents("net.staretta.modules");
@@ -75,8 +74,6 @@ public class RawrBot
 			{
 				try
 				{
-					// builder.addListener((Listener<PircBotX>) Class.forName("net.staretta.modules." +
-					// module).newInstance());
 					builder.addListener((Listener<PircBotX>) Class.forName(module.getBeanClassName()).newInstance());
 					logger.info("Added module: " + module.getBeanClassName());
 				}

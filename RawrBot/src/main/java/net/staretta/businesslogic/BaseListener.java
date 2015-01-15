@@ -3,6 +3,9 @@ package net.staretta.businesslogic;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import net.staretta.RawrBot;
+import net.staretta.businesslogic.services.SettingsService;
+
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -12,9 +15,13 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 {
 	public ModuleInfo moduleInfo;
 
+	private SettingsService settingsService;
+
 	public BaseListener()
 	{
 		moduleInfo = setModuleInfo();
+
+		settingsService = RawrBot.applicationContext.getBean(SettingsService.class);
 	}
 
 	protected abstract ModuleInfo setModuleInfo();
@@ -24,21 +31,26 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
-		for (Entry<String, String[]> command : commandList.entrySet())
+
+		if (settingsService.hasChannelModule(event.getBot().getConfiguration().getServerHostname(), event.getChannel().getName(),
+				moduleInfo.getName()))
 		{
-			if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			for (Entry<String, String[]> command : commandList.entrySet())
 			{
-				if (command.getValue().length > 0)
+				if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
 				{
-					for (String message : command.getValue())
+					if (command.getValue().length > 0)
 					{
-						event.getChannel().send().message(message);
+						for (String message : command.getValue())
+						{
+							event.getChannel().send().message(message);
+						}
+						return;
 					}
-					return;
 				}
 			}
+			OnMessage(event);
 		}
-		OnMessage(event);
 	}
 
 	public abstract void OnMessage(MessageEvent<PircBotX> event);
