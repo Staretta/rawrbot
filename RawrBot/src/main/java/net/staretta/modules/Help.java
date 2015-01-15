@@ -1,6 +1,8 @@
 package net.staretta.modules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.staretta.businesslogic.BaseListener;
@@ -38,7 +40,24 @@ public class Help extends BaseListener
 		if ((isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
 				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
 		{
-			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+
+			List<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
+					.getChannel().getName());
+
+			List<Listener<PircBotX>> temp = new ArrayList<Listener<PircBotX>>();
+			for (Listener<PircBotX> listener : event.getBot().getConfiguration().getListenerManager().getListeners())
+			{
+				for (String module : modules)
+				{
+					String name = listener.getClass().getName();
+					if (listener.getClass().getName().endsWith(module))
+					{
+						temp.add(listener);
+					}
+				}
+			}
+
+			ImmutableSet<Listener<PircBotX>> listeners = ImmutableSet.copyOf(temp.iterator());
 			for (String message : helpCommand(listeners))
 				event.getChannel().send().message(message);
 		}

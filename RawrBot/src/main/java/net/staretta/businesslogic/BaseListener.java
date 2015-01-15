@@ -15,7 +15,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 {
 	public ModuleInfo moduleInfo;
 
-	private SettingsService settingsService;
+	public SettingsService settingsService;
 
 	public BaseListener()
 	{
