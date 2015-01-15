@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.staretta.businesslogic.entity.ChannelEntity;
-import net.staretta.businesslogic.entity.Settings;
+import net.staretta.businesslogic.entity.ServerEntity;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -16,15 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class SettingsService
+public class ServerService
 {
 	@PersistenceContext
 	private EntityManager em;
 
-	public List<Settings> getBotSettings()
+	public List<ServerEntity> getBotSettings()
 	{
-		Query q = getSession().createQuery("select s from Settings s");
-		return (List<Settings>) q.list();
+		Query q = getSession().createQuery("select s from ServerEntity s");
+		return (List<ServerEntity>) q.list();
 	}
 
 	// public void addChannel(String channel, String server)
@@ -83,11 +83,11 @@ public class SettingsService
 		return getServerSettings(server).getChannels();
 	}
 
-	public Settings getServerSettings(String server)
+	public ServerEntity getServerSettings(String server)
 	{
-		Query q = getSession().createQuery("from Settings as s where s.server = :server");
+		Query q = getSession().createQuery("from ServerEntity as s where s.server = :server");
 		q.setParameter("server", server.toLowerCase());
-		return (Settings) q.uniqueResult();
+		return (ServerEntity) q.uniqueResult();
 	}
 
 	private Session getSession()

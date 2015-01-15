@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.staretta.businesslogic.entity.ChannelEntity;
-import net.staretta.businesslogic.entity.Settings;
-import net.staretta.businesslogic.services.SettingsService;
+import net.staretta.businesslogic.entity.ServerEntity;
+import net.staretta.businesslogic.services.ServerService;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.Builder;
@@ -36,33 +36,33 @@ public class RawrBot
 		applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
 		logger.info("Spring context initialized.");
 
-		SettingsService settingsService = applicationContext.getBean(SettingsService.class);
-		List<Settings> serverSettings = settingsService.getBotSettings();
+		ServerService serverService = applicationContext.getBean(ServerService.class);
+		List<ServerEntity> serverSettings = serverService.getBotSettings();
 		logger.info("Loaded bot settings from database.");
 
 		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
-		for (Settings setting : serverSettings)
+		for (ServerEntity server : serverSettings)
 		{
-			logger.info("Building bot for server: " + setting.getServer());
+			logger.info("Building bot for server: " + server.getServer());
 			// @formatter:off
 			Builder<PircBotX> builder = new Configuration.Builder<PircBotX>()
-				.setName(setting.getNickname())
-				.setLogin(setting.getUsername())
-				.setRealName(setting.getVersion())
+				.setName(server.getNickname())
+				.setLogin(server.getUsername())
+				.setRealName(server.getVersion())
 				.setAutoNickChange(true)
 				.setAutoReconnect(true)
 				.setCapEnabled(true)
 				.setIdentServerEnabled(false)
-				.setServerHostname(setting.getServer())
-				.setServerPort(setting.getPort())
-				.setNickservPassword(setting.getPassword())
+				.setServerHostname(server.getServer())
+				.setServerPort(server.getPort())
+				.setNickservPassword(server.getPassword())
 				.setAutoReconnect(true);
 			// @formatter:on
 
-			if (setting.isSsl())
+			if (server.isSsl())
 				builder.setSocketFactory(new UtilSSLSocketFactory().trustAllCertificates());
 
-			for (ChannelEntity channel : setting.getChannels())
+			for (ChannelEntity channel : server.getChannels())
 				builder.addAutoJoinChannel(channel.getChannel());
 
 			// Find all the modules in net.staretta.modules, and we'll sort out whether they should be used in BaseListener
@@ -85,7 +85,7 @@ public class RawrBot
 
 			Configuration<PircBotX> config = builder.buildConfiguration();
 			manager.addBot(config);
-			logger.info("IRC bot built and added to manager: " + setting.getServer());
+			logger.info("IRC bot built and added to manager: " + server.getServer());
 		}
 		logger.info("Starting IRC bots.");
 		manager.start();

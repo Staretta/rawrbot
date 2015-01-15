@@ -17,22 +17,22 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "channels")
+@Table(name = "server_channels")
 public class ChannelEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "channels" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "server_channels" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	private String channel;
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "channel_modules", joinColumns = @JoinColumn(name = "id"))
-	@Column(name = "channel_modules")
+	@CollectionTable(name = "server_channel_modules", joinColumns = @JoinColumn(name = "id"))
+	@Column(name = "server_channel_modules")
 	private List<String> modules;
 	@ManyToOne
-	private Settings settings;
+	private ServerEntity servers;
 
 	public ChannelEntity()
 	{

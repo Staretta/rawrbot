@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.staretta.RawrBot;
-import net.staretta.businesslogic.services.SettingsService;
+import net.staretta.businesslogic.services.ServerService;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -15,13 +15,13 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 {
 	public ModuleInfo moduleInfo;
 
-	public SettingsService settingsService;
+	public ServerService settingsService;
 
 	public BaseListener()
 	{
 		moduleInfo = setModuleInfo();
 
-		settingsService = RawrBot.applicationContext.getBean(SettingsService.class);
+		settingsService = RawrBot.applicationContext.getBean(ServerService.class);
 	}
 
 	protected abstract ModuleInfo setModuleInfo();

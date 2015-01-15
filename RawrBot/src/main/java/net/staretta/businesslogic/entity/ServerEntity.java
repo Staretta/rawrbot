@@ -14,13 +14,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "settings")
-public class Settings implements Serializable
+@Table(name = "servers")
+public class ServerEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "settings" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "servers" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	private String nickname;
@@ -29,12 +29,12 @@ public class Settings implements Serializable
 	private String version;
 	private String server;
 	private int port;
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "settings")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "servers")
 	private List<ChannelEntity> channels;
 	private String password;
 	private boolean ssl;
 
-	public Settings()
+	public ServerEntity()
 	{
 
 	}
