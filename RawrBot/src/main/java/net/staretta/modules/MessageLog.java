@@ -123,11 +123,14 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			String channels = "";
-			for (Channel channel : userMap.get(event.getUser().getNick()))
+			if (userMap.containsKey(event.getUser().getNick()))
 			{
-				if (event.getBot().getUserBot().getChannels().contains(channel))
+				for (Channel channel : userMap.get(event.getUser().getNick()))
 				{
-					channels += channel.getName() + " ";
+					if (event.getBot().getUserBot().getChannels().contains(channel))
+					{
+						channels += channel.getName() + " ";
+					}
 				}
 			}
 			channels = channels.trim();
@@ -189,8 +192,10 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	// {
 	// Date date = new Date();
 	// String message = event.getRecipient() + " became owner of channel " + event.getChannel().getName();
-	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
-	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message,
+	// event.getChannel()
+	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(),
+	// event.getUser()),
 	// MessageType.MESSAGE, date);
 	// }
 	//
@@ -199,8 +204,10 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	// {
 	// Date date = new Date();
 	// String message = event.getRecipient() + " became super operator of channel " + event.getChannel().getName();
-	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
-	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message,
+	// event.getChannel()
+	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(),
+	// event.getUser()),
 	// MessageType.MESSAGE, date);
 	// }
 	//
@@ -209,8 +216,10 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	// {
 	// Date date = new Date();
 	// String message = event.getRecipient() + " became operator of channel " + event.getChannel().getName();
-	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
-	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message,
+	// event.getChannel()
+	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(),
+	// event.getUser()),
 	// MessageType.MESSAGE, date);
 	// }
 	//
@@ -219,8 +228,10 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	// {
 	// Date date = new Date();
 	// String message = event.getRecipient() + " became half operator of channel " + event.getChannel().getName();
-	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
-	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message,
+	// event.getChannel()
+	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(),
+	// event.getUser()),
 	// MessageType.MESSAGE, date);
 	// }
 	//
@@ -229,8 +240,10 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	// {
 	// Date date = new Date();
 	// String message = event.getRecipient() + " became voiced for channel " + event.getChannel().getName();
-	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event.getChannel()
-	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(), event.getUser()),
+	// service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message,
+	// event.getChannel()
+	// .getName(), event.getBot().getConfiguration().getServerHostname(), getUserLevel(event.getChannel(),
+	// event.getUser()),
 	// MessageType.MESSAGE, date);
 	// }
 	//
