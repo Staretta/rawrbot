@@ -49,8 +49,8 @@ public class Help extends BaseListener
 			{
 				for (String module : modules)
 				{
-					String name = listener.getClass().getName();
-					if (listener.getClass().getName().endsWith(module))
+					String[] name = listener.getClass().getName().split("\\.");
+					if (name[name.length - 1].equals(module))
 					{
 						temp.add(listener);
 					}
