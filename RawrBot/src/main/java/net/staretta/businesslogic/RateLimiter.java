@@ -5,20 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RateLimiter extends ListenerAdapter
+public class RateLimiter extends ListenerAdapter<PircBotX>
 {
 	private static Logger logger = LoggerFactory.getLogger(RateLimiter.class);
 	private static int timeout = 600000; // Milliseconds
 	private static volatile Map<User, List> userRequests = new HashMap<User, List>();
 
 	// userRequests is our hashmap of users and how many times they do a command.
-	// Basically something like { username : [ millisec1, millisec2 ] } Where username is the key, and the list is the
+	// Basically something like { username : [ millisec1, millisec2 ] } Where User is the key, and the list is the
 	// list that contains the millisecond when they entered the command.
+	// User is a user object representation of a specific user on the server. It should be the same across all channels
+	// on a server.
 
 	public static void addRequest(User user)
 	{
@@ -51,7 +54,6 @@ public class RateLimiter extends ListenerAdapter
 			for (int x = 0; x < request; x++)
 			{
 				timeList.add(System.currentTimeMillis());
-				// logger.info("for loop " + x);
 			}
 
 			userRequests.put(user, timeList);
