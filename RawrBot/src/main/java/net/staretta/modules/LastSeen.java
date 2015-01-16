@@ -6,6 +6,7 @@ import java.util.Date;
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.entity.LastSeenEntity;
 import net.staretta.businesslogic.entity.LastSeenEntity.MessageType;
 import net.staretta.businesslogic.services.LastSeenService;
@@ -90,7 +91,8 @@ public class LastSeen extends BaseListener
 						.getChannel().getName(), MessageType.MESSAGE);
 			}
 
-			if (isCommand(event.getMessage(), "!seen") || isCommand(event.getMessage(), "!lastseen"))
+			if ((isCommand(event.getMessage(), "!seen") || isCommand(event.getMessage(), "!lastseen"))
+					&& !RateLimiter.isRateLimited(event.getUser()))
 			{
 				String[] params = removeCommands(new String[] { "!seen", "!lastseen" }, event.getMessage()).split("\\s");
 				if (params.length > 1)

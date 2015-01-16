@@ -6,6 +6,7 @@ import java.util.Arrays;
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.SexDiceService;
 
 import org.pircbotx.PircBotX;
@@ -39,22 +40,25 @@ public class SexDice extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!sexdice"))
-		{
-			event.getChannel().send().message(service.getRandomSexDice());
-		}
-		else if (isCommand(event.getMessage(), "!action"))
-		{
-			event.getChannel().send().message(service.getRandomAction());
-		}
-		else if (isCommand(event.getMessage(), "!bodypart"))
-		{
-			event.getChannel().send().message(service.getRandomBodypart());
-		}
-		else if (isCommand(event.getMessage(), "!location"))
-		{
-			event.getChannel().send().message(service.getRandomLocation());
-		}
+		if ((isCommand(event.getMessage(), "!sexdice") || isCommand(event.getMessage(), "!action")
+				|| isCommand(event.getMessage(), "!bodypart") || isCommand(event.getMessage(), "!location"))
+				&& !RateLimiter.isRateLimited(event.getUser()))
+			if (isCommand(event.getMessage(), "!sexdice"))
+			{
+				event.getChannel().send().message(service.getRandomSexDice());
+			}
+			else if (isCommand(event.getMessage(), "!action"))
+			{
+				event.getChannel().send().message(service.getRandomAction());
+			}
+			else if (isCommand(event.getMessage(), "!bodypart"))
+			{
+				event.getChannel().send().message(service.getRandomBodypart());
+			}
+			else if (isCommand(event.getMessage(), "!location"))
+			{
+				event.getChannel().send().message(service.getRandomLocation());
+			}
 	}
 
 	@Override

@@ -42,9 +42,7 @@ public class Eightball extends BaseListener
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if ((isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball") || isCommand(event.getMessage(),
-				"!8-ball"))
-				&& event.getMessage().trim().toLowerCase().endsWith("?")
-				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
+				"!8-ball")) && event.getMessage().trim().toLowerCase().endsWith("?") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			String answer = service.getRandomAnswer();
 			event.getChannel().send().message(answer);

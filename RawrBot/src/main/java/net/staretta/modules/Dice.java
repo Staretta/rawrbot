@@ -46,8 +46,8 @@ public class Dice extends BaseListener
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		String userMessage = event.getMessage().trim().toLowerCase();
-		if (!RateLimiter.isRateLimited(event.getUser().getNick(), 20)
-				&& (isCommand(event.getMessage(), "!dice") || isCommand(event.getMessage(), "!roll")))
+		if ((isCommand(event.getMessage(), "!dice") || isCommand(event.getMessage(), "!roll"))
+				&& !RateLimiter.isRateLimited(event.getUser(), 20))
 		{
 			int numberDies = defaultNumberDies;
 			int dieSize = defaultDieSize;

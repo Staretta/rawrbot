@@ -38,22 +38,19 @@ public class Help extends BaseListener
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if ((isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
-				&& !RateLimiter.isRateLimited(event.getUser().getNick()))
+				&& !RateLimiter.isRateLimited(event.getUser()))
 		{
-
 			List<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
 					.getChannel().getName());
 
 			List<Listener<PircBotX>> temp = new ArrayList<Listener<PircBotX>>();
 			for (Listener<PircBotX> listener : event.getBot().getConfiguration().getListenerManager().getListeners())
 			{
-				for (String module : modules)
+				String[] name = listener.getClass().getName().split("\\.");
+
+				if (modules.contains(name[name.length - 1]))
 				{
-					String[] name = listener.getClass().getName().split("\\.");
-					if (name[name.length - 1].equals(module))
-					{
-						temp.add(listener);
-					}
+					temp.add(listener);
 				}
 			}
 

@@ -26,7 +26,7 @@ public class Tea extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!tea") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if (isCommand(event.getMessage(), "!tea") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			String[] param = event.getMessage().trim().split("\\s");
 			if (param.length == 1)

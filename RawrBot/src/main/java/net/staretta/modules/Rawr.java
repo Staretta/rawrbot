@@ -42,7 +42,7 @@ public class Rawr extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!rawr") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if (isCommand(event.getMessage(), "!rawr") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			if (event.getMessage().trim().startsWith("!RAWR"))
 			{
@@ -53,7 +53,7 @@ public class Rawr extends BaseListener
 				event.getChannel().send().message(service.getRandomRawr());
 			}
 		} // Check if message starts with !meow, and if they are rate limited
-		else if (isCommand(event.getMessage(), "!meow") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		else if (isCommand(event.getMessage(), "!meow") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			if (event.getMessage().trim().startsWith("!MEOW"))
 			{
@@ -67,10 +67,10 @@ public class Rawr extends BaseListener
 				event.getChannel().send().message(meow);
 			}
 		} // Check if message starts with !nyan, and if they are rate limited
-		else if (isCommand(event.getMessage(), "!nyan") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		else if (isCommand(event.getMessage(), "!nyan") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			// We want nyan to be weighted more than any other command. So we add more requests to their queue.
-			RateLimiter.addRequest(event.getUser().getNick(), 4);
+			RateLimiter.addRequest(event.getUser(), 4);
 
 			// String[] nyan = {
 			// "...,__,......,__,.....____________",
@@ -89,7 +89,7 @@ public class Rawr extends BaseListener
 			for (String line : nyan)
 				event.getChannel().send().message(line);
 		}
-		else if (isCommand(event.getMessage(), "!woosh") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		else if (isCommand(event.getMessage(), "!woosh") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			Random random = new Random();
 			String msg = "woo";

@@ -52,7 +52,7 @@ public class MessageLogEntity implements Serializable
 
 	public static enum MessageType
 	{
-		MESSAGE, PRIVATE, ACTION, NOTICE, JOIN, PART, QUIT, KICK, NICK
+		MESSAGE, PRIVATE, ACTION, NOTICE, JOIN, PART, QUIT, KICK, NICK, TOPIC
 	}
 
 	public long getId()
@@ -144,4 +144,15 @@ public class MessageLogEntity implements Serializable
 	{
 		this.messageType = messageType;
 	}
+
+	public Date getDate()
+	{
+		return date;
+	}
+
+	public void setDate(Date date)
+	{
+		this.date = date;
+	}
+
 }

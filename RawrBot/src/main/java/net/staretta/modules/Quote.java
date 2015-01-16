@@ -27,7 +27,7 @@ public class Quote extends BaseListener
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!quote") && !RateLimiter.isRateLimited(event.getUser().getNick()))
+		if (isCommand(event.getMessage(), "!quote") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			Object[] quote = null;
 			quote = getQuote();
