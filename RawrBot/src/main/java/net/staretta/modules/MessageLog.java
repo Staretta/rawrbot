@@ -92,7 +92,8 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 		{
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has quit. " + " (" + event.getReason() + ")";
-			service.addLog(event.getUser(), message, "ALL", event.getBot().getConfiguration().getServerHostname(), Role.USER,
+			// Using SERVER as channel name because this is a server wide event and not a channel specific event.
+			service.addLog(event.getUser(), message, "SERVER", event.getBot().getConfiguration().getServerHostname(), Role.USER,
 					MessageType.QUIT);
 		}
 	}
@@ -115,7 +116,8 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 		if (!event.getOldNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
 		{
 			String message = event.getOldNick() + " changed nickname to " + event.getNewNick();
-			service.addLog(event.getUser(), message, "ALL", event.getBot().getConfiguration().getServerHostname(), Role.USER,
+			// Using SERVER as channel name because this is a server wide event and not a channel specific event.
+			service.addLog(event.getUser(), message, "SERVER", event.getBot().getConfiguration().getServerHostname(), Role.USER,
 					MessageType.NICK);
 		}
 	}
