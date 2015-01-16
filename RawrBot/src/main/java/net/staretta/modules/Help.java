@@ -40,10 +40,20 @@ public class Help extends BaseListener
 		if ((isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
 				&& !RateLimiter.isRateLimited(event.getUser()))
 		{
+			// Get a list of modules available to the channel.
 			List<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
 					.getChannel().getName());
 
+			if (modules == null)
+			{
+				return;
+			}
+
+			// Create a temporary list to store the listeners.
 			List<Listener<PircBotX>> temp = new ArrayList<Listener<PircBotX>>();
+
+			// Loop through the available modules currently in use by the server and if they match the modules allowed
+			// for the channel, then add the listener to the temporary list.
 			for (Listener<PircBotX> listener : event.getBot().getConfiguration().getListenerManager().getListeners())
 			{
 				String[] name = listener.getClass().getName().split("\\.");
@@ -54,8 +64,9 @@ public class Help extends BaseListener
 				}
 			}
 
-			ImmutableSet<Listener<PircBotX>> listeners = ImmutableSet.copyOf(temp.iterator());
-			for (String message : helpCommand(listeners))
+			// The helpCommand function expects an ImmutableSet, so we copy the temp list to an ImmutableSet so the
+			// function can use it.
+			for (String message : helpCommand(ImmutableSet.copyOf(temp.iterator())))
 				event.getChannel().send().message(message);
 		}
 	}
