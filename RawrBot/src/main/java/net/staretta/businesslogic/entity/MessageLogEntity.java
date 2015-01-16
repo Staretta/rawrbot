@@ -45,20 +45,6 @@ public class MessageLogEntity implements Serializable
 
 	}
 
-	public MessageLogEntity(String nickname, String username, String hostmask, String message, String channel, String server, Role role,
-			MessageType messageType, Date date)
-	{
-		this.nickname = nickname;
-		this.username = username;
-		this.hostmask = hostmask;
-		this.message = message;
-		this.channel = channel;
-		this.server = server;
-		this.role = role;
-		this.messageType = messageType;
-		this.date = date;
-	}
-
 	public static enum Role
 	{
 		USER, VOICE, HALFOP, OP, SUPEROP, OWNER, IRCOP

@@ -1,6 +1,5 @@
 package net.staretta.modules;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,10 +56,9 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		userMap.put(event.getUser().getNick(), event.getUser().getChannels());
-		Date date = new Date();
-		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
-				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
-				getUserLevel(event.getChannel(), event.getUser()), MessageType.MESSAGE, date);
+
+		service.addLog(event.getUser(), event.getMessage(), event.getUser().getChannels(), event.getBot().getConfiguration()
+				.getServerHostname(), getUserLevel(event.getChannel(), event.getUser()), MessageType.MESSAGE);
 	}
 
 	// @Override
@@ -74,10 +72,9 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
 		userMap.put(event.getUser().getNick(), event.getUser().getChannels());
-		Date date = new Date();
-		service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage(), event
-				.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
-				getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION, date);
+
+		service.addLog(event.getUser(), event.getMessage(), event.getUser().getChannels(), event.getBot().getConfiguration()
+				.getServerHostname(), getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION);
 	}
 
 	@Override
@@ -94,12 +91,11 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 		else if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			userMap.put(event.getUser().getNick(), event.getUser().getChannels());
-			Date date = new Date();
+
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has joined " + event.getChannel().getName();
-			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
-					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
-					getUserLevel(event.getChannel(), event.getUser()), MessageType.JOIN, date);
+			service.addLog(event.getUser(), message, event.getUser().getChannels(), event.getBot().getConfiguration().getServerHostname(),
+					getUserLevel(event.getChannel(), event.getUser()), MessageType.JOIN);
 		}
 	}
 
@@ -109,11 +105,11 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			userMap.put(event.getUser().getNick(), event.getUser().getChannels());
-			Date date = new Date();
+
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has left " + event.getChannel().getName() + ". (" + event.getReason() + ")";
-			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, event
-					.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.PART, date);
+			service.addLog(event.getUser(), message, event.getUser().getChannels(), event.getBot().getConfiguration().getServerHostname(),
+					Role.USER, MessageType.PART);
 		}
 	}
 
@@ -135,11 +131,10 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 			}
 			channels = channels.trim();
 
-			Date date = new Date();
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has quit. " + " (" + event.getReason() + ")";
-			service.addLog(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, channels, event
-					.getBot().getConfiguration().getServerHostname(), Role.USER, MessageType.QUIT, date);
+			service.addLog(event.getUser(), message, event.getUser().getChannels(), event.getBot().getConfiguration().getServerHostname(),
+					Role.USER, MessageType.QUIT);
 		}
 	}
 
@@ -180,10 +175,9 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 			}
 			channels = channels.trim();
 
-			Date date = new Date();
 			String message = event.getOldNick() + " changed nickname to " + event.getNewNick();
-			service.addLog(event.getOldNick(), event.getUser().getLogin(), event.getUser().getHostmask(), message, channels, event.getBot()
-					.getConfiguration().getServerHostname(), Role.USER, MessageType.NICK, date);
+			service.addLog(event.getUser(), message, event.getUser().getChannels(), event.getBot().getConfiguration().getServerHostname(),
+					Role.USER, MessageType.NICK);
 		}
 	}
 	//
