@@ -1,6 +1,8 @@
 package net.staretta.modules;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.entity.MessageLogEntity.MessageType;
 import net.staretta.businesslogic.entity.MessageLogEntity.Role;
 import net.staretta.businesslogic.services.MessageLogService;
@@ -8,19 +10,19 @@ import net.staretta.businesslogic.services.MessageLogService;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageLog extends ListenerAdapter<PircBotX>
+public class MessageLog extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -29,6 +31,16 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	public MessageLog()
 	{
 		service = RawrBot.applicationContext.getBean(MessageLogService.class);
+	}
+
+	@Override
+	protected ModuleInfo setModuleInfo()
+	{
+		ModuleInfo moduleInfo = new ModuleInfo();
+		moduleInfo.setAuthor("Staretta");
+		moduleInfo.setName("MessageLog");
+		moduleInfo.setVersion("v0.9");
+		return moduleInfo;
 	}
 
 	private Role getUserLevel(Channel channel, User user)
@@ -126,6 +138,18 @@ public class MessageLog extends ListenerAdapter<PircBotX>
 	public void onTopic(TopicEvent event) throws Exception
 	{
 		// Do stuff here?
+	}
+
+	@Override
+	public void OnMessage(MessageEvent<PircBotX> event)
+	{
+		// We don't care about Capital OnMessage, only want to use lowercase onMessage.
+	}
+
+	@Override
+	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	{
+		// We don't care about Capital OnPrivateMessage, only want to use lowercase onPrivateMessage.
 	}
 
 	//

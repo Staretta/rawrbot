@@ -1,4 +1,4 @@
-package net.staretta.modules;
+package net.staretta.businesslogic.admin;
 
 import java.util.Arrays;
 
