@@ -24,8 +24,14 @@ public class UserEntity implements Serializable
 	private String nickname;
 	private String hostmask;
 	private String server;
-	private boolean identified;
-	private Date register;
+	private String password;
+	private String salt;
+	// Email verification
+	private boolean verified = false;
+	// Nickserv Identified
+	private boolean identified = false;
+	private Date registerDate;
 	private Date lastLogin;
+	private SessionEntity session;
 
 }
