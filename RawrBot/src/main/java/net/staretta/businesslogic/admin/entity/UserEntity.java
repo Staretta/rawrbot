@@ -32,6 +32,6 @@ public class UserEntity implements Serializable
 	private boolean identified = false;
 	private Date registerDate;
 	private Date lastLogin;
-	private SessionEntity session;
-
+	// Used to see how long they've been idle.
+	private Date lastActive;
 }
