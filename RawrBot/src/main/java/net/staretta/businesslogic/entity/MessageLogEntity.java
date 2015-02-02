@@ -16,13 +16,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "messagelog")
+@Table(name = "message_log")
 public class MessageLogEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "messagelog" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "message_log" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	private String nickname;
