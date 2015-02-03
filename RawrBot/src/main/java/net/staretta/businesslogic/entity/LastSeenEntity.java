@@ -10,13 +10,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "lastseen")
+@Table(name = "lastseen", indexes = { @Index(columnList = "nickname", name = "nickname_index"),
+		@Index(columnList = "server", name = "server_index") })
 public class LastSeenEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
