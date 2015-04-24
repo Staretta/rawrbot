@@ -25,7 +25,28 @@
 		<property name="persistenceUnitName" value="rawrbot" />
 	</bean>
 
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" depends-on="hibernateStringEncryptor">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="strongEncryptor" class="org.jasypt.encryption.pbe.PooledPBEStringEncryptor">
+		<property name="algorithm">
+			<value>PBEWithMD5AndTripleDES</value>
+		</property>
+		<property name="password">
+			<value>8m7noieKsqQ2yNikUW1F</value>
+		</property>
+		<property name="poolSize">
+			<value>4</value>
+		</property>
+	</bean>
+	
+	<bean id="hibernateStringEncryptor" class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>strongHibernateStringEncryptor</value>
+		</property>
+		<property name="encryptor">
+			<ref bean="strongEncryptor" />
+		</property>
 	</bean>
 </beans>

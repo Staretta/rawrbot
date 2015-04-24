@@ -4,6 +4,7 @@ import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
+import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.services.EightballService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -68,6 +69,14 @@ public class Eightball extends BaseListener
 				String answer = service.getRandomAnswer();
 				event.getUser().send().message(answer);
 			}
+		}
+	}
+
+	public class AdminEightball extends AdminListener
+	{
+		public AdminEightball()
+		{
+			// optionParser.acceptsAll(Arrays.asList("8ball", "eightball", "8-ball")).withRequiredArg().;
 		}
 	}
 }

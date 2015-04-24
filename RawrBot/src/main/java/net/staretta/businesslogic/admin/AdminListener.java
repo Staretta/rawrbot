@@ -14,22 +14,22 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Admin extends BaseListener
+public class AdminListener extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private OptionParser parser;
+	public static OptionParser optionParser;
 
-	public Admin()
+	public AdminListener()
 	{
-		parser = new OptionParser();
-		parser.acceptsAll(Arrays.asList("i", "identify"));
-		parser.acceptsAll(Arrays.asList("r", "register"));
-		parser.acceptsAll(Arrays.asList("p", "pass", "password")).requiredIf("identify", "register").requiresArgument();
-		parser.acceptsAll(Arrays.asList("e", "email")).requiredIf("register").requiresArgument();
-		parser.acceptsAll(Arrays.asList("a", "alias")).withRequiredArg();
-		parser.acceptsAll(Arrays.asList("h", "host", "hostmask")).withRequiredArg();
-		parser.acceptsAll(Arrays.asList("v", "verify")).requiresArgument();
+		optionParser = new OptionParser();
+		optionParser.acceptsAll(Arrays.asList("i", "identify"));
+		optionParser.acceptsAll(Arrays.asList("r", "register"));
+		optionParser.acceptsAll(Arrays.asList("p", "pass", "password")).requiredIf("identify", "register").requiresArgument();
+		optionParser.acceptsAll(Arrays.asList("e", "email")).requiredIf("register").requiresArgument();
+		optionParser.acceptsAll(Arrays.asList("a", "alias")).withRequiredArg();
+		optionParser.acceptsAll(Arrays.asList("h", "host", "hostmask")).withRequiredArg();
+		optionParser.acceptsAll(Arrays.asList("v", "verify")).requiresArgument();
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class Admin extends BaseListener
 
 			try
 			{
-				options = parser.parse(params);
+				options = optionParser.parse(params);
 			}
 			catch (NullPointerException | OptionException e)
 			{

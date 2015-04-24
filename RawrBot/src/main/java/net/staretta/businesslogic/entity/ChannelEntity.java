@@ -16,8 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.jasypt.hibernate4.type.EncryptedStringType;
+
 @Entity
 @Table(name = "server_channels")
+@TypeDef(name = "encryptedString", typeClass = EncryptedStringType.class, parameters = { @Parameter(name = "encryptorRegisteredName", value = "strongHibernateStringEncryptor") })
 public class ChannelEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -27,6 +33,8 @@ public class ChannelEntity implements Serializable
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	private String channel;
+	@Type(type = "encryptedString")
+	private String password;
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "server_channel_modules", joinColumns = @JoinColumn(name = "id"))
 	@Column(name = "server_channel_modules")
@@ -37,6 +45,16 @@ public class ChannelEntity implements Serializable
 	public ChannelEntity()
 	{
 
+	}
+
+	public String getPassword()
+	{
+		return password;
+	}
+
+	public void setPassword(String password)
+	{
+		this.password = password;
 	}
 
 	public String getChannel()
@@ -57,5 +75,12 @@ public class ChannelEntity implements Serializable
 	public void setModules(List<String> modules)
 	{
 		this.modules = modules;
+	}
+
+	public boolean hasPassword()
+	{
+		if (password != null)
+			return true;
+		return false;
 	}
 }

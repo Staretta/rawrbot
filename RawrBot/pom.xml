@@ -124,6 +124,18 @@
 			<artifactId>jopt-simple</artifactId>
 			<version>4.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt</artifactId>
+			<version>1.9.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt-hibernate4</artifactId>
+			<version>1.9.2</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
         <repository>
