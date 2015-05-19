@@ -1,37 +1,31 @@
 package net.staretta.businesslogic.admin;
 
-import java.util.Arrays;
-
-import joptsimple.OptionException;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class AdminListener extends BaseListener
+public abstract class AdminListener extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
-
-	public static OptionParser optionParser;
-
+	private AdminInfo adminInfo;
+	
 	public AdminListener()
 	{
-		optionParser = new OptionParser();
-		optionParser.acceptsAll(Arrays.asList("i", "identify"));
-		optionParser.acceptsAll(Arrays.asList("r", "register"));
-		optionParser.acceptsAll(Arrays.asList("p", "pass", "password")).requiredIf("identify", "register").requiresArgument();
-		optionParser.acceptsAll(Arrays.asList("e", "email")).requiredIf("register").requiresArgument();
-		optionParser.acceptsAll(Arrays.asList("a", "alias")).withRequiredArg();
-		optionParser.acceptsAll(Arrays.asList("h", "host", "hostmask")).withRequiredArg();
-		optionParser.acceptsAll(Arrays.asList("v", "verify")).requiresArgument();
+		adminInfo = setAdminInfo();
+		
+		// optionParser.acceptsAll(Arrays.asList("i", "identify"));
+		// optionParser.acceptsAll(Arrays.asList("r", "register"));
+		// optionParser.acceptsAll(Arrays.asList("p", "pass", "password")).requiredIf("identify", "register").requiresArgument();
+		// optionParser.acceptsAll(Arrays.asList("e", "email")).requiredIf("register").requiresArgument();
+		// optionParser.acceptsAll(Arrays.asList("a", "alias")).withRequiredArg();
+		// optionParser.acceptsAll(Arrays.asList("h", "host", "hostmask")).withRequiredArg();
+		// optionParser.acceptsAll(Arrays.asList("v", "verify")).requiresArgument();
 	}
-
+	
+	public abstract AdminInfo setAdminInfo();
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -42,34 +36,27 @@ public class AdminListener extends BaseListener
 		moduleInfo.addCommand("!admin");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		// We don't care about MessageEvents. We only care about PrivateMessageEvents
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!admin"))
+		String m = event.getMessage();
+		if (isCommand(m, "!admin"))
 		{
-			String[] params = event.getMessage().replaceFirst("!admin", "").trim().split("\\s");
-			OptionSet options = null;
-
-			try
+			if (m.toLowerCase().endsWith("-h") || m.toLowerCase().endsWith("-help") || m.toLowerCase().endsWith("--help"))
 			{
-				options = optionParser.parse(params);
+				
+				return;
 			}
-			catch (NullPointerException | OptionException e)
-			{
-				// message user about invalid options
-			}
-
-			if (options != null)
-			{
-
-			}
+			OnAdminPrivateMessage(event);
 		}
 	}
+	
+	public abstract void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event);
 }

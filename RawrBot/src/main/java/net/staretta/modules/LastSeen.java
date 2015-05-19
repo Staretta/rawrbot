@@ -21,20 +21,20 @@ import org.slf4j.LoggerFactory;
 public class LastSeen extends BaseListener
 {
 	private LastSeenService service;
-
+	
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
+	
 	// TODO: Set and filter by channel
 	// TODO: LIKE Search results, get 3 results by default.
 	public LastSeen()
 	{
 		service = RawrBot.applicationContext.getBean(LastSeenService.class);
 	}
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
-		moduleInfo = new ModuleInfo();
+		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("LastSeen");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
@@ -44,14 +44,14 @@ public class LastSeen extends BaseListener
 				"!lastseen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen.");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick())) // Need to make sure not our bot.
 		{
 			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
-
+			
 			if (seen != null)
 			{
 				seen.setUsername(event.getUser().getLogin());
@@ -68,14 +68,14 @@ public class LastSeen extends BaseListener
 			}
 		}
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick())) // Need to make sure not our bot.
 		{
 			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
-
+			
 			if (seen != null)
 			{
 				seen.setUsername(event.getUser().getLogin());
@@ -90,7 +90,7 @@ public class LastSeen extends BaseListener
 				service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getConfiguration().getServerHostname(), event
 						.getChannel().getName(), MessageType.MESSAGE);
 			}
-
+			
 			if ((isCommand(event.getMessage(), "!seen") || isCommand(event.getMessage(), "!lastseen"))
 					&& !RateLimiter.isRateLimited(event.getUser()))
 			{
@@ -111,7 +111,7 @@ public class LastSeen extends BaseListener
 			}
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{

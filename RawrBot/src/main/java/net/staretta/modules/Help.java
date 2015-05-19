@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableSet;
 public class Help extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -33,7 +33,7 @@ public class Help extends BaseListener
 		moduleInfo.setName("Help");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -43,34 +43,34 @@ public class Help extends BaseListener
 			// Get a list of modules available to the channel.
 			List<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
 					.getChannel().getName());
-
+			
 			if (modules == null)
 			{
 				return;
 			}
-
+			
 			// Create a temporary list to store the listeners.
 			List<Listener<PircBotX>> temp = new ArrayList<Listener<PircBotX>>();
-
+			
 			// Loop through the available modules currently in use by the server and if they match the modules allowed
 			// for the channel, then add the listener to the temporary list.
 			for (Listener<PircBotX> listener : event.getBot().getConfiguration().getListenerManager().getListeners())
 			{
 				String[] name = listener.getClass().getName().split("\\.");
-
+				
 				if (modules.contains(name[name.length - 1]))
 				{
 					temp.add(listener);
 				}
 			}
-
+			
 			// The helpCommand function expects an ImmutableSet, so we copy the temp list to an ImmutableSet so the
 			// function can use it.
 			for (String message : helpCommand(ImmutableSet.copyOf(temp.iterator())))
 				event.getChannel().send().message(message);
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
@@ -81,7 +81,7 @@ public class Help extends BaseListener
 				event.getUser().send().message(message);
 		}
 	}
-
+	
 	private String[] helpCommand(ImmutableSet<Listener<PircBotX>> modules)
 	{
 		String commands = "";
@@ -90,8 +90,8 @@ public class Help extends BaseListener
 			if (BaseListener.class.isAssignableFrom(mod.getClass()))
 			{
 				BaseListener listener = (BaseListener) mod;
-
-				HashMap<String, String[]> commandList = listener.moduleInfo.getCommands();
+				
+				HashMap<String, String[]> commandList = listener.getModuleInfo().getCommands();
 				for (Entry<String, String[]> commandInfo : commandList.entrySet())
 				{
 					if (!commandInfo.getKey().isEmpty())

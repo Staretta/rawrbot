@@ -4,6 +4,7 @@ import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
+import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.services.EightballService;
 
@@ -18,12 +19,12 @@ public class Eightball extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private EightballService service;
-
+	
 	public Eightball()
 	{
 		service = RawrBot.applicationContext.getBean(EightballService.class);
 	}
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -38,7 +39,7 @@ public class Eightball extends BaseListener
 				+ " Note: Question must end with a question mark. \"?\"");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -49,7 +50,7 @@ public class Eightball extends BaseListener
 			event.getChannel().send().message(answer);
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
@@ -57,7 +58,7 @@ public class Eightball extends BaseListener
 				|| isCommand(event.getMessage(), "!8-ball"))
 		{
 			String[] params = event.getMessage().trim().split("\\s");
-
+			
 			if (params.length >= 3 && (params[1].equals("-add") || params[1].equals("-a")) && event.getUser().getNick().equals("Staretta"))
 			{
 				logger.info(StringUtils.join(params, " ", 2, params.length));
@@ -71,12 +72,31 @@ public class Eightball extends BaseListener
 			}
 		}
 	}
-
+	
 	public class AdminEightball extends AdminListener
 	{
 		public AdminEightball()
 		{
-			// optionParser.acceptsAll(Arrays.asList("8ball", "eightball", "8-ball")).withRequiredArg().;
+			
+		}
+		
+		@Override
+		public AdminInfo setAdminInfo()
+		{
+			AdminInfo adminInfo = new AdminInfo();
+			adminInfo.setAdminVersion("v0.1");
+			adminInfo.addCommand("eightball");
+			adminInfo.addCommand("8ball");
+			return adminInfo;
+		}
+		
+		@Override
+		public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
+		{
+			if (isOption(event.getMessage(), "eightball") || isOption(event.getMessage(), "8ball"))
+			{
+				
+			}
 		}
 	}
 }

@@ -13,25 +13,30 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 public abstract class BaseListener extends ListenerAdapter<PircBotX>
 {
-	public ModuleInfo moduleInfo;
-
+	private ModuleInfo moduleInfo;
+	
 	public ServerService settingsService;
-
+	
 	public BaseListener()
 	{
 		moduleInfo = setModuleInfo();
-
+		
 		settingsService = RawrBot.applicationContext.getBean(ServerService.class);
 	}
-
+	
 	protected abstract ModuleInfo setModuleInfo();
-
+	
+	public ModuleInfo getModuleInfo()
+	{
+		return moduleInfo;
+	}
+	
 	@Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
-
+		
 		if (settingsService.hasChannelModule(event.getBot().getConfiguration().getServerHostname(), event.getChannel().getName(),
 				moduleInfo.getName()))
 		{
@@ -52,9 +57,9 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 			OnMessage(event);
 		}
 	}
-
+	
 	public abstract void OnMessage(MessageEvent<PircBotX> event);
-
+	
 	@Override
 	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
 	{
@@ -76,9 +81,9 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		}
 		OnPrivateMessage(event);
 	}
-
+	
 	public abstract void OnPrivateMessage(PrivateMessageEvent<PircBotX> event);
-
+	
 	public boolean isCommand(String message, String command)
 	{
 		// Doing it this way versus just using .startswith because we want to be sure the command is actually the correct command.
@@ -93,12 +98,25 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		}
 		return false;
 	}
-
+	
+	public boolean isOption(String message, String option)
+	{
+		String[] params = message.trim().split("\\s");
+		if (params.length >= 1)
+		{
+			if (params[1].toLowerCase().equals(option))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public String removeCommand(String command, String message)
 	{
 		return removeCommands(new String[] { command }, message);
 	}
-
+	
 	public String removeCommands(String[] commands, String message)
 	{
 		for (String command : commands)
