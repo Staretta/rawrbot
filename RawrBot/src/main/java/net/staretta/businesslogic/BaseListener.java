@@ -42,7 +42,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		{
 			for (Entry<String, String[]> command : commandList.entrySet())
 			{
-				if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+				if (isCommand(event.getMessage(), command.getKey()) && isHelp(s))
 				{
 					if (command.getValue().length > 0)
 					{
@@ -67,7 +67,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, String[]> commandList = moduleInfo.getCommands();
 		for (Entry<String, String[]> command : commandList.entrySet())
 		{
-			if (isCommand(event.getMessage(), command.getKey()) && (s.endsWith("-h") || s.endsWith("-help") || s.endsWith("--help")))
+			if (isCommand(event.getMessage(), command.getKey()) && isHelp(s))
 			{
 				if (command.getValue().length > 0)
 				{
@@ -99,16 +99,44 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		return false;
 	}
 	
-	public boolean isOption(String message, String option)
+	public boolean isOption(String message, String[] option, int i)
 	{
 		String[] params = message.trim().split("\\s");
-		if (params.length >= 1)
+		if (params.length >= 2)
 		{
-			if (params[1].toLowerCase().equals(option))
+			for (String s : option)
 			{
-				return true;
+				if (params[i].toLowerCase().equals(s))
+				{
+					return true;
+				}
 			}
 		}
+		return false;
+	}
+	
+	public boolean isOption(String message, String option)
+	{
+		if (isOption(message, new String[] { option }, 1))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isOption(String message, String[] option)
+	{
+		if (isOption(message, option, 1))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isHelp(String message)
+	{
+		if (message.toLowerCase().endsWith("-h") || message.toLowerCase().endsWith("-help") || message.toLowerCase().endsWith("--help"))
+			return true;
 		return false;
 	}
 	

@@ -99,7 +99,7 @@ public class Help extends BaseListener
 				}
 			}
 		}
-		String[] commandHelp = { "Commands: " + commands, "For command specific help, type \"-help\" or \"-h\" after a command." };
+		String[] commandHelp = { "Commands: " + commands, "For command specific help, type \"--help\" or \"-h\" after a command." };
 		return commandHelp;
 	}
 }

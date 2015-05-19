@@ -1,5 +1,7 @@
 package net.staretta.businesslogic.admin;
 
+import java.util.HashMap;
+
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 
@@ -49,12 +51,31 @@ public abstract class AdminListener extends BaseListener
 		String m = event.getMessage();
 		if (isCommand(m, "!admin"))
 		{
-			if (m.toLowerCase().endsWith("-h") || m.toLowerCase().endsWith("-help") || m.toLowerCase().endsWith("--help"))
+			String[] params = m.trim().split("\\s");
+			HashMap<String, String[]> commandList = adminInfo.getCommands();
+			if (commandList.containsKey(params[1].toLowerCase()) && isHelp(m))
+			{
+				for (String message : commandList.get(params[1]))
+				{
+					event.getUser().send().message(message);
+				}
+			}
+			else if (isOption(m, new String[] { "register", "r" }))
 			{
 				
-				return;
 			}
-			OnAdminPrivateMessage(event);
+			else if (isOption(m, new String[] { "identify", "i" }))
+			{
+				
+			}
+			else if (isOption(m, "password"))
+			{
+				
+			}
+			else
+			{
+				OnAdminPrivateMessage(event);
+			}
 		}
 	}
 	
