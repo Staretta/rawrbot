@@ -1,6 +1,7 @@
 package net.staretta.businesslogic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.staretta.RawrBot;
@@ -35,16 +36,16 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		HashMap<String, String[]> commandList = moduleInfo.getCommands();
+		HashMap<String, List<String>> commandList = moduleInfo.getCommands();
 		
 		if (settingsService.hasChannelModule(event.getBot().getConfiguration().getServerHostname(), event.getChannel().getName(),
 				moduleInfo.getName()))
 		{
-			for (Entry<String, String[]> command : commandList.entrySet())
+			for (Entry<String, List<String>> command : commandList.entrySet())
 			{
 				if (isCommand(event.getMessage(), command.getKey()) && isHelp(s))
 				{
-					if (command.getValue().length > 0)
+					if (command.getValue().size() > 0)
 					{
 						for (String message : command.getValue())
 						{
@@ -64,12 +65,12 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		HashMap<String, String[]> commandList = moduleInfo.getCommands();
-		for (Entry<String, String[]> command : commandList.entrySet())
+		HashMap<String, List<String>> commandList = moduleInfo.getCommands();
+		for (Entry<String, List<String>> command : commandList.entrySet())
 		{
 			if (isCommand(event.getMessage(), command.getKey()) && isHelp(s))
 			{
-				if (command.getValue().length > 0)
+				if (command.getValue().size() > 0)
 				{
 					for (String message : command.getValue())
 					{

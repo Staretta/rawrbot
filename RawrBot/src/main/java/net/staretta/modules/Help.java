@@ -91,8 +91,8 @@ public class Help extends BaseListener
 			{
 				BaseListener listener = (BaseListener) mod;
 				
-				HashMap<String, String[]> commandList = listener.getModuleInfo().getCommands();
-				for (Entry<String, String[]> commandInfo : commandList.entrySet())
+				HashMap<String, List<String>> commandList = listener.getModuleInfo().getCommands();
+				for (Entry<String, List<String>> commandInfo : commandList.entrySet())
 				{
 					if (!commandInfo.getKey().isEmpty())
 						commands += commandInfo.getKey() + " ";
