@@ -2,8 +2,8 @@ package net.staretta;
 
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
+import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.entity.ChannelEntity;
 import net.staretta.businesslogic.entity.ServerEntity;
 import net.staretta.businesslogic.services.ServerService;
@@ -20,26 +20,26 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.type.filter.RegexPatternTypeFilter;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import com.google.common.collect.ImmutableSortedSet;
 
 public class RawrBot
 {
 	public static ApplicationContext applicationContext;
-
+	
 	public static void main(String[] args)
 	{
 		Logger logger = LoggerFactory.getLogger(RawrBot.class);
-
+		
 		logger.info("Initializing Spring context.");
 		applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
 		logger.info("Spring context initialized.");
-
+		
 		ServerService serverService = applicationContext.getBean(ServerService.class);
 		List<ServerEntity> serverSettings = serverService.getBotSettings();
 		logger.info("Loaded bot settings from database.");
-
+		
 		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
 		for (ServerEntity server : serverSettings)
 		{
@@ -58,10 +58,10 @@ public class RawrBot
 				.setNickservPassword(server.getPassword())
 				.setAutoReconnect(true);
 			// @formatter:on
-
+			
 			if (server.isSsl())
 				builder.setSocketFactory(new UtilSSLSocketFactory().trustAllCertificates());
-
+			
 			for (ChannelEntity channel : server.getChannels())
 			{
 				if (channel.hasPassword())
@@ -69,12 +69,13 @@ public class RawrBot
 				else
 					builder.addAutoJoinChannel(channel.getChannel());
 			}
-
+			
 			// Find all the modules in net.staretta.modules, and we'll sort out whether they should be used in BaseListener
 			final ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
-			provider.addIncludeFilter(new RegexPatternTypeFilter(Pattern.compile(".*")));
-			final Set<BeanDefinition> classes = provider.findCandidateComponents("net.staretta.modules");
-
+			// provider.addIncludeFilter(new RegexPatternTypeFilter(Pattern.compile(".*")));
+			provider.addIncludeFilter(new AssignableTypeFilter(BaseListener.class));
+			final Set<BeanDefinition> classes = provider.findCandidateComponents("net.staretta");
+			
 			for (BeanDefinition module : classes)
 			{
 				try
@@ -87,14 +88,14 @@ public class RawrBot
 					logger.error("Exception in RawrBot.main: ", e);
 				}
 			}
-
+			
 			Configuration<PircBotX> config = builder.buildConfiguration();
 			manager.addBot(config);
 			logger.info("IRC bot built and added to manager: " + server.getServer());
 		}
 		logger.info("Starting IRC bots.");
 		manager.start();
-
+		
 		// Bot monitoring
 		// The bots throw an exception when they get disconnected from a server, and never reconnect.
 		// This is a stopgap measure at best, sometimes it works, sometimes it doesn't.
