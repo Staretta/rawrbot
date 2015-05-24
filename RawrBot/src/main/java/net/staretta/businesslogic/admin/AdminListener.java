@@ -28,6 +28,11 @@ public abstract class AdminListener extends BaseListener
 	
 	public abstract AdminInfo setAdminInfo();
 	
+	public AdminInfo getAdminInfo()
+	{
+		return adminInfo;
+	}
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -53,7 +58,7 @@ public abstract class AdminListener extends BaseListener
 		{
 			String[] params = m.trim().split("\\s");
 			HashMap<String, String[]> commandList = adminInfo.getCommands();
-			if (commandList.containsKey(params[1].toLowerCase()) && isHelp(m))
+			if (params.length > 1 && (commandList.containsKey(params[1].toLowerCase()) && isHelp(m)))
 			{
 				for (String message : commandList.get(params[1]))
 				{
