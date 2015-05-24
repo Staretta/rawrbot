@@ -49,8 +49,8 @@ public class Admin extends AdminListener
 				if (AdminListener.class.isAssignableFrom(mod.getClass()))
 				{
 					AdminListener listener = (AdminListener) mod;
-					HashMap<String, String[]> commandList = listener.getAdminInfo().getCommands();
-					for (Entry<String, String[]> command : commandList.entrySet())
+					HashMap<String, List<String>> commandList = listener.getAdminInfo().getCommands();
+					for (Entry<String, List<String>> command : commandList.entrySet())
 					{
 						if (!command.getKey().isEmpty())
 						{
