@@ -115,21 +115,10 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		return false;
 	}
 	
-	public boolean isOption(String message, String option)
-	{
-		if (isOption(message, new String[] { option }, 1))
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isOption(String message, String[] option)
+	public boolean isOption(String message, String... option)
 	{
 		if (isOption(message, option, 1))
-		{
 			return true;
-		}
 		return false;
 	}
 	

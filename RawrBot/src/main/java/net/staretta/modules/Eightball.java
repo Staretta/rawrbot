@@ -4,8 +4,6 @@ import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
-import net.staretta.businesslogic.admin.AdminInfo;
-import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.services.EightballService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -69,33 +67,6 @@ public class Eightball extends BaseListener
 			{
 				String answer = service.getRandomAnswer();
 				event.getUser().send().message(answer);
-			}
-		}
-	}
-	
-	public class AdminEightball extends AdminListener
-	{
-		public AdminEightball()
-		{
-			
-		}
-		
-		@Override
-		public AdminInfo setAdminInfo()
-		{
-			AdminInfo adminInfo = new AdminInfo();
-			adminInfo.setAdminVersion("v0.1");
-			adminInfo.addCommand("eightball");
-			adminInfo.addCommand("8ball");
-			return adminInfo;
-		}
-		
-		@Override
-		public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
-		{
-			if (isOption(event.getMessage(), "eightball") || isOption(event.getMessage(), "8ball"))
-			{
-				
 			}
 		}
 	}

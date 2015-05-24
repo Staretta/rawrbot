@@ -60,18 +60,6 @@ public abstract class AdminListener extends BaseListener
 					event.getUser().send().message(message);
 				}
 			}
-			else if (isOption(m, new String[] { "register", "r" }))
-			{
-				
-			}
-			else if (isOption(m, new String[] { "identify", "i" }))
-			{
-				
-			}
-			else if (isOption(m, "password"))
-			{
-				
-			}
 			else
 			{
 				OnAdminPrivateMessage(event);
