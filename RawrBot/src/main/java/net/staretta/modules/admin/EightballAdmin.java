@@ -18,7 +18,6 @@ public class EightballAdmin extends AdminListener
 		AdminInfo adminInfo = new AdminInfo();
 		adminInfo.setAdminVersion("v0.1");
 		adminInfo.addCommand("eightball");
-		adminInfo.addCommand("8ball");
 		return adminInfo;
 	}
 	

@@ -63,23 +63,23 @@ public class Admin extends AdminListener
 					"For command specific help, type \"--help\" or \"-h\" after a command.");
 			commandHelp.forEach(message -> event.getUser().send().message(message));
 		}
-		else if (isOption(m, new String[] { "r", "register" }))
+		else if (isOption(m, "r", "register"))
 		{
 			
 		}
-		else if (isOption(m, new String[] { "i", "identify" }))
+		else if (isOption(m, "i", "identify"))
 		{
 			
 		}
-		else if (isOption(m, new String[] { "p", "pass", "password" }))
+		else if (isOption(m, "p", "pass", "password"))
 		{
 			
 		}
-		else if (isOption(m, new String[] { "e", "email" }))
+		else if (isOption(m, "e", "email"))
 		{
 			
 		}
-		else if (isOption(m, new String[] { "v", "verify" }))
+		else if (isOption(m, "v", "verify"))
 		{
 			
 		}

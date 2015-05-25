@@ -100,7 +100,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		return false;
 	}
 	
-	public boolean isOption(String message, String[] option, int i)
+	public boolean isOption(String message, int i, String... option)
 	{
 		String[] params = message.trim().split("\\s");
 		if (params.length >= 2)
@@ -118,7 +118,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	
 	public boolean isOption(String message, String... option)
 	{
-		if (isOption(message, option, 1))
+		if (isOption(message, 1, option))
 			return true;
 		return false;
 	}
