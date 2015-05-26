@@ -22,7 +22,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	{
 		moduleInfo = setModuleInfo();
 		
-		settingsService = RawrBot.applicationContext.getBean(ServerService.class);
+		settingsService = RawrBot.getAppCtx().getBean(ServerService.class);
 	}
 	
 	protected abstract ModuleInfo setModuleInfo();

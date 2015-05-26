@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableSortedSet;
 
 public class RawrBot
 {
-	public static ApplicationContext applicationContext;
+	private static ApplicationContext applicationContext;
 	
 	public static void main(String[] args)
 	{
@@ -122,5 +122,10 @@ public class RawrBot
 				}
 			}
 		}
+	}
+	
+	public static ApplicationContext getAppCtx()
+	{
+		return applicationContext;
 	}
 }

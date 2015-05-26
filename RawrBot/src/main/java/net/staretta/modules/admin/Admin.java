@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.staretta.RawrBot;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
-import net.staretta.businesslogic.util.UserUtil;
+import net.staretta.businesslogic.services.UserService;
 
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -17,10 +20,11 @@ import com.google.common.collect.ImmutableSet;
 
 public class Admin extends AdminListener
 {
+	private UserService userService;
 	
 	public Admin()
 	{
-		
+		userService = RawrBot.getAppCtx().getBean(UserService.class);
 	}
 	
 	@Override
@@ -72,9 +76,11 @@ public class Admin extends AdminListener
 			// !admin register email password
 			if (params.size() == 4)
 			{
-				if (UserUtil.isEmail(params.get(2)) && UserUtil.isPassword(params.get(3)))
+				if (userService.isValidEmail(params.get(2)) && userService.isValidPassword(params.get(3)))
 				{
-					
+					String password = "";
+					PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+					String encryptedPassword = passwordEncryptor.encryptPassword(password);
 				}
 			}
 		}

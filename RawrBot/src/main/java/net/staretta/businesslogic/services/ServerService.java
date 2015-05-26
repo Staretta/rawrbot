@@ -2,31 +2,23 @@ package net.staretta.businesslogic.services;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import net.staretta.businesslogic.entity.ChannelEntity;
 import net.staretta.businesslogic.entity.ServerEntity;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ServerService
+public class ServerService extends BaseService
 {
-	@PersistenceContext
-	private EntityManager em;
-
 	public List<ServerEntity> getBotSettings()
 	{
 		Query q = getSession().createQuery("select s from ServerEntity s");
 		return (List<ServerEntity>) q.list();
 	}
-
+	
 	// public void addChannel(String channel, String server)
 	// {
 	// Session s = getSession();
@@ -46,7 +38,7 @@ public class ServerService
 	// serverSettings.setChannels(channels);
 	// s.saveOrUpdate(serverSettings);
 	// }
-
+	
 	public boolean hasChannelModule(String server, String channel, String module)
 	{
 		List<String> modules = getChannelModules(server, channel);
@@ -59,12 +51,12 @@ public class ServerService
 		}
 		return false;
 	}
-
+	
 	public List<String> getChannelModules(String server, String channel)
 	{
 		return getServerChannel(server, channel).getModules();
 	}
-
+	
 	public ChannelEntity getServerChannel(String server, String channel)
 	{
 		List<ChannelEntity> channels = getServerChannels(server);
@@ -77,21 +69,16 @@ public class ServerService
 		}
 		return null;
 	}
-
+	
 	public List<ChannelEntity> getServerChannels(String server)
 	{
 		return getServerSettings(server).getChannels();
 	}
-
+	
 	public ServerEntity getServerSettings(String server)
 	{
 		Query q = getSession().createQuery("from ServerEntity as s where s.server = :server");
 		q.setParameter("server", server.toLowerCase());
 		return (ServerEntity) q.uniqueResult();
-	}
-
-	private Session getSession()
-	{
-		return em.unwrap(EntityManagerImpl.class).getSession();
 	}
 }

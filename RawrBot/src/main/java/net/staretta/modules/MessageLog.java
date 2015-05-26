@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 public class MessageLog extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
+	
 	private MessageLogService service;
-
+	
 	public MessageLog()
 	{
-		service = RawrBot.applicationContext.getBean(MessageLogService.class);
+		service = RawrBot.getAppCtx().getBean(MessageLogService.class);
 	}
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -42,7 +42,7 @@ public class MessageLog extends BaseListener
 		moduleInfo.setVersion("v0.9");
 		return moduleInfo;
 	}
-
+	
 	private Role getUserLevel(Channel channel, User user)
 	{
 		if (channel.isOwner(user))
@@ -58,21 +58,21 @@ public class MessageLog extends BaseListener
 		else
 			return Role.USER;
 	}
-
+	
 	@Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		service.addLog(event.getUser(), event.getMessage(), event.getChannel().getName(), event.getBot().getConfiguration()
 				.getServerHostname(), getUserLevel(event.getChannel(), event.getUser()), MessageType.MESSAGE);
 	}
-
+	
 	@Override
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
 		service.addLog(event.getUser(), event.getMessage(), event.getChannel().getName(), event.getBot().getConfiguration()
 				.getServerHostname(), getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION);
 	}
-
+	
 	@Override
 	public void onJoin(JoinEvent<PircBotX> event) throws Exception
 	{
@@ -84,7 +84,7 @@ public class MessageLog extends BaseListener
 					getUserLevel(event.getChannel(), event.getUser()), MessageType.JOIN);
 		}
 	}
-
+	
 	@Override
 	public void onPart(PartEvent<PircBotX> event) throws Exception
 	{
@@ -96,7 +96,7 @@ public class MessageLog extends BaseListener
 					Role.USER, MessageType.PART);
 		}
 	}
-
+	
 	@Override
 	public void onQuit(QuitEvent<PircBotX> event) throws Exception
 	{
@@ -109,7 +109,7 @@ public class MessageLog extends BaseListener
 					MessageType.QUIT);
 		}
 	}
-
+	
 	@Override
 	public void onKick(KickEvent event) throws Exception
 	{
@@ -121,7 +121,7 @@ public class MessageLog extends BaseListener
 					Role.USER, MessageType.KICK);
 		}
 	}
-
+	
 	@Override
 	public void onNickChange(NickChangeEvent<PircBotX> event) throws Exception
 	{
@@ -133,25 +133,25 @@ public class MessageLog extends BaseListener
 					MessageType.NICK);
 		}
 	}
-
+	
 	@Override
 	public void onTopic(TopicEvent event) throws Exception
 	{
 		// Do stuff here?
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		// We don't care about Capital OnMessage, only want to use lowercase onMessage.
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		// We don't care about Capital OnPrivateMessage, only want to use lowercase onPrivateMessage.
 	}
-
+	
 	//
 	// @Override
 	// public void onOwner(OwnerEvent event) throws Exception
@@ -212,5 +212,5 @@ public class MessageLog extends BaseListener
 	// event.getUser()),
 	// MessageType.MESSAGE, date);
 	// }
-
+	
 }

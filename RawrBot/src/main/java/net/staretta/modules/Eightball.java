@@ -20,7 +20,7 @@ public class Eightball extends BaseListener
 	
 	public Eightball()
 	{
-		service = RawrBot.applicationContext.getBean(EightballService.class);
+		service = RawrBot.getAppCtx().getBean(EightballService.class);
 	}
 	
 	@Override

@@ -28,7 +28,7 @@ public class LastSeen extends BaseListener
 	// TODO: LIKE Search results, get 3 results by default.
 	public LastSeen()
 	{
-		service = RawrBot.applicationContext.getBean(LastSeenService.class);
+		service = RawrBot.getAppCtx().getBean(LastSeenService.class);
 	}
 	
 	@Override

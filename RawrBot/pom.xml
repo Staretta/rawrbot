@@ -124,6 +124,7 @@
 			<artifactId>jopt-simple</artifactId>
 			<version>4.8</version>
 		</dependency>
+<!-- jasypt / Password Encryption -->
 		<dependency>
 			<groupId>org.jasypt</groupId>
 			<artifactId>jasypt</artifactId>
@@ -136,7 +137,7 @@
 			<version>1.9.2</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Passay / Password Validation -->
+<!-- Passay / Password Validation -->
 		<dependency>
 			<groupId>org.passay</groupId>
 			<artifactId>passay</artifactId>

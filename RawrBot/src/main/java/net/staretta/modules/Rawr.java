@@ -19,12 +19,12 @@ public class Rawr extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private RawrService service;
-
+	
 	public Rawr()
 	{
-		service = RawrBot.applicationContext.getBean(RawrService.class);
+		service = RawrBot.getAppCtx().getBean(RawrService.class);
 	}
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -38,7 +38,7 @@ public class Rawr extends BaseListener
 		moduleInfo.addCommand("!woosh", "!woosh : Woosh! :3");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -71,7 +71,7 @@ public class Rawr extends BaseListener
 		{
 			// We want nyan to be weighted more than any other command. So we add more requests to their queue.
 			RateLimiter.addRequest(event.getUser(), 4);
-
+			
 			// String[] nyan = {
 			// "...,__,......,__,.....____________",
 			// "`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
@@ -85,7 +85,7 @@ public class Rawr extends BaseListener
 					+ Colors.add(Colors.MAGENTA) + "|:::::" + Colors.add(Colors.LIGHT_GRAY) + "(  o wo )";
 			String line4 = Colors.add(Colors.PURPLE) + "-.......-\"\"-.......--¯" + Colors.add(Colors.LIGHT_GRAY) + "\"u\"''''u''''u\"";
 			String[] nyan = { line1, line2, line3, line4 };
-
+			
 			for (String line : nyan)
 				event.getChannel().send().message(line);
 		}
@@ -99,13 +99,13 @@ public class Rawr extends BaseListener
 			event.getChannel().send().message(msg);
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
-
+		
 	}
-
+	
 	/**
 	 * Replaces Rawr with Meow.<br>
 	 * <br>
@@ -137,7 +137,7 @@ public class Rawr extends BaseListener
 			word = word.replace("R", "W").replace("r", "w");
 			message += word + " ";
 		}
-
+		
 		return message;
 	}
 }

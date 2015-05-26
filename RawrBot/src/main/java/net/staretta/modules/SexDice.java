@@ -19,12 +19,12 @@ public class SexDice extends BaseListener
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SexDiceService service;
-
+	
 	public SexDice()
 	{
-		service = RawrBot.applicationContext.getBean(SexDiceService.class);
+		service = RawrBot.getAppCtx().getBean(SexDiceService.class);
 	}
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -36,7 +36,7 @@ public class SexDice extends BaseListener
 				+ "You can also specify an !action !bodypart or !location seperately.");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -60,7 +60,7 @@ public class SexDice extends BaseListener
 				event.getChannel().send().message(service.getRandomLocation());
 			}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{

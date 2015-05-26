@@ -40,7 +40,7 @@ public class Tell extends BaseListener
 	
 	public Tell()
 	{
-		service = RawrBot.applicationContext.getBean(TellService.class);
+		service = RawrBot.getAppCtx().getBean(TellService.class);
 		
 		parser = new OptionParser();
 		parser.acceptsAll(Arrays.asList("a", "all"));

@@ -1,24 +1,17 @@
 package net.staretta.businesslogic.services;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import net.staretta.businesslogic.entity.SexDiceEntity;
 import net.staretta.businesslogic.entity.SexDiceEntity.DiceType;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class SexDiceService
+public class SexDiceService extends BaseService
 {
-	@PersistenceContext
-	private EntityManager em;
-	
 	public void addAction(String action)
 	{
 		Session session = getSession();
@@ -67,10 +60,5 @@ public class SexDiceService
 	public String getRandomSexDice()
 	{
 		return getRandomAction() + " " + getRandomBodypart() + " " + getRandomLocation();
-	}
-	
-	public Session getSession()
-	{
-		return em.unwrap(EntityManagerImpl.class).getSession();
 	}
 }
