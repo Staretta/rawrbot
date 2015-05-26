@@ -12,11 +12,10 @@ import org.joda.time.format.PeriodFormatter;
 
 public class MiscUtil
 {
-
 	// URL Regex matching
-	static String regex = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
-	static Pattern pattern = Pattern.compile(regex);
-
+	static String urlRegex = "(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)";
+	static Pattern urlPattern = Pattern.compile(urlRegex);
+	
 	/**
 	 * Chooses a random number based on the length of a list.
 	 * 
@@ -31,7 +30,7 @@ public class MiscUtil
 		int randomNumber = random.nextInt(fileLength);
 		return randomNumber;
 	}
-
+	
 	/**
 	 * Chooses a random selection using the {@link randomNumber} function, and returns the line for that index from a
 	 * list.
@@ -46,32 +45,17 @@ public class MiscUtil
 		String randomLine = fileList[randomNumber(fileList.length)];
 		return randomLine;
 	}
-
+	
 	public static String redactURL(String line)
 	{
-		// // Initialize variables
-		// String[] words = null;
-		// String message = "";
-		// // Split line into individual words at the spaces.
-		// words = line.split("\\s");
-		// for (String word : words) {
-		// if (word.length() < 15) {
-		// if (pattern.matcher(word).matches()) {
-		// word = "URL_REDACTED";
-		// }
-		// }
-		// // piece the words back together into a nice string
-		// message += word + " ";
-		// }
-		// return message.trim();
 		String message = "";
-		if (pattern.matcher(line).find())
+		if (urlPattern.matcher(line).find())
 		{
-			message = pattern.matcher(line).replaceAll("URL_REDACTED");
+			message = urlPattern.matcher(line).replaceAll("URL_REDACTED");
 		}
 		return message;
 	}
-
+	
 	public static int parsePeriodTime(String time)
 	{
 		PeriodFormatter formatter = ISOPeriodFormat.standard();
@@ -79,18 +63,18 @@ public class MiscUtil
 		Seconds s = p.toStandardSeconds();
 		return s.getSeconds();
 	}
-
+	
 	public static String durationFormat(int total_seconds)
 	{
 		// Helper variables.
 		int MINUTE = 60;
 		int HOUR = MINUTE * 60;
-
+		
 		// Get the days, hours, etc.
 		int hours = (total_seconds) / HOUR;
 		int minutes = (total_seconds % HOUR) / MINUTE;
 		int seconds = total_seconds % MINUTE;
-
+		
 		// Build a pretty string. (like this: "[HH:mm:ss]")
 		String uptime = "[";
 		if (hours > 0)
@@ -102,11 +86,11 @@ public class MiscUtil
 				uptime += minutes + ":";
 		// if (seconds < 10)
 		uptime += String.format("%1$02d", seconds) + "]";
-
+		
 		// Return the ugly bastard.
 		return uptime;
 	}
-
+	
 	/**
 	 * Outputs a formatted time based on the current time, and the last seen time.
 	 * 
@@ -120,7 +104,7 @@ public class MiscUtil
 		int seconds = (int) (System.currentTimeMillis() / 1000) - oldTime;
 		String a_second;
 		String formatTime = seconds + " " + (a_second = (seconds == 1) ? "second" : "seconds");
-
+		
 		int minutes = seconds / 60;
 		if (minutes > 0)
 		{
@@ -139,11 +123,11 @@ public class MiscUtil
 			String a_day;
 			formatTime = days + " " + (a_day = (days == 1) ? "day" : "days");
 		}
-
+		
 		// Return the pretty string.
 		return formatTime;
 	}
-
+	
 	/**
 	 * Outputs a formatted time based on the current time, and the start time of the system, or the bot.
 	 * 
@@ -157,14 +141,14 @@ public class MiscUtil
 		int MINUTE = 60;
 		int HOUR = MINUTE * 60;
 		int DAY = HOUR * 24;
-
+		
 		// Get the days, hours, etc.
-
+		
 		long days = total_seconds / DAY;
 		long hours = (total_seconds % DAY) / HOUR;
 		long minutes = (total_seconds % HOUR) / MINUTE;
 		long seconds = total_seconds % MINUTE;
-
+		
 		// Build a pretty string. (like this: "N days, N hours, N minutes, N seconds")
 		String uptime = "";
 		if (days > 0)
@@ -184,11 +168,11 @@ public class MiscUtil
 		}
 		String a_second;
 		uptime += seconds + " " + (a_second = (seconds == 1) ? "second" : "seconds");
-
+		
 		// Return the ugly bastard.
 		return uptime;
 	}
-
+	
 	/**
 	 * Outputs a formatted date based on the current time.
 	 * 
@@ -200,10 +184,10 @@ public class MiscUtil
 		String dateNow = null;
 		Date date = new Date();
 		dateNow = new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(date);
-
+		
 		return dateNow;
 	}
-
+	
 	/**
 	 * Returns current seconds based on the systems milliseconds
 	 * 

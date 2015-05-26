@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
+import net.staretta.businesslogic.util.UserUtil;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
@@ -27,7 +28,7 @@ public class Admin extends AdminListener
 	{
 		AdminInfo adminInfo = new AdminInfo();
 		adminInfo.setAdminVersion("v0.1");
-		adminInfo.addCommand("register");
+		adminInfo.addCommand("register", "");
 		adminInfo.addCommand("identify");
 		adminInfo.addCommand("email");
 		adminInfo.addCommand("password");
@@ -39,6 +40,7 @@ public class Admin extends AdminListener
 	public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		String m = event.getMessage();
+		List<String> params = Arrays.asList(m.split("\\s"));
 		// Check and see if all they entered was !admin, and if so, spit out the admin commands.
 		if (m.trim().equalsIgnoreCase("!admin"))
 		{
@@ -65,23 +67,45 @@ public class Admin extends AdminListener
 		}
 		else if (isOption(m, "r", "register"))
 		{
-			
+			// Check the size, verify that the user entered a valid email address, and the password isn't unreasonably small or large.
+			// Then create the user and save it to the database
+			// !admin register email password
+			if (params.size() == 4)
+			{
+				if (UserUtil.isEmail(params.get(2)) && UserUtil.isPassword(params.get(3)))
+				{
+					
+				}
+			}
 		}
 		else if (isOption(m, "i", "identify"))
 		{
-			
+			// !admin identify password
+			if (params.size() == 3)
+			{
+				
+			}
 		}
 		else if (isOption(m, "p", "pass", "password"))
 		{
-			
+			if (params.size() == 3)
+			{
+				
+			}
 		}
 		else if (isOption(m, "e", "email"))
 		{
-			
+			if (params.size() == 3)
+			{
+				
+			}
 		}
 		else if (isOption(m, "v", "verify"))
 		{
-			
+			if (params.size() == 3)
+			{
+				
+			}
 		}
 	}
 }
