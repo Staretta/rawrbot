@@ -10,14 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.jasypt.hibernate4.type.EncryptedStringType;
-
 @Entity
 @Table(name = "admin_user")
-@TypeDef(name = "encryptedString", typeClass = EncryptedStringType.class, parameters = { @Parameter(name = "encryptorRegisteredName", value = "strongHibernateStringEncryptor") })
+// @TypeDef(name = "encryptedString", typeClass = EncryptedStringType.class, parameters = { @Parameter(name = "encryptorRegisteredName",
+// value = "strongHibernateStringEncryptor") })
 public class UserEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +26,7 @@ public class UserEntity implements Serializable
 	private String nickname;
 	private String hostmask;
 	private String server;
-	@Type(type = "encryptedString")
+	// @Type(type = "encryptedString")
 	private String password;
 	// Email verification
 	private boolean verified = false;
@@ -44,12 +40,6 @@ public class UserEntity implements Serializable
 	public UserEntity()
 	{
 		this.registerDate = new Date();
-	}
-	
-	public boolean checkPassword()
-	{
-		
-		return false;
 	}
 	
 	public String getUsername()
