@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.staretta.businesslogic.admin.entity.UserEntity;
+
+import org.hibernate.Query;
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.passay.CharacterCharacteristicsRule;
 import org.passay.DigitCharacterRule;
 import org.passay.LengthRule;
@@ -14,6 +19,7 @@ import org.passay.Rule;
 import org.passay.SpecialCharacterRule;
 import org.passay.UppercaseCharacterRule;
 import org.passay.WhitespaceRule;
+import org.pircbotx.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +32,39 @@ public class UserService extends BaseService
 	
 	public UserService()
 	{
+	}
+	
+	public boolean createUser(User user, String password)
+	{
+		UserEntity userEntity = new UserEntity();
+		userEntity.setHostmask(user.getHostmask());
+		userEntity.setNickname(user.getNick());
+		userEntity.setUsername(user.getLogin());
+		userEntity.setServer(user.getBot().getConfiguration().getServerHostname());
+		return true;
+	}
+	
+	public UserEntity getUser(User user)
+	{
+		Query q = getSession().createQuery(
+				"from UserEntity as user where lower(user.toNickname) = lower(:toNickname) and user.server = :server");
+		q.setParameter("toNickname", user.getNick());
+		q.setParameter("server", user.getBot().getConfiguration().getServerHostname());
+		return (UserEntity) q.uniqueResult();
+	}
+	
+	public boolean checkPassword(User user, String password)
+	{
+		if (password != null)
+		{
+			PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+			String encryptedPassword = getUser(user).getPassword();
+			if (passwordEncryptor.checkPassword(password, encryptedPassword))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean isValidEmail(String email)
