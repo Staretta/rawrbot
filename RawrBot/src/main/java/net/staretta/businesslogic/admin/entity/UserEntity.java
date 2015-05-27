@@ -26,6 +26,7 @@ public class UserEntity implements Serializable
 	private String nickname;
 	private String hostmask;
 	private String server;
+	// THE REASON YOU HAD THIS IN PLACE WAS TO TEST THE CHANNEL PASSWORD ENCRYPTION, WHICH NEEDED TO BE TWO WAY ENCRYPTED/DECRYPTED
 	// @Type(type = "encryptedString")
 	private String password;
 	// Email verification

@@ -41,6 +41,17 @@ public class UserService extends BaseService
 		userEntity.setNickname(user.getNick());
 		userEntity.setUsername(user.getLogin());
 		userEntity.setServer(user.getBot().getConfiguration().getServerHostname());
+		userEntity.setIdentified(user.isVerified()); // TODO: Fix this at some point to query nickserv instead of whois, as whois is rate
+														// limited. Not sure I want to do this?
+		
+		PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+		String encryptedPassword = passwordEncryptor.encryptPassword(password);
+		userEntity.setPassword(encryptedPassword);
+		
+		// TODO: Send email verification
+		
+		getSession().save(userEntity);
+		
 		return true;
 	}
 	
@@ -64,6 +75,12 @@ public class UserService extends BaseService
 				return true;
 			}
 		}
+		return false;
+	}
+	
+	public boolean sendEmailVerification(User user)
+	{
+		// TODO
 		return false;
 	}
 	
@@ -100,5 +117,4 @@ public class UserService extends BaseService
 		
 		return validator.validate(passwordData).isValid();
 	}
-	
 }

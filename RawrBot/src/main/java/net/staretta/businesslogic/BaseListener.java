@@ -39,7 +39,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		HashMap<String, List<String>> commandList = moduleInfo.getCommands();
 		
 		if (settingsService.hasChannelModule(event.getBot().getConfiguration().getServerHostname(), event.getChannel().getName(),
-				moduleInfo.getName()))
+				moduleInfo.getName())) // TODO: MOVE THIS INTO A GLOBAL CONCURRENT HASHMAP, AND ADD A RELOAD COMMAND TO REFRESH THE MAP.
 		{
 			for (Entry<String, List<String>> command : commandList.entrySet())
 			{
