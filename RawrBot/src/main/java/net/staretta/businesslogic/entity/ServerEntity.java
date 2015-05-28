@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -18,7 +19,7 @@ import javax.persistence.Table;
 public class ServerEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@SequenceGenerator(name = "generatorMySeq", sequenceName = "servers" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
@@ -33,59 +34,71 @@ public class ServerEntity implements Serializable
 	private List<ChannelEntity> channels;
 	private String password;
 	private boolean ssl;
-
+	@ManyToOne(fetch = FetchType.EAGER)
+	private GlobalConfigEntity config;
+	
 	public ServerEntity()
 	{
-
+		
 	}
-
+	
 	public List<ChannelEntity> getChannels()
 	{
 		return channels;
 	}
-
+	
 	public void setChannels(List<ChannelEntity> channels)
 	{
 		this.channels = channels;
 	}
-
+	
 	public boolean isSsl()
 	{
 		return ssl;
 	}
-
+	
 	public Long getId()
 	{
 		return id;
 	}
-
+	
 	public String getNickname()
 	{
 		return nickname;
 	}
-
+	
 	public String getUsername()
 	{
 		return username;
 	}
-
+	
 	public String getVersion()
 	{
 		return version;
 	}
-
+	
 	public String getServer()
 	{
 		return server;
 	}
-
+	
 	public int getPort()
 	{
 		return port;
 	}
-
+	
 	public String getPassword()
 	{
 		return password;
+	}
+	
+	public GlobalConfigEntity getGlobalConfig()
+	{
+		return config;
+	}
+	
+	public void setGlobalConfig(GlobalConfigEntity config)
+	{
+		this.config = config;
 	}
 }

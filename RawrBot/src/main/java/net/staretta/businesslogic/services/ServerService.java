@@ -3,6 +3,7 @@ package net.staretta.businesslogic.services;
 import java.util.List;
 
 import net.staretta.businesslogic.entity.ChannelEntity;
+import net.staretta.businesslogic.entity.GlobalConfigEntity;
 import net.staretta.businesslogic.entity.ServerEntity;
 
 import org.hibernate.Query;
@@ -50,6 +51,11 @@ public class ServerService extends BaseService
 			}
 		}
 		return false;
+	}
+	
+	public GlobalConfigEntity getGlobalConfig(String server)
+	{
+		return getServerSettings(server).getGlobalConfig();
 	}
 	
 	public List<String> getChannelModules(String server, String channel)

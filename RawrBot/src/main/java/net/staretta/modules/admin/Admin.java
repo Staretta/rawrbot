@@ -10,8 +10,6 @@ import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.services.UserService;
 
-import org.jasypt.util.password.PasswordEncryptor;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -78,9 +76,7 @@ public class Admin extends AdminListener
 			{
 				if (userService.isValidEmail(params.get(2)) && userService.isValidPassword(params.get(3)))
 				{
-					String password = "";
-					PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-					String encryptedPassword = passwordEncryptor.encryptPassword(password);
+					
 				}
 			}
 		}

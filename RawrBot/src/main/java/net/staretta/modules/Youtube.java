@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.services.ServerService;
 import net.staretta.businesslogic.util.Colors;
 import net.staretta.businesslogic.util.MiscUtil;
 
@@ -35,11 +37,17 @@ public class Youtube extends BaseListener
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String regex = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
 	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-	private String apiKey = "AIzaSyBrCQ6gcGeOsZF0BLAdX_K7j9CX8svrcBo";
+	private String apiKey = "";
 	private HttpTransport httpTransport = new NetHttpTransport();
 	private JsonFactory jsonFactory = new JacksonFactory();
 	private YouTube youtube;
-
+	private ServerService serverService;
+	
+	public Youtube()
+	{
+		serverService = RawrBot.getAppCtx().getBean(ServerService.class);
+	}
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -49,7 +57,7 @@ public class Youtube extends BaseListener
 		moduleInfo.setVersion("v1.2");
 		return moduleInfo;
 	}
-
+	
 	class VideoDetails
 	{
 		String videoID;
@@ -60,13 +68,13 @@ public class Youtube extends BaseListener
 		String description;
 		String channelTitle;
 		String dimension;
-
+		
 		VideoDetails()
 		{
-
+			
 		}
 	}
-
+	
 	/**
 	 * Checks if the message has a valid YouTube URL
 	 */
@@ -77,7 +85,7 @@ public class Youtube extends BaseListener
 			return true;
 		return false;
 	}
-
+	
 	/**
 	 * Gets the YouTube video ID from the url<br>
 	 * <br>
@@ -96,7 +104,7 @@ public class Youtube extends BaseListener
 		}
 		return video_id;
 	}
-
+	
 	private List<Video> getYouTubeAPI(String ID)
 	{
 		// Need to build our http request for Youtube's API
@@ -122,7 +130,7 @@ public class Youtube extends BaseListener
 		}
 		return list;
 	}
-
+	
 	/**
 	 * Gets the YouTube Video info using Google's API and the ID
 	 */
@@ -131,7 +139,7 @@ public class Youtube extends BaseListener
 		// Parse the ID from the URL, and if it's not null, then get the title.
 		String ID = getYouTubeVideoID(link);
 		VideoDetails videoDetails = new VideoDetails();
-
+		
 		if (ID != null)
 		{
 			List<Video> list = getYouTubeAPI(ID);
@@ -148,39 +156,61 @@ public class Youtube extends BaseListener
 		}
 		return videoDetails;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
 		// If message is a youtube url and we have a youtube api key in the properties file.
-		if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage()))
+		if (isYouTubeURL(event.getMessage()))
 		{
-			// Get the title of the video, and message the channel.
-			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
-					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
-					+ videoDetails.quality.toUpperCase() + "]";
-			if (videoDetails.title != null)
-				event.getChannel().send().message(message);
+			// if we don't have an API key set, then try and get it from the db.
+			if (apiKey.isEmpty())
+			{
+				String server = event.getBot().getConfiguration().getServerHostname();
+				apiKey = serverService.getGlobalConfig(server).getYoutubeApiKey();
+			}
+			else
+			{
+				// Get the title of the video, and message the channel.
+				VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
+				String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
+						+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
+						+ videoDetails.quality.toUpperCase() + "]";
+				if (videoDetails.title != null)
+				{
+					event.getChannel().send().message(message);
+				}
+			}
 		}
 	}
-
+	
 	@Override
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
-		// If message is a youtube url and we have a youtube api key in the properties file.
-		if (!apiKey.isEmpty() && isYouTubeURL(event.getMessage()))
+		// If message is a youtube url.
+		if (isYouTubeURL(event.getMessage()))
 		{
-			// Get the title of the video, and message the channel.
-			VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
-			String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
-					+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
-					+ videoDetails.quality.toUpperCase() + "]";
-			if (videoDetails.title != null)
-				event.getChannel().send().message(message);
+			// if we don't have an API key set, then try and get it from the db.
+			if (apiKey.isEmpty())
+			{
+				String server = event.getBot().getConfiguration().getServerHostname();
+				apiKey = serverService.getGlobalConfig(server).getYoutubeApiKey();
+			}
+			else
+			{
+				// Get the title of the video, and message the channel.
+				VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
+				String message = Colors.add(Colors.BLACK, Colors.WHITE_BG, Colors.BOLD) + "You" + Colors.add(Colors.WHITE, Colors.RED_BG)
+						+ "Tube" + Colors.NORMAL + ": " + videoDetails.title + " " + videoDetails.fDuration + "["
+						+ videoDetails.quality.toUpperCase() + "]";
+				if (videoDetails.title != null)
+				{
+					event.getChannel().send().message(message);
+				}
+			}
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
