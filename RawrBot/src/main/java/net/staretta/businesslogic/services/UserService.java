@@ -34,7 +34,7 @@ public class UserService extends BaseService
 	{
 	}
 	
-	public boolean createUser(User user, String password)
+	public void createUser(User user, String password)
 	{
 		UserEntity userEntity = new UserEntity();
 		userEntity.setHostmask(user.getHostmask());
@@ -51,8 +51,6 @@ public class UserService extends BaseService
 		// TODO: Send email verification
 		
 		getSession().save(userEntity);
-		
-		return true;
 	}
 	
 	public UserEntity getUser(User user)
@@ -78,10 +76,9 @@ public class UserService extends BaseService
 		return false;
 	}
 	
-	public boolean sendEmailVerification(User user)
+	public void sendEmailVerification(User user)
 	{
-		// TODO
-		return false;
+		// emailService.sendMail("", "", "", "");
 	}
 	
 	public boolean isValidEmail(String email)
