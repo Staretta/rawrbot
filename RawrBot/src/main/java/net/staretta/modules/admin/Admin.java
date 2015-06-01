@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
+import net.staretta.businesslogic.services.EmailService;
 import net.staretta.businesslogic.services.UserService;
 
 import org.pircbotx.PircBotX;
@@ -19,10 +20,12 @@ import com.google.common.collect.ImmutableSet;
 public class Admin extends AdminListener
 {
 	private UserService userService;
+	private EmailService emailService;
 	
 	public Admin()
 	{
 		userService = RawrBot.getAppCtx().getBean(UserService.class);
+		emailService = RawrBot.getAppCtx().getBean(EmailService.class);
 	}
 	
 	@Override
@@ -74,10 +77,33 @@ public class Admin extends AdminListener
 			// !admin register email password
 			if (params.size() == 4)
 			{
-				if (userService.isValidEmail(params.get(2)) && userService.isValidPassword(params.get(3)))
+				if (!userService.isNicknameAvailable(event.getUser()))
 				{
-					
+					event.getUser().send().message("Nickname already in use.");
 				}
+				else if (!userService.isValidEmail(params.get(2)))
+				{
+					event.getUser().send().message("Invalid Email address, please enter a correct email address.");
+				}
+				else if (!userService.isValidPassword(params.get(3)))
+				{
+					String message = "Invalid password. Passwords must be 8-31 characters long, "
+							+ "and contain at least 3 of the following:"
+							+ " a Digit, an Uppercase Character, a Lowercase Character, or a Special Character.";
+					event.getUser().send().message(message);
+				}
+				else
+				{
+					userService.createUser(event.getUser(), params.get(3));
+					userService.sendEmailVerification(emailService, event.getUser());
+					String message = "User Created - A verification email has been sent to the email provided. "
+							+ "To verify the email: \"!admin verify <code from email>\"";
+					event.getUser().send().message(message);
+				}
+			}
+			else
+			{
+				event.getUser().send().message("Incorrect number of parameters. \"!admin register user@email.com P@sSw0rd\"");
 			}
 		}
 		else if (isOption(m, "i", "identify"))

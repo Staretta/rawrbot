@@ -197,4 +197,31 @@ public class MiscUtil
 	{
 		return (int) (System.currentTimeMillis() / 1000);
 	}
+	
+	public static int randomInt(Random rand, int min, int max)
+	{
+		// return (int)(Math.random() * (max - min) + min);
+		max += 1; // otherwise its not inclusive of max
+		return (int) (rand.nextDouble() * (max - min) + min);
+	}
+	
+	public static String generateRandomString(int min, int max)
+	{
+		Random rand = new Random(System.currentTimeMillis());
+		
+		int num = (int) (byte) randomInt(rand, min, max);
+		byte b[] = new byte[num];
+		for (int i = 0; i < num; i++)
+		{
+			int x = randomInt(rand, 0, 2);
+			if (x == 0)
+				b[i] = (byte) randomInt(rand, '0', '9');
+			else if (x == 1)
+				b[i] = (byte) randomInt(rand, 'a', 'z');
+			else if (x == 2)
+				b[i] = (byte) randomInt(rand, 'A', 'Z');
+		}
+		
+		return new String(b);
+	}
 }

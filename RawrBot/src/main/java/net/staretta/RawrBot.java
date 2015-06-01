@@ -36,6 +36,7 @@ public class RawrBot
 		applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
 		logger.info("Spring context initialized.");
 		
+		logger.info("Loading bot settings.");
 		ServerService serverService = applicationContext.getBean(ServerService.class);
 		List<ServerEntity> serverSettings = serverService.getBotSettings();
 		logger.info("Loaded bot settings from database.");
@@ -59,6 +60,7 @@ public class RawrBot
 				.setAutoReconnect(true);
 			// @formatter:on
 			
+			// We have to trust all certificates because some IRC servers are stupid and use unsigned certs.
 			if (server.isSsl())
 				builder.setSocketFactory(new UtilSSLSocketFactory().trustAllCertificates());
 			
@@ -96,9 +98,12 @@ public class RawrBot
 		logger.info("Starting IRC bots.");
 		manager.start();
 		
-		// Bot monitoring
-		// The bots throw an exception when they get disconnected from a server, and never reconnect.
-		// This is a stopgap measure at best, sometimes it works, sometimes it doesn't.
+		/****************
+		 * Bot monitoring
+		 * 
+		 * The bots throw an exception when they get disconnected from a server, and never reconnect.
+		 * This is a retarded stopgap measure at best, sometimes it works, sometimes it doesn't.
+		 */
 		ImmutableSortedSet<PircBotX> bots = manager.getBots();
 		while (true)
 		{
@@ -113,12 +118,14 @@ public class RawrBot
 			logger.info("Bot Monitor Check");
 			for (PircBotX bot : bots)
 			{
-				logger.info("Bot Monitor Check -> Checking Bot: " + bot.getNick() + "@" + bot.getConfiguration().getServerHostname());
+				String server = bot.getConfiguration().getServerHostname();
+				String nickname = bot.getNick();
+				logger.info("Bot Monitor Check -> Checking Bot: " + nickname + "@" + server);
 				if (!bot.isConnected() || bot.getState().equals(PircBotX.State.DISCONNECTED))
 				{
-					logger.info("Bot Monitor Check -> Bot Offline: " + bot.getNick() + "@" + bot.getConfiguration().getServerHostname());
+					logger.info("Bot Monitor Check -> Bot Offline: " + nickname + "@" + server);
 					manager.addBot(bot);
-					logger.info("Bot Monitor Check -> Restarting Bot: " + bot.getNick() + "@" + bot.getConfiguration().getServerHostname());
+					logger.info("Bot Monitor Check -> Restarting Bot: " + nickname + "@" + server);
 				}
 			}
 		}

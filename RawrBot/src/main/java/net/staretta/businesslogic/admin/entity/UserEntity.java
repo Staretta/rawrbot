@@ -2,13 +2,22 @@ package net.staretta.businesslogic.admin.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import net.staretta.businesslogic.util.MiscUtil;
 
 @Entity
 @Table(name = "admin_user")
@@ -31,16 +40,22 @@ public class UserEntity implements Serializable
 	private String password;
 	// Email verification
 	private boolean verified = false;
+	private String verificationCode;
 	// Nickserv Identified
 	private boolean identified = false;
 	private Date registerDate;
 	private Date lastLogin;
 	// Used to see how long they've been idle. ?Why?
 	private Date lastActive;
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "admin_user_aliases", joinColumns = @JoinColumn(name = "id"))
+	@Column(name = "admin_user_aliases")
+	private Set<String> aliases = new HashSet<String>();
 	
 	public UserEntity()
 	{
 		this.registerDate = new Date();
+		this.verificationCode = generateVerificationCode();
 	}
 	
 	public String getUsername()
@@ -141,5 +156,35 @@ public class UserEntity implements Serializable
 	public void setLastActive(Date lastActive)
 	{
 		this.lastActive = lastActive;
+	}
+	
+	public Set<String> getAliases()
+	{
+		return aliases;
+	}
+	
+	public void addAlias(String alias)
+	{
+		aliases.add(alias);
+	}
+	
+	public void removeAlias(String alias)
+	{
+		aliases.remove(alias);
+	}
+	
+	public String getVerificationCode()
+	{
+		return verificationCode;
+	}
+	
+	public void setVerificationCode(String verificationCode)
+	{
+		this.verificationCode = verificationCode;
+	}
+	
+	public String generateVerificationCode()
+	{
+		return MiscUtil.generateRandomString(20, 20);
 	}
 }
