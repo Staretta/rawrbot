@@ -6,6 +6,8 @@ import java.util.Set;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.entity.ChannelEntity;
 import net.staretta.businesslogic.entity.ServerEntity;
+import net.staretta.businesslogic.services.EmailService;
+import net.staretta.businesslogic.services.EmailService.EmailCredentials;
 import net.staretta.businesslogic.services.ServerService;
 
 import org.pircbotx.Configuration;
@@ -37,9 +39,13 @@ public class RawrBot
 		logger.info("Spring context initialized.");
 		
 		logger.info("Loading bot settings.");
-		ServerService serverService = applicationContext.getBean(ServerService.class);
+		ServerService serverService = getAppCtx().getBean(ServerService.class);
 		List<ServerEntity> serverSettings = serverService.getBotSettings();
 		logger.info("Loaded bot settings from database.");
+		
+		EmailService emailService = getAppCtx().getBean(EmailService.class);
+		emailService.setGlobalCredentials(getGlobalEmailCredentials());
+		logger.info("Configuring global email settings");
 		
 		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
 		for (ServerEntity server : serverSettings)
@@ -129,6 +135,19 @@ public class RawrBot
 				}
 			}
 		}
+	}
+	
+	public static EmailCredentials getGlobalEmailCredentials()
+	{
+		EmailCredentials credentials = new EmailCredentials();
+		credentials.smtpHost = "smtp.conglomolabs.com";
+		credentials.username = "rawrbot@staretta.com";
+		credentials.password = "cl1203144k";
+		credentials.authenticate = true;
+		credentials.ttls = true;
+		credentials.port = "587";
+		
+		return credentials;
 	}
 	
 	public static ApplicationContext getAppCtx()

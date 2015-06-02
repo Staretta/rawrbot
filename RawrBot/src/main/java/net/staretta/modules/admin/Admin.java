@@ -94,8 +94,7 @@ public class Admin extends AdminListener
 				}
 				else
 				{
-					userService.createUser(event.getUser(), params.get(3));
-					userService.sendEmailVerification(emailService, event.getUser());
+					userService.createUser(emailService, event.getUser(), params.get(2), params.get(3));
 					String message = "User Created - A verification email has been sent to the email provided. "
 							+ "To verify the email: \"!admin verify <code from email>\"";
 					event.getUser().send().message(message);
@@ -132,7 +131,14 @@ public class Admin extends AdminListener
 		{
 			if (params.size() == 3)
 			{
-				
+				if (userService.verifyEmail(event.getUser(), params.get(2)))
+				{
+					event.getUser().send().message("Email successfully verified. You can now login.");
+				}
+			}
+			else
+			{
+				event.getUser().send().message("Incorrect number of parameters. \"!admin verify <code>\"");
 			}
 		}
 	}

@@ -35,7 +35,7 @@ public class UserService extends BaseService
 		emailPattern = Pattern.compile(emailRegex);
 	}
 	
-	public void createUser(User user, String password)
+	public void createUser(EmailService emailService, User user, String email, String password)
 	{
 		UserEntity userEntity = new UserEntity();
 		userEntity.setHostmask(user.getHostmask());
@@ -50,6 +50,8 @@ public class UserService extends BaseService
 		userEntity.setPassword(encryptedPassword);
 		
 		getSession().save(userEntity);
+		
+		sendEmailVerification(emailService, user, email, userEntity.getVerificationCode());
 	}
 	
 	public UserEntity getUser(User user)
@@ -75,9 +77,32 @@ public class UserService extends BaseService
 		return false;
 	}
 	
-	public void sendEmailVerification(EmailService emailService, User user)
+	public void sendEmailVerification(EmailService emailService, User user, String email, String verificationCode)
 	{
-		emailService.sendMail("", "", "", "");
+		String subject = "RawrBot User Registration";
+		String body = user.getNick()
+				+ ", \n\nIn order to complete your registration, you must send the following \ncommand on IRC. \n/msg "
+				+ user.getBot().getNick() + " !admin verify " + verificationCode + "\n\nThank you for registering your nickname with "
+				+ user.getBot().getNick() + "\n\nThis email was sent due to a command from " + user.getNick() + "[" + user.getLogin() + "@"
+				+ user.getHostmask() + "] \n\nIf you have any questions, please contact rawrbot@staretta.com";
+		emailService.sendMail(email, "rawrbot@staretta.com", subject, body);
+	}
+	
+	public boolean verifyEmail(User user, String verificationCode)
+	{
+		Query q = getSession().createQuery(
+				"from UserEntity as user where lower(user.nickname) = lower(:nickname) and user.server = :server");
+		q.setParameter("nickname", user.getNick());
+		q.setParameter("server", user.getBot().getConfiguration().getServerHostname());
+		UserEntity userEntity = (UserEntity) q.uniqueResult();
+		
+		if (userEntity.getVerificationCode().equals(verificationCode))
+		{
+			userEntity.setVerified(true);
+			getSession().saveOrUpdate(userEntity);
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean isNicknameAvailable(User user)
@@ -88,10 +113,9 @@ public class UserService extends BaseService
 		q.setParameter("server", user.getBot().getConfiguration().getServerHostname());
 		UserEntity userEntity = (UserEntity) q.uniqueResult();
 		
-		if (userEntity != null)
+		if (userEntity == null)
 			return true;
-		else
-			return false;
+		return false;
 	}
 	
 	/**

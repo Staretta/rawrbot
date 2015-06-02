@@ -67,6 +67,8 @@ public class EmailService extends BaseService
 		properties.setProperty("mail.smtp.auth", emailCredentials.authenticate ? "true" : "false");
 		properties.setProperty("mail.smtp.starttls.enable", emailCredentials.ttls ? "true" : "false");
 		properties.setProperty("mail.smtp.port", emailCredentials.port);
+		properties.setProperty("mail.smtp.ssl.trust", "*");
+		properties.setProperty("mail.smtp.ssl.checkserveridentity", "false");
 		
 		// Get the default Session object.
 		// Session session = Session.getDefaultInstance(properties);
