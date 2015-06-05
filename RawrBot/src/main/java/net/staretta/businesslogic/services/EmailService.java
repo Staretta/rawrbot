@@ -99,7 +99,7 @@ public class EmailService extends BaseService
 		}
 		catch (MessagingException mex)
 		{
-			logger.error("Email Error: ", mex);
+			getLogger().error("Email Error: ", mex);
 		}
 	}
 }
