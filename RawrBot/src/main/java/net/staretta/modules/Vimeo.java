@@ -13,17 +13,14 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Vimeo extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String regex = "(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*";
 	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -33,7 +30,7 @@ public class Vimeo extends BaseListener
 		moduleInfo.setVersion("v1.2");
 		return moduleInfo;
 	}
-
+	
 	class VideoDetails
 	{
 		int videoID;
@@ -48,12 +45,12 @@ public class Vimeo extends BaseListener
 		String username;
 		String uploadDate;
 		String description;
-
+		
 		VideoDetails()
 		{
 		}
 	}
-
+	
 	private boolean isVimeoURL(String message)
 	{
 		Matcher matcher = pattern.matcher(message);
@@ -61,7 +58,7 @@ public class Vimeo extends BaseListener
 			return true;
 		return false;
 	}
-
+	
 	private String getVimeoVideoID(String message)
 	{
 		String video_id = null;
@@ -76,7 +73,7 @@ public class Vimeo extends BaseListener
 		}
 		return video_id;
 	}
-
+	
 	private JsonNode getVimeoAPI(String ID) throws IOException
 	{
 		String jsonURL = "http://vimeo.com/api/v2/video/" + ID + ".json";
@@ -84,7 +81,7 @@ public class Vimeo extends BaseListener
 		JsonNode json = jsonArray.get(0);
 		return json;
 	}
-
+	
 	private VideoDetails getVimeoVideoDetails(String link)
 	{
 		// Parse the ID from the URL, and if it's not null, then get the video information.
@@ -97,7 +94,7 @@ public class Vimeo extends BaseListener
 				JsonNode json = getVimeoAPI(ID);
 				if (json == null)
 					return videoDetails;
-
+				
 				if (json.has("id"))
 					videoDetails.videoID = json.get("id").asInt();
 				if (json.has("title"))
@@ -123,17 +120,17 @@ public class Vimeo extends BaseListener
 					videoDetails.username = json.get("user_name").asText();
 				if (json.has("upload_date"))
 					videoDetails.uploadDate = json.get("upload_date").asText();
-
+				
 				return videoDetails;
 			}
 			catch (Exception e)
 			{
-				logger.error("Exception in Vimeo.getVimeoVideoDetails: " + e);
+				getLogger().error("Exception in Vimeo.getVimeoVideoDetails: " + e);
 			}
 		}
 		return videoDetails;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -147,7 +144,7 @@ public class Vimeo extends BaseListener
 				event.getChannel().send().message(message);
 		}
 	}
-
+	
 	@Override
 	public void onAction(ActionEvent<PircBotX> event) throws Exception
 	{
@@ -161,7 +158,7 @@ public class Vimeo extends BaseListener
 				event.getChannel().send().message(message);
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{

@@ -13,7 +13,7 @@ public class BaseService
 	@PersistenceContext
 	private EntityManager em;
 	
-	Logger logger = LoggerFactory.getLogger(getClass());
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	public BaseService()
 	{
@@ -27,5 +27,10 @@ public class BaseService
 	protected EntityManager getEntityManager()
 	{
 		return em;
+	}
+	
+	public Logger getLogger()
+	{
+		return logger;
 	}
 }

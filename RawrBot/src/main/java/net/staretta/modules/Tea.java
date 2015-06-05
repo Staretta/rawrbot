@@ -11,7 +11,6 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 public class Tea extends BaseListener
 {
-
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -22,7 +21,7 @@ public class Tea extends BaseListener
 		moduleInfo.addCommand("!tea", "!tea [user] : Gives you, or the user, some tea. [Command idea by GothicEmily]");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -47,7 +46,7 @@ public class Tea extends BaseListener
 			}
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{

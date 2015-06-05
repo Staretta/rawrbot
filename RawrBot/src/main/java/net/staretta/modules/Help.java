@@ -13,15 +13,11 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
 public class Help extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{

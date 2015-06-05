@@ -1,6 +1,9 @@
 package net.staretta.businesslogic.services;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -56,22 +59,33 @@ public class UserService extends BaseService
 	
 	public UserEntity getUser(User user)
 	{
-		Query q = getSession().createQuery(
-				"from UserEntity as user where lower(user.nickname) = lower(:nickname) and user.server = :server");
-		q.setParameter("nickname", user.getNick());
-		q.setParameter("server", user.getBot().getConfiguration().getServerHostname());
-		return (UserEntity) q.uniqueResult();
+		String queryString = "from UserEntity as user where lower(user.nickname) = lower(:nickname) and user.server = :server";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("nickname", user.getNick());
+		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
+		return (UserEntity) query.uniqueResult();
 	}
 	
+	/**
+	 * Checks the supplied password against the one stored in the database. If it matches, then returns true, else returns false.
+	 * 
+	 * @param user
+	 * @param password
+	 * @return True if matches, false if no match.
+	 */
 	public boolean checkPassword(User user, String password)
 	{
 		if (password != null)
 		{
 			PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-			String encryptedPassword = getUser(user).getPassword();
-			if (passwordEncryptor.checkPassword(password, encryptedPassword))
+			UserEntity userEntity = getUser(user);
+			if (userEntity != null)
 			{
-				return true;
+				String encryptedPassword = userEntity.getPassword();
+				if (passwordEncryptor.checkPassword(password, encryptedPassword))
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -90,13 +104,9 @@ public class UserService extends BaseService
 	
 	public boolean verifyEmail(User user, String verificationCode)
 	{
-		Query q = getSession().createQuery(
-				"from UserEntity as user where lower(user.nickname) = lower(:nickname) and user.server = :server");
-		q.setParameter("nickname", user.getNick());
-		q.setParameter("server", user.getBot().getConfiguration().getServerHostname());
-		UserEntity userEntity = (UserEntity) q.uniqueResult();
+		UserEntity userEntity = getUser(user);
 		
-		if (userEntity.getVerificationCode().equals(verificationCode))
+		if (userEntity != null && userEntity.getVerificationCode().equals(verificationCode))
 		{
 			userEntity.setVerified(true);
 			getSession().saveOrUpdate(userEntity);
@@ -107,15 +117,36 @@ public class UserService extends BaseService
 	
 	public boolean isNicknameAvailable(User user)
 	{
-		Query q = getSession().createQuery(
-				"from UserEntity as user where lower(user.nickname) = lower(:nickname) and user.server = :server");
-		q.setParameter("nickname", user.getNick());
-		q.setParameter("server", user.getBot().getConfiguration().getServerHostname());
-		UserEntity userEntity = (UserEntity) q.uniqueResult();
+		UserEntity userEntity = getUser(user);
 		
 		if (userEntity == null)
 			return true;
 		return false;
+	}
+	
+	public boolean isLoggedIn(User user)
+	{
+		UserEntity userEntity = getUser(user);
+		if (userEntity != null)
+		{
+			LocalDateTime lastActive = LocalDateTime.ofInstant(userEntity.getLastActive().toInstant(), ZoneId.systemDefault());
+			LocalDateTime now = LocalDateTime.now();
+			if (lastActive.isBefore(now) && lastActive.isAfter(now.minusMinutes(15)))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void setLastActive(User user)
+	{
+		UserEntity userEntity = getUser(user);
+		if (userEntity != null)
+		{
+			userEntity.setLastActive(new Date());
+			getSession().saveOrUpdate(userEntity);
+		}
 	}
 	
 	/**

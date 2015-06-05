@@ -11,25 +11,21 @@ import net.staretta.businesslogic.RateLimiter;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Dice extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
-
 	private int maxNumberDies = 20;
 	private int maxDieSize = 1000;
 	private int defaultNumberDies = 1;
 	private int defaultDieSize = 20;
 	private int maxModNumber = 1000;
-
+	
 	// URL Regex matching
 	static String regex = "([\\+\\-])?\\s*((\\d*)[dD](\\d+)|(\\d+))";
 	// static String regex = "([\\+\\-])?((\\d*)d(\\d+)|(\\d+))";
 	// static String regex = "(([\\+\\-])?(\\d*)d(\\d+))|(([\\+\\-])(\\d+))";
 	static Pattern pattern = Pattern.compile(regex);
-
+	
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -41,7 +37,7 @@ public class Dice extends BaseListener
 		moduleInfo.addCommand("!roll", "!roll [dice notation] : Throws some dice and displays the result. " + "Example: 1d20+10 or 3d6-2");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -51,7 +47,7 @@ public class Dice extends BaseListener
 		{
 			int numberDies = defaultNumberDies;
 			int dieSize = defaultDieSize;
-
+			
 			// If the message only consists of !dice or !roll, throw a standard 1d20
 			if (userMessage.equalsIgnoreCase("!dice") || userMessage.equalsIgnoreCase("!roll"))
 			{
@@ -65,7 +61,7 @@ public class Dice extends BaseListener
 				String message = event.getUser().getNick() + " rolled ";
 				String rolled = "";
 				int total = 0;
-
+				
 				while (match.find())
 				{
 					// group 1 is the modifier, +, -, *, /
@@ -74,7 +70,7 @@ public class Dice extends BaseListener
 					// group 5 is the modifier amount
 					String mod = match.group(1);
 					int modNumber = 0;
-
+					
 					// if we have a modifier, then lets stuff with it
 					if (match.group(1) != null)
 					{
@@ -83,7 +79,7 @@ public class Dice extends BaseListener
 						if (match.group(1).startsWith("+"))
 						{
 							rolled += "+";
-
+							
 							if (match.group(2).contains("d"))
 							{
 								if (parseInt(match.group(3)) > 0)
@@ -93,7 +89,7 @@ public class Dice extends BaseListener
 										numberDies = maxNumberDies;
 									rolled += numberDies;
 								}
-
+								
 								if (parseInt(match.group(4)) > 0)
 								{
 									dieSize = parseInt(match.group(4));
@@ -101,7 +97,7 @@ public class Dice extends BaseListener
 										dieSize = maxDieSize;
 									rolled += "d" + dieSize;
 								}
-
+								
 								int number = randomNumber(numberDies, dieSize);
 								total += number;
 								rolled += "(" + number + ")";
@@ -120,7 +116,7 @@ public class Dice extends BaseListener
 						else if (match.group(1).startsWith("-"))
 						{
 							rolled += "-";
-
+							
 							if (match.group(2).contains("d"))
 							{
 								if (parseInt(match.group(3)) > 0)
@@ -130,7 +126,7 @@ public class Dice extends BaseListener
 										numberDies = maxNumberDies;
 									rolled += numberDies;
 								}
-
+								
 								if (parseInt(match.group(4)) > 0)
 								{
 									dieSize = parseInt(match.group(4));
@@ -138,11 +134,11 @@ public class Dice extends BaseListener
 										dieSize = maxDieSize;
 									rolled += "d" + dieSize;
 								}
-
+								
 								int number = randomNumber(numberDies, dieSize);
 								total -= number;
 								rolled += "(" + number + ")";
-
+								
 							}
 							else if (parseInt(match.group(5)) > 0)
 							{
@@ -164,7 +160,7 @@ public class Dice extends BaseListener
 								numberDies = maxNumberDies;
 							rolled += numberDies;
 						}
-
+						
 						if (parseInt(match.group(4)) > 0)
 						{
 							dieSize = parseInt(match.group(4));
@@ -172,13 +168,13 @@ public class Dice extends BaseListener
 								dieSize = maxDieSize;
 							rolled += "d" + dieSize;
 						}
-
+						
 						int number = randomNumber(numberDies, dieSize);
 						total += number;
 						rolled += "(" + number + ")";
 					}
 				}
-
+				
 				if (rolled.length() == 0)
 				{
 					String defaultRoll = event.getUser().getNick() + " rolled " + numberDies + "d" + dieSize + " = "
@@ -198,30 +194,30 @@ public class Dice extends BaseListener
 			}
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 	}
-
+	
 	public int randomNumber(int dieSize)
 	{
 		Random random = new Random();
 		int n = random.nextInt(dieSize) + 1;
 		return n;
 	}
-
+	
 	private int randomNumber(int numberDies, int dieSize)
 	{
 		int n = 0;
-
+		
 		for (int i = 1; i <= numberDies; i++)
 		{
 			n += randomNumber(dieSize);
 		}
 		return n;
 	}
-
+	
 	public static int parseInt(String integer)
 	{
 		try

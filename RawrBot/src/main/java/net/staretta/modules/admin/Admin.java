@@ -77,15 +77,17 @@ public class Admin extends AdminListener
 			// !admin register email password
 			if (params.size() == 4)
 			{
+				String email = params.get(2);
+				String password = params.get(3);
 				if (!userService.isNicknameAvailable(event.getUser()))
 				{
 					event.getUser().send().message("Nickname already in use.");
 				}
-				else if (!userService.isValidEmail(params.get(2)))
+				else if (!userService.isValidEmail(email))
 				{
 					event.getUser().send().message("Invalid Email address, please enter a correct email address.");
 				}
-				else if (!userService.isValidPassword(params.get(3)))
+				else if (!userService.isValidPassword(password))
 				{
 					String message = "Invalid password. Passwords must be 8-31 characters long, "
 							+ "and contain at least 3 of the following:"
@@ -94,7 +96,7 @@ public class Admin extends AdminListener
 				}
 				else
 				{
-					userService.createUser(emailService, event.getUser(), params.get(2), params.get(3));
+					userService.createUser(emailService, event.getUser(), email, password);
 					String message = "User Created - A verification email has been sent to the email provided. "
 							+ "To verify the email: \"!admin verify <code from email>\"";
 					event.getUser().send().message(message);
@@ -110,7 +112,37 @@ public class Admin extends AdminListener
 			// !admin identify password
 			if (params.size() == 3)
 			{
-				
+				String password = params.get(2);
+				if (userService.isNicknameAvailable(event.getUser()))
+				{
+					event.getUser().send().message("Nickname not registered. \"!admin register user@email.com P@sSw0rd\"");
+				}
+				else if (!userService.isValidPassword(password))
+				{
+					String message = "Invalid password. Passwords must be 8-31 characters long, "
+							+ "and contain at least 3 of the following:"
+							+ " a Digit, an Uppercase Character, a Lowercase Character, or a Special Character.";
+					event.getUser().send().message(message);
+				}
+				else if (userService.isLoggedIn(event.getUser()))
+				{
+					event.getUser().send().message("You are already logged in.");
+				}
+				else
+				{
+					if (userService.checkPassword(event.getUser(), password))
+					{
+						userService.setLastActive(event.getUser());
+					}
+					else
+					{
+						event.getUser().send().message("Incorrect Password.");
+					}
+				}
+			}
+			else
+			{
+				event.getUser().send().message("Incorrect number of parameters. \"!admin identify <password>\"");
 			}
 		}
 		else if (isOption(m, "p", "pass", "password"))
@@ -133,7 +165,7 @@ public class Admin extends AdminListener
 			{
 				if (userService.verifyEmail(event.getUser(), params.get(2)))
 				{
-					event.getUser().send().message("Email successfully verified. You can now login.");
+					event.getUser().send().message("Email successfully verified. You can now login using \"!admin identify <password>\"");
 				}
 			}
 			else

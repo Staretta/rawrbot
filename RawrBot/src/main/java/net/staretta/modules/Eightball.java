@@ -10,12 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Eightball extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	private EightballService service;
 	
 	public Eightball()
@@ -59,7 +56,7 @@ public class Eightball extends BaseListener
 			
 			if (params.length >= 3 && (params[1].equals("-add") || params[1].equals("-a")) && event.getUser().getNick().equals("Staretta"))
 			{
-				logger.info(StringUtils.join(params, " ", 2, params.length));
+				getLogger().info(StringUtils.join(params, " ", 2, params.length));
 				service.addAnswer(StringUtils.join(params, " ", 2, params.length));
 				event.getUser().send().message("Successfully added new 8ball answer.");
 			}

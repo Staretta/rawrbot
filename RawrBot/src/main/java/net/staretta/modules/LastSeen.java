@@ -15,14 +15,10 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LastSeen extends BaseListener
 {
 	private LastSeenService service;
-	
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	// TODO: Set and filter by channel
 	// TODO: LIKE Search results, get 3 results by default.

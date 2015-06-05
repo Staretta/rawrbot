@@ -12,12 +12,9 @@ import net.staretta.businesslogic.util.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Rawr extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	private RawrService service;
 	
 	public Rawr()
@@ -74,16 +71,16 @@ public class Rawr extends BaseListener
 			
 			// String[] nyan = {
 			// "...,__,......,__,.....____________",
-			// "`·.,¸,.·*¯`·.,¸,.·*¯..|::::::/\\:_|/\\",
-			// "`·.,¸,.·*¯`·.,¸,.·*¯.<|:::::(  o wo )",
+			// "`ï¿½.,ï¿½,.ï¿½*ï¿½`ï¿½.,ï¿½,.ï¿½*ï¿½..|::::::/\\:_|/\\",
+			// "`ï¿½.,ï¿½,.ï¿½*ï¿½`ï¿½.,ï¿½,.ï¿½*ï¿½.<|:::::(  o wo )",
 			// "-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
 			String line1 = Colors.add(Colors.RED) + "...,__,......,__,....." + Colors.add(Colors.MAGENTA) + "____________";
-			String line2 = Colors.add(Colors.OLIVE) + "`·.,¸,.·*¯`·.,¸,.·*¯.." + Colors.add(Colors.MAGENTA) + "|::::::"
+			String line2 = Colors.add(Colors.OLIVE) + "`ï¿½.,ï¿½,.ï¿½*ï¿½`ï¿½.,ï¿½,.ï¿½*ï¿½.." + Colors.add(Colors.MAGENTA) + "|::::::"
 					+ Colors.add(Colors.LIGHT_GRAY) + "/\\" + Colors.add(Colors.MAGENTA) + ":" + Colors.add(Colors.LIGHT_GRAY) + "_"
 					+ Colors.add(Colors.MAGENTA) + "|" + Colors.add(Colors.LIGHT_GRAY) + "/\\";
-			String line3 = Colors.add(Colors.BLUE) + "`·.,¸,.·*¯`·.,¸,.·*¯." + Colors.add(Colors.LIGHT_GRAY) + "<"
+			String line3 = Colors.add(Colors.BLUE) + "`ï¿½.,ï¿½,.ï¿½*ï¿½`ï¿½.,ï¿½,.ï¿½*ï¿½." + Colors.add(Colors.LIGHT_GRAY) + "<"
 					+ Colors.add(Colors.MAGENTA) + "|:::::" + Colors.add(Colors.LIGHT_GRAY) + "(  o wo )";
-			String line4 = Colors.add(Colors.PURPLE) + "-.......-\"\"-.......--¯" + Colors.add(Colors.LIGHT_GRAY) + "\"u\"''''u''''u\"";
+			String line4 = Colors.add(Colors.PURPLE) + "-.......-\"\"-.......--ï¿½" + Colors.add(Colors.LIGHT_GRAY) + "\"u\"''''u''''u\"";
 			String[] nyan = { line1, line2, line3, line4 };
 			
 			for (String line : nyan)

@@ -19,13 +19,9 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.TopicEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MessageLog extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
 	private MessageLogService service;
 	
 	public MessageLog()

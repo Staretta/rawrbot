@@ -11,10 +11,14 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseListener extends ListenerAdapter<PircBotX>
 {
 	private ModuleInfo moduleInfo;
+	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	public ServerService settingsService;
 	
@@ -145,5 +149,10 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 			}
 		}
 		return message;
+	}
+	
+	public Logger getLogger()
+	{
+		return logger;
 	}
 }

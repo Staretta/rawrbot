@@ -16,8 +16,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -34,7 +32,6 @@ public class Youtube extends BaseListener
 	// TODO: Add Duration, Uploader, and short description of youtube video.
 	// Probably requires making a new function for building http requests, and passing the list
 	// for snippets, and video details.
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String regex = "(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
 	private Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	private String apiKey = "";
@@ -126,7 +123,7 @@ public class Youtube extends BaseListener
 		}
 		catch (IOException e)
 		{
-			logger.info("IOException in YouTube.getYouTubeAPI: " + e);
+			getLogger().info("IOException in YouTube.getYouTubeAPI: " + e);
 		}
 		return list;
 	}

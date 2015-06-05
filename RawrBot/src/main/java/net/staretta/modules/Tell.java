@@ -23,18 +23,11 @@ import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-// TODO: Add parameters to told, allowing for finer control over date ranges, filter true tolds, limits to the amount of
-// history to display to the user. Use jopt-simple.
 // TODO: Add told date, and display the date they were told when using !told command.
-// TODO: Add syntax to !tell to allow for specifying multiple users in a tell message.
 public class Tell extends BaseListener
 {
 	private TellService service;
-	
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private OptionParser parser;
 	

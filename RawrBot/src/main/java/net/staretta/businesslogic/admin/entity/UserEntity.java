@@ -45,7 +45,7 @@ public class UserEntity implements Serializable
 	private boolean identified = false;
 	private Date registerDate;
 	private Date lastLogin;
-	// Used to see how long they've been idle. ?Why?
+	// Used to see how long they've been idle, and if they need to re sign in.
 	private Date lastActive;
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "admin_user_aliases", joinColumns = @JoinColumn(name = "id"))

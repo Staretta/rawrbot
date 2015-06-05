@@ -12,12 +12,9 @@ import net.staretta.businesslogic.services.SexDiceService;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SexDice extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SexDiceService service;
 	
 	public SexDice()

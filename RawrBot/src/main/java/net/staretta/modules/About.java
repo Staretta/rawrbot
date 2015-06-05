@@ -8,13 +8,9 @@ import net.staretta.businesslogic.ModuleInfo;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class About extends BaseListener
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
-
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
@@ -25,7 +21,7 @@ public class About extends BaseListener
 		moduleInfo.addCommand("!about", "!about : About the bot");
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -38,7 +34,7 @@ public class About extends BaseListener
 				event.getChannel().send().message(message);
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
