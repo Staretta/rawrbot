@@ -6,7 +6,6 @@ import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.EightballService;
 
-import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -49,22 +48,11 @@ public class Eightball extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball")
-				|| isCommand(event.getMessage(), "!8-ball"))
+		if ((isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball") || isCommand(event.getMessage(),
+				"!8-ball")) && event.getMessage().trim().toLowerCase().endsWith("?"))
 		{
-			String[] params = event.getMessage().trim().split("\\s");
-			
-			if (params.length >= 3 && (params[1].equals("-add") || params[1].equals("-a")) && event.getUser().getNick().equals("Staretta"))
-			{
-				getLogger().info(StringUtils.join(params, " ", 2, params.length));
-				service.addAnswer(StringUtils.join(params, " ", 2, params.length));
-				event.getUser().send().message("Successfully added new 8ball answer.");
-			}
-			else if (event.getMessage().trim().toLowerCase().endsWith("?"))
-			{
-				String answer = service.getRandomAnswer();
-				event.getUser().send().message(answer);
-			}
+			String answer = service.getRandomAnswer();
+			event.getUser().send().message(answer);
 		}
 	}
 }

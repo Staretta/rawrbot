@@ -110,6 +110,8 @@ public class Admin extends AdminListener
 		else if (isOption(m, "i", "identify"))
 		{
 			// !admin identify password
+			// TODO: !admin identify <email> <password>
+			// TODO: Check location of email in parameters, and use that to log them in? Except emails aren't unique. >.< Craaaaap.
 			if (params.size() == 3)
 			{
 				String password = params.get(2);
@@ -132,7 +134,7 @@ public class Admin extends AdminListener
 				{
 					if (userService.checkPassword(event.getUser(), password))
 					{
-						userService.setLastActive(event.getUser());
+						userService.login(event.getUser());
 					}
 					else
 					{
@@ -149,18 +151,20 @@ public class Admin extends AdminListener
 		{
 			if (params.size() == 3)
 			{
-				
+				// TODO
 			}
 		}
 		else if (isOption(m, "e", "email"))
 		{
 			if (params.size() == 3)
 			{
-				
+				// TODO
 			}
 		}
 		else if (isOption(m, "v", "verify"))
 		{
+			// !admin verify <verifcation code>
+			// Verify their email is correct, because they should have received the email when they signed up.
 			if (params.size() == 3)
 			{
 				if (userService.verifyEmail(event.getUser(), params.get(2)))

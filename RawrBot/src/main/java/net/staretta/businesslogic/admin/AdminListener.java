@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.services.UserService;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -14,10 +16,12 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 public abstract class AdminListener extends BaseListener
 {
 	private AdminInfo adminInfo;
+	private UserService userService;
 	
 	public AdminListener()
 	{
 		adminInfo = setAdminInfo();
+		userService = RawrBot.getAppCtx().getBean(UserService.class);
 		
 		// optionParser.acceptsAll(Arrays.asList("i", "identify"));
 		// optionParser.acceptsAll(Arrays.asList("r", "register"));
@@ -75,4 +79,9 @@ public abstract class AdminListener extends BaseListener
 	}
 	
 	public abstract void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event);
+	
+	public UserService getUserService()
+	{
+		return userService;
+	}
 }

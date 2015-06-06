@@ -139,16 +139,6 @@ public class UserService extends BaseService
 		return false;
 	}
 	
-	public void setLastActive(User user)
-	{
-		UserEntity userEntity = getUser(user);
-		if (userEntity != null)
-		{
-			userEntity.setLastActive(new Date());
-			getSession().saveOrUpdate(userEntity);
-		}
-	}
-	
 	/**
 	 * Email validation, checks to see if the entered email matches our email regex.
 	 * 
@@ -195,5 +185,31 @@ public class UserService extends BaseService
 		PasswordData passwordData = new PasswordData(password);
 		
 		return validator.validate(passwordData).isValid();
+	}
+	
+	public void saveOrUpdate(Object object)
+	{
+		getSession().saveOrUpdate(object);
+	}
+	
+	public void login(User user)
+	{
+		UserEntity userEntity = getUser(user);
+		if (userEntity != null)
+		{
+			userEntity.setLastActive(new Date());
+			userEntity.setLastLogin(new Date());
+			getSession().saveOrUpdate(userEntity);
+		}
+	}
+	
+	public void setLastActive(User user)
+	{
+		UserEntity userEntity = getUser(user);
+		if (userEntity != null)
+		{
+			userEntity.setLastActive(new Date());
+			getSession().saveOrUpdate(userEntity);
+		}
 	}
 }

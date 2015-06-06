@@ -9,6 +9,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,8 +23,6 @@ import net.staretta.businesslogic.util.MiscUtil;
 
 @Entity
 @Table(name = "admin_user")
-// @TypeDef(name = "encryptedString", typeClass = EncryptedStringType.class, parameters = { @Parameter(name = "encryptorRegisteredName",
-// value = "strongHibernateStringEncryptor") })
 public class UserEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -35,8 +35,6 @@ public class UserEntity implements Serializable
 	private String nickname;
 	private String hostmask;
 	private String server;
-	// THE REASON YOU HAD THIS IN PLACE WAS TO TEST THE CHANNEL PASSWORD ENCRYPTION, WHICH NEEDED TO BE TWO WAY ENCRYPTED/DECRYPTED
-	// @Type(type = "encryptedString")
 	private String password;
 	// Email verification
 	private boolean verified = false;
@@ -50,12 +48,23 @@ public class UserEntity implements Serializable
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "admin_user_aliases", joinColumns = @JoinColumn(name = "id"))
 	@Column(name = "admin_user_aliases")
-	private Set<String> aliases = new HashSet<String>();
+	private Set<String> aliases = new HashSet<String>(); // TODO: CHECK ALL ALIASES IN ALL USERS FOR DUPLICATES
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "admin_user_channels", joinColumns = @JoinColumn(name = "id"))
+	@Column(name = "admin_user_channels")
+	private Set<String> channels = new HashSet<String>();
+	@Enumerated(EnumType.STRING)
+	private Role role = Role.User;
 	
 	public UserEntity()
 	{
 		this.registerDate = new Date();
 		this.verificationCode = generateVerificationCode();
+	}
+	
+	public enum Role
+	{
+		User, Operator, Admin, SuperAdmin
 	}
 	
 	public String getUsername()
@@ -186,5 +195,35 @@ public class UserEntity implements Serializable
 	public String generateVerificationCode()
 	{
 		return MiscUtil.generateRandomString(20, 20);
+	}
+	
+	public Role getRole()
+	{
+		return role;
+	}
+	
+	public void setRole(Role role)
+	{
+		this.role = role;
+	}
+	
+	public Set<String> getChannels()
+	{
+		return channels;
+	}
+	
+	public void addChannel(String channel)
+	{
+		channels.add(channel);
+	}
+	
+	public void removeChannel(String channel)
+	{
+		channels.remove(channel);
+	}
+	
+	public boolean hasChannel(String channel)
+	{
+		return channels.contains(channel);
 	}
 }
