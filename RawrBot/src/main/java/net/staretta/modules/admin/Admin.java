@@ -161,6 +161,36 @@ public class Admin extends AdminListener
 				// TODO
 			}
 		}
+		else if (isOption(m, "c", "channel"))
+		{
+			// !admin channel add <channel> (password)
+			// !admin channel del <channel>
+			// !admin channel join <channel> (password)
+			// !admin channel quit <channel>
+			// !admin channel module add <module> <channel>
+			// !admin channel module del <module> <channel>
+			// Add and remove channels that a user is an operator of. By adding a channel, the user can control what the bot is able to do
+			// in the channel?
+			if (params.size() == 4)
+			{
+				if (isOption(m, 2, "a", "add"))
+				{
+					
+				}
+				else if (isOption(m, 2, "d", "del", "delete", "r", "remove"))
+				{
+					
+				}
+				else if (isOption(m, 2, "j", "join"))
+				{
+					
+				}
+				else if (isOption(m, 2, "q", "quit", "l", "leave"))
+				{
+					
+				}
+			}
+		}
 		else if (isOption(m, "v", "verify"))
 		{
 			// !admin verify <verifcation code>

@@ -1,7 +1,7 @@
 package net.staretta.businesslogic.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +31,7 @@ public class ServerEntity implements Serializable
 	private String server;
 	private int port;
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "servers")
-	private List<ChannelEntity> channels;
+	private Set<ChannelEntity> channels;
 	private String password;
 	private boolean ssl;
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -42,12 +42,12 @@ public class ServerEntity implements Serializable
 		
 	}
 	
-	public List<ChannelEntity> getChannels()
+	public Set<ChannelEntity> getChannels()
 	{
 		return channels;
 	}
 	
-	public void setChannels(List<ChannelEntity> channels)
+	public void setChannels(Set<ChannelEntity> channels)
 	{
 		this.channels = channels;
 	}

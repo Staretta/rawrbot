@@ -49,6 +49,7 @@ public class UserEntity implements Serializable
 	@CollectionTable(name = "admin_user_aliases", joinColumns = @JoinColumn(name = "id"))
 	@Column(name = "admin_user_aliases")
 	private Set<String> aliases = new HashSet<String>(); // TODO: CHECK ALL ALIASES IN ALL USERS FOR DUPLICATES
+															// Might be better to just make aliases it's own entity, and onetomany it. Fuck.
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "admin_user_channels", joinColumns = @JoinColumn(name = "id"))
 	@Column(name = "admin_user_channels")

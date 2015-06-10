@@ -1,6 +1,7 @@
 package net.staretta.businesslogic.services;
 
 import java.util.List;
+import java.util.Set;
 
 import net.staretta.businesslogic.entity.ChannelEntity;
 import net.staretta.businesslogic.entity.GlobalConfigEntity;
@@ -42,7 +43,7 @@ public class ServerService extends BaseService
 	
 	public boolean hasChannelModule(String server, String channel, String module)
 	{
-		List<String> modules = getChannelModules(server, channel);
+		Set<String> modules = getChannelModules(server, channel);
 		for (String m : modules)
 		{
 			if (m.equalsIgnoreCase(module))
@@ -58,14 +59,14 @@ public class ServerService extends BaseService
 		return getServerSettings(server).getGlobalConfig();
 	}
 	
-	public List<String> getChannelModules(String server, String channel)
+	public Set<String> getChannelModules(String server, String channel)
 	{
 		return getServerChannel(server, channel).getModules();
 	}
 	
 	public ChannelEntity getServerChannel(String server, String channel)
 	{
-		List<ChannelEntity> channels = getServerChannels(server);
+		Set<ChannelEntity> channels = getServerChannels(server);
 		for (ChannelEntity chan : channels)
 		{
 			if (chan.getChannel().equalsIgnoreCase(channel))
@@ -76,7 +77,7 @@ public class ServerService extends BaseService
 		return null;
 	}
 	
-	public List<ChannelEntity> getServerChannels(String server)
+	public Set<ChannelEntity> getServerChannels(String server)
 	{
 		return getServerSettings(server).getChannels();
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
@@ -37,7 +38,7 @@ public class Help extends BaseListener
 				&& !RateLimiter.isRateLimited(event.getUser()))
 		{
 			// Get a list of modules available to the channel.
-			List<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
+			Set<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
 					.getChannel().getName());
 			
 			if (modules == null)

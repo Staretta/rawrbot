@@ -1,7 +1,7 @@
 package net.staretta.businesslogic.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -27,7 +27,7 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
 public class ChannelEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@SequenceGenerator(name = "generatorMySeq", sequenceName = "server_channels" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
@@ -38,45 +38,45 @@ public class ChannelEntity implements Serializable
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "server_channel_modules", joinColumns = @JoinColumn(name = "id"))
 	@Column(name = "server_channel_modules")
-	private List<String> modules;
+	private Set<String> modules;
 	@ManyToOne
 	private ServerEntity servers;
-
+	
 	public ChannelEntity()
 	{
-
+		
 	}
-
+	
 	public String getPassword()
 	{
 		return password;
 	}
-
+	
 	public void setPassword(String password)
 	{
 		this.password = password;
 	}
-
+	
 	public String getChannel()
 	{
 		return channel;
 	}
-
+	
 	public void setChannel(String channel)
 	{
 		this.channel = channel;
 	}
-
-	public List<String> getModules()
+	
+	public Set<String> getModules()
 	{
 		return modules;
 	}
-
-	public void setModules(List<String> modules)
+	
+	public void setModules(Set<String> modules)
 	{
 		this.modules = modules;
 	}
-
+	
 	public boolean hasPassword()
 	{
 		if (password != null)
