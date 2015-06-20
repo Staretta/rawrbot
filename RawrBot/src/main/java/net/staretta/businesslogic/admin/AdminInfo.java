@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class AdminInfo
+import net.staretta.businesslogic.ModuleInfo;
+
+public class AdminInfo extends ModuleInfo
 {
 	private String adminVersion = "";
-	private HashMap<String, List<String>> adminCommandList = new HashMap<String, List<String>>();
+	private HashMap<String, List<String>> adminOptionList = new HashMap<String, List<String>>();
 	
 	public AdminInfo()
 	{
@@ -16,22 +18,22 @@ public class AdminInfo
 	
 	public HashMap<String, List<String>> getCommands()
 	{
-		return adminCommandList;
+		return adminOptionList;
 	}
 	
-	public void addCommand(String command)
+	public void addOption(String option)
 	{
-		this.adminCommandList.put(command, Arrays.asList());
+		this.adminOptionList.put(option, Arrays.asList());
 	}
 	
-	public void addCommand(String command, String commandHelp)
+	public void addOption(String option, String optionHelp)
 	{
-		this.adminCommandList.put(command, Arrays.asList(commandHelp));
+		this.adminOptionList.put(option, Arrays.asList(optionHelp));
 	}
 	
-	public void addCommand(String command, List<String> commandHelp)
+	public void addOption(String option, List<String> optionHelp)
 	{
-		this.adminCommandList.put(command, commandHelp);
+		this.adminOptionList.put(option, optionHelp);
 	}
 	
 	public String getAdminVersion()

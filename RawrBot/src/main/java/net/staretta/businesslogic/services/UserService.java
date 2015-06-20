@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.staretta.businesslogic.admin.entity.AliasEntity;
 import net.staretta.businesslogic.admin.entity.UserEntity;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.passay.CharacterCharacteristicsRule;
@@ -40,26 +42,43 @@ public class UserService extends BaseService
 	
 	public void createUser(EmailService emailService, User user, String email, String password)
 	{
+		Session session = getSession();
 		UserEntity userEntity = new UserEntity();
+		userEntity.setEmail(email);
 		userEntity.setHostmask(user.getHostmask());
-		userEntity.setNickname(user.getNick());
 		userEntity.setUsername(user.getLogin());
 		userEntity.setServer(user.getBot().getConfiguration().getServerHostname());
 		userEntity.setIdentified(user.isVerified()); // TODO: Fix this at some point to query nickserv instead of whois, as whois is rate
 														// limited. Not sure I want to do this?
-		
 		PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
 		String encryptedPassword = passwordEncryptor.encryptPassword(password);
 		userEntity.setPassword(encryptedPassword);
 		
-		getSession().save(userEntity);
+		session.save(userEntity);
+		
+		AliasEntity aliasEntity = new AliasEntity();
+		aliasEntity.setNickname(user.getNick());
+		aliasEntity.setServer(user.getBot().getConfiguration().getServerHostname());
+		aliasEntity.setUser(userEntity);
+		
+		session.save(aliasEntity);
 		
 		sendEmailVerification(emailService, user, email, userEntity.getVerificationCode());
 	}
 	
+	public AliasEntity getAlias(User user)
+	{
+		String queryString = "from AliasEntity as alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("nickname", user.getNick());
+		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
+		
+		return (AliasEntity) query.uniqueResult();
+	}
+	
 	public UserEntity getUser(User user)
 	{
-		String queryString = "from UserEntity as user where lower(user.nickname) = lower(:nickname) and user.server = :server";
+		String queryString = "select user from AliasEntity alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("nickname", user.getNick());
 		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
@@ -129,11 +148,14 @@ public class UserService extends BaseService
 		UserEntity userEntity = getUser(user);
 		if (userEntity != null)
 		{
-			LocalDateTime lastActive = LocalDateTime.ofInstant(userEntity.getLastActive().toInstant(), ZoneId.systemDefault());
-			LocalDateTime now = LocalDateTime.now();
-			if (lastActive.isBefore(now) && lastActive.isAfter(now.minusMinutes(15)))
+			if (userEntity.getLastLogin() != null)
 			{
-				return true;
+				LocalDateTime lastActive = LocalDateTime.ofInstant(userEntity.getLastLogin().toInstant(), ZoneId.systemDefault());
+				LocalDateTime now = LocalDateTime.now();
+				if (lastActive.isBefore(now) && lastActive.isAfter(now.minusMinutes(15)))
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -197,18 +219,7 @@ public class UserService extends BaseService
 		UserEntity userEntity = getUser(user);
 		if (userEntity != null)
 		{
-			userEntity.setLastActive(new Date());
 			userEntity.setLastLogin(new Date());
-			getSession().saveOrUpdate(userEntity);
-		}
-	}
-	
-	public void setLastActive(User user)
-	{
-		UserEntity userEntity = getUser(user);
-		if (userEntity != null)
-		{
-			userEntity.setLastActive(new Date());
 			getSession().saveOrUpdate(userEntity);
 		}
 	}

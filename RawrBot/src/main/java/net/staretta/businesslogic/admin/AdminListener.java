@@ -43,12 +43,8 @@ public abstract class AdminListener extends BaseListener
 	protected ModuleInfo setModuleInfo()
 	{
 		ModuleInfo moduleInfo = new ModuleInfo();
-		moduleInfo.setName("Admin");
-		moduleInfo.setAuthor("Staretta");
-		moduleInfo.setVersion("v0.1");
-		moduleInfo.addCommand("!admin");
 		return moduleInfo;
-	}
+	};
 	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)

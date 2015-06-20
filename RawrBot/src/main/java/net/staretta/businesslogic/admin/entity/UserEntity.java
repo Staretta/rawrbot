@@ -1,8 +1,10 @@
 package net.staretta.businesslogic.admin.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -16,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -31,8 +34,8 @@ public class UserEntity implements Serializable
 	@SequenceGenerator(name = "generatorMySeq", sequenceName = "admin_user" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
+	private String email;
 	private String username;
-	private String nickname;
 	private String hostmask;
 	private String server;
 	private String password;
@@ -42,20 +45,16 @@ public class UserEntity implements Serializable
 	// Nickserv Identified
 	private boolean identified = false;
 	private Date registerDate;
-	private Date lastLogin;
 	// Used to see how long they've been idle, and if they need to re sign in.
-	private Date lastActive;
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "admin_user_aliases", joinColumns = @JoinColumn(name = "id"))
-	@Column(name = "admin_user_aliases")
-	private Set<String> aliases = new HashSet<String>(); // TODO: CHECK ALL ALIASES IN ALL USERS FOR DUPLICATES
-															// Might be better to just make aliases it's own entity, and onetomany it. Fuck.
+	private Date lastLogin;
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "admin_user_channels", joinColumns = @JoinColumn(name = "id"))
 	@Column(name = "admin_user_channels")
 	private Set<String> channels = new HashSet<String>();
 	@Enumerated(EnumType.STRING)
 	private Role role = Role.User;
+	@OneToMany(mappedBy = "user")
+	private List<AliasEntity> alias = new ArrayList<AliasEntity>();
 	
 	public UserEntity()
 	{
@@ -71,11 +70,6 @@ public class UserEntity implements Serializable
 	public String getUsername()
 	{
 		return username;
-	}
-	
-	public String getNickname()
-	{
-		return nickname;
 	}
 	
 	public String getHostmask()
@@ -113,19 +107,9 @@ public class UserEntity implements Serializable
 		return lastLogin;
 	}
 	
-	public Date getLastActive()
-	{
-		return lastActive;
-	}
-	
 	public void setUsername(String username)
 	{
 		this.username = username;
-	}
-	
-	public void setNickname(String nickname)
-	{
-		this.nickname = nickname;
 	}
 	
 	public void setHostmask(String hostmask)
@@ -161,26 +145,6 @@ public class UserEntity implements Serializable
 	public void setLastLogin(Date lastLogin)
 	{
 		this.lastLogin = lastLogin;
-	}
-	
-	public void setLastActive(Date lastActive)
-	{
-		this.lastActive = lastActive;
-	}
-	
-	public Set<String> getAliases()
-	{
-		return aliases;
-	}
-	
-	public void addAlias(String alias)
-	{
-		aliases.add(alias);
-	}
-	
-	public void removeAlias(String alias)
-	{
-		aliases.remove(alias);
 	}
 	
 	public String getVerificationCode()
@@ -226,5 +190,20 @@ public class UserEntity implements Serializable
 	public boolean hasChannel(String channel)
 	{
 		return channels.contains(channel);
+	}
+	
+	public String getEmail()
+	{
+		return email;
+	}
+	
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
+	
+	public List<AliasEntity> getAlias()
+	{
+		return alias;
 	}
 }
