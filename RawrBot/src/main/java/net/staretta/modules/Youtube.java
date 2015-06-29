@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.entity.GlobalConfigEntity;
 import net.staretta.businesslogic.services.ServerService;
 import net.staretta.businesslogic.util.Colors;
 import net.staretta.businesslogic.util.MiscUtil;
@@ -164,9 +165,12 @@ public class Youtube extends BaseListener
 			if (apiKey.isEmpty())
 			{
 				String server = event.getBot().getConfiguration().getServerHostname();
-				apiKey = serverService.getGlobalConfig(server).getYoutubeApiKey();
+				GlobalConfigEntity config = serverService.getGlobalConfig(server);
+				if (config != null)
+					apiKey = config.getYoutubeApiKey();
 			}
-			else
+			
+			if (!apiKey.isEmpty())
 			{
 				// Get the title of the video, and message the channel.
 				VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
@@ -191,9 +195,12 @@ public class Youtube extends BaseListener
 			if (apiKey.isEmpty())
 			{
 				String server = event.getBot().getConfiguration().getServerHostname();
-				apiKey = serverService.getGlobalConfig(server).getYoutubeApiKey();
+				GlobalConfigEntity config = serverService.getGlobalConfig(server);
+				if (config != null)
+					apiKey = config.getYoutubeApiKey();
 			}
-			else
+			
+			if (!apiKey.isEmpty())
 			{
 				// Get the title of the video, and message the channel.
 				VideoDetails videoDetails = getYouTubeVideoInfo(event.getMessage());
@@ -211,5 +218,15 @@ public class Youtube extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
+	}
+	
+	public String getApiKey()
+	{
+		return apiKey;
+	}
+	
+	public void setApiKey(String apiKey)
+	{
+		this.apiKey = apiKey;
 	}
 }

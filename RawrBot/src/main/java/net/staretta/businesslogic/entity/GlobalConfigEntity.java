@@ -25,6 +25,12 @@ public class GlobalConfigEntity implements Serializable
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "config")
 	private List<ServerEntity> servers;
 	private String youtubeApiKey = "";
+	private String smtpHost = "";
+	private String smtpUsername = "";
+	private String smtpPassword = "";
+	private boolean smtpAuth = true;
+	private boolean smtpSsl = true;
+	private String smtpPort = "";
 	
 	public GlobalConfigEntity()
 	{
@@ -38,5 +44,65 @@ public class GlobalConfigEntity implements Serializable
 	public void setYoutubeApiKey(String youtubeApiKey)
 	{
 		this.youtubeApiKey = youtubeApiKey;
+	}
+	
+	public String getSmtpHost()
+	{
+		return smtpHost;
+	}
+	
+	public void setSmtpHost(String smtpHost)
+	{
+		this.smtpHost = smtpHost;
+	}
+	
+	public String getSmtpUsername()
+	{
+		return smtpUsername;
+	}
+	
+	public void setSmtpUsername(String smtpUsername)
+	{
+		this.smtpUsername = smtpUsername;
+	}
+	
+	public String getSmtpPassword()
+	{
+		return smtpPassword;
+	}
+	
+	public void setSmtpPassword(String smtpPassword)
+	{
+		this.smtpPassword = smtpPassword;
+	}
+	
+	public boolean isSmtpAuth()
+	{
+		return smtpAuth;
+	}
+	
+	public void setSmtpAuth(boolean smtpAuth)
+	{
+		this.smtpAuth = smtpAuth;
+	}
+	
+	public boolean isSmtpSsl()
+	{
+		return smtpSsl;
+	}
+	
+	public void setSmtpSsl(boolean smtpSsl)
+	{
+		this.smtpSsl = smtpSsl;
+	}
+	
+	public String getSmtpPort()
+	{
+		return smtpPort;
+	}
+	
+	public void setSmtpPort(String smtpPort)
+	{
+		this.smtpPort = smtpPort;
 	}
 }

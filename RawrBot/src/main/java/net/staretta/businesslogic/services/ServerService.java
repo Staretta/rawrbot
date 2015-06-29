@@ -56,12 +56,18 @@ public class ServerService extends BaseService
 	
 	public GlobalConfigEntity getGlobalConfig(String server)
 	{
-		return getServerSettings(server).getGlobalConfig();
+		ServerEntity serverEntity = getServerSettings(server);
+		if (server != null)
+			return serverEntity.getGlobalConfig();
+		return null;
 	}
 	
 	public Set<String> getChannelModules(String server, String channel)
 	{
-		return getServerChannel(server, channel).getModules();
+		ChannelEntity channelEntity = getServerChannel(server, channel);
+		if (channelEntity != null)
+			return channelEntity.getModules();
+		return null;
 	}
 	
 	public ChannelEntity getServerChannel(String server, String channel)
@@ -79,7 +85,10 @@ public class ServerService extends BaseService
 	
 	public Set<ChannelEntity> getServerChannels(String server)
 	{
-		return getServerSettings(server).getChannels();
+		ServerEntity serverEntity = getServerSettings(server);
+		if (server != null)
+			return serverEntity.getChannels();
+		return null;
 	}
 	
 	public ServerEntity getServerSettings(String server)

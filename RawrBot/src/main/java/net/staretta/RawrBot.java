@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.entity.ChannelEntity;
+import net.staretta.businesslogic.entity.GlobalConfigEntity;
 import net.staretta.businesslogic.entity.ServerEntity;
 import net.staretta.businesslogic.services.EmailService;
 import net.staretta.businesslogic.services.EmailService.EmailCredentials;
@@ -43,9 +44,10 @@ public class RawrBot
 		List<ServerEntity> serverSettings = serverService.getBotSettings();
 		logger.info("Loaded bot settings from database.");
 		
-		EmailService emailService = getAppCtx().getBean(EmailService.class);
-		emailService.setGlobalCredentials(getGlobalEmailCredentials());
+		// TODO: Specific smtp servers for different servers.
 		logger.info("Configuring global email settings");
+		EmailService emailService = getAppCtx().getBean(EmailService.class);
+		emailService.setGlobalCredentials(getGlobalEmailCredentials(serverService));
 		
 		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
 		for (ServerEntity server : serverSettings)
@@ -137,16 +139,21 @@ public class RawrBot
 		}
 	}
 	
-	public static EmailCredentials getGlobalEmailCredentials()
+	public static EmailCredentials getGlobalEmailCredentials(ServerService serverService)
 	{
+		GlobalConfigEntity config = null;
+		ServerEntity server = serverService.getBotSettings().get(0);
 		EmailCredentials credentials = new EmailCredentials();
-		credentials.smtpHost = "smtp.conglomolabs.com";
-		credentials.username = "rawrbot@staretta.com";
-		credentials.password = "cl1203144k";
-		credentials.authenticate = true;
-		credentials.ttls = true;
-		credentials.port = "587";
-		
+		if (server.getGlobalConfig() != null)
+		{
+			config = server.getGlobalConfig();
+			credentials.smtpHost = config.getSmtpHost();
+			credentials.username = config.getSmtpUsername();
+			credentials.password = config.getSmtpPassword();
+			credentials.authenticate = config.isSmtpAuth();
+			credentials.ttls = config.isSmtpSsl();
+			credentials.port = config.getSmtpPort();
+		}
 		return credentials;
 	}
 	
