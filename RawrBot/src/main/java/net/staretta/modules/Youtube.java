@@ -155,6 +155,13 @@ public class Youtube extends BaseListener
 		return videoDetails;
 	}
 	
+	private void init(String server) throws NullPointerException
+	{
+		GlobalConfigEntity config = serverService.getGlobalConfig(server);
+		if (config != null)
+			apiKey = config.getYoutubeApiKey();
+	}
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -164,10 +171,7 @@ public class Youtube extends BaseListener
 			// if we don't have an API key set, then try and get it from the db.
 			if (apiKey.isEmpty())
 			{
-				String server = event.getBot().getConfiguration().getServerHostname();
-				GlobalConfigEntity config = serverService.getGlobalConfig(server);
-				if (config != null)
-					apiKey = config.getYoutubeApiKey();
+				init(event.getBot().getConfiguration().getServerHostname());
 			}
 			
 			if (!apiKey.isEmpty())
@@ -194,10 +198,7 @@ public class Youtube extends BaseListener
 			// if we don't have an API key set, then try and get it from the db.
 			if (apiKey.isEmpty())
 			{
-				String server = event.getBot().getConfiguration().getServerHostname();
-				GlobalConfigEntity config = serverService.getGlobalConfig(server);
-				if (config != null)
-					apiKey = config.getYoutubeApiKey();
+				init(event.getBot().getConfiguration().getServerHostname());
 			}
 			
 			if (!apiKey.isEmpty())

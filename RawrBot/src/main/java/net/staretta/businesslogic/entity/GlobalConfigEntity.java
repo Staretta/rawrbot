@@ -31,6 +31,10 @@ public class GlobalConfigEntity implements Serializable
 	private boolean smtpAuth = true;
 	private boolean smtpSsl = true;
 	private String smtpPort = "";
+	private String twitterConsumerKey = "";
+	private String twitterConsumerSecret = "";
+	private String twitterAccessToken = "";
+	private String twitterAccessSecret = "";
 	
 	public GlobalConfigEntity()
 	{
@@ -104,5 +108,45 @@ public class GlobalConfigEntity implements Serializable
 	public void setSmtpPort(String smtpPort)
 	{
 		this.smtpPort = smtpPort;
+	}
+	
+	public String getTwitterConsumerKey()
+	{
+		return twitterConsumerKey;
+	}
+	
+	public void setTwitterConsumerKey(String twitterConsumerKey)
+	{
+		this.twitterConsumerKey = twitterConsumerKey;
+	}
+	
+	public String getTwitterConsumerSecret()
+	{
+		return twitterConsumerSecret;
+	}
+	
+	public void setTwitterConsumerSecret(String twitterConsumerSecret)
+	{
+		this.twitterConsumerSecret = twitterConsumerSecret;
+	}
+	
+	public String getTwitterAccessToken()
+	{
+		return twitterAccessToken;
+	}
+	
+	public void setTwitterAccessToken(String twitterAccessToken)
+	{
+		this.twitterAccessToken = twitterAccessToken;
+	}
+	
+	public String getTwitterAccessSecret()
+	{
+		return twitterAccessSecret;
+	}
+	
+	public void setTwitterAccessSecret(String twitterAccessSecret)
+	{
+		this.twitterAccessSecret = twitterAccessSecret;
 	}
 }
