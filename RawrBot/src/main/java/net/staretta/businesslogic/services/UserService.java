@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.staretta.businesslogic.admin.entity.AliasEntity;
-import net.staretta.businesslogic.admin.entity.UserEntity;
+import net.staretta.businesslogic.entity.AliasEntity;
+import net.staretta.businesslogic.entity.UserEntity;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -68,7 +68,7 @@ public class UserService extends BaseService
 	
 	public AliasEntity getAlias(User user)
 	{
-		String queryString = "from AliasEntity as alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
+		String queryString = "from UserEntity as alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("nickname", user.getNick());
 		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
@@ -78,7 +78,7 @@ public class UserService extends BaseService
 	
 	public UserEntity getUser(User user)
 	{
-		String queryString = "select user from AliasEntity alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
+		String queryString = "select user from UserEntity alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("nickname", user.getNick());
 		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());

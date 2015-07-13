@@ -1,4 +1,4 @@
-package net.staretta.businesslogic.admin.entity;
+package net.staretta.businesslogic.entity;
 
 import java.io.Serializable;
 

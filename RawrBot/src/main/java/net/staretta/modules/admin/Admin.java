@@ -9,7 +9,7 @@ import net.staretta.RawrBot;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
-import net.staretta.businesslogic.admin.entity.UserEntity.Role;
+import net.staretta.businesslogic.entity.UserEntity.Role;
 import net.staretta.businesslogic.services.EmailService;
 import net.staretta.businesslogic.services.UserService;
 

@@ -3,7 +3,7 @@ package net.staretta.modules.admin;
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
-import net.staretta.businesslogic.admin.entity.UserEntity.Role;
+import net.staretta.businesslogic.entity.UserEntity.Role;
 import net.staretta.businesslogic.services.EightballService;
 
 import org.apache.commons.lang3.StringUtils;

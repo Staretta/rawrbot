@@ -1,4 +1,4 @@
-package net.staretta.businesslogic.admin.entity;
+package net.staretta.businesslogic.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import javax.persistence.Table;
 import net.staretta.businesslogic.util.MiscUtil;
 
 @Entity
-@Table(name = "admin_user")
+@Table(name = "user")
 public class UserEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -48,8 +48,8 @@ public class UserEntity implements Serializable
 	// Used to see how long they've been idle, and if they need to re sign in.
 	private Date lastLogin;
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "admin_user_channels", joinColumns = @JoinColumn(name = "id"))
-	@Column(name = "admin_user_channels")
+	@CollectionTable(name = "user_channels", joinColumns = @JoinColumn(name = "id"))
+	@Column(name = "user_channels")
 	private Set<String> channels = new HashSet<String>();
 	@Enumerated(EnumType.STRING)
 	private Role role = Role.User;
