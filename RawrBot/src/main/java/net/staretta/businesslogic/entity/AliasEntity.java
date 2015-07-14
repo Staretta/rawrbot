@@ -11,13 +11,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "admin_user_aliases")
+@Table(name = "user_aliases")
 public class AliasEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "admin_user" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "user" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	private String nickname;

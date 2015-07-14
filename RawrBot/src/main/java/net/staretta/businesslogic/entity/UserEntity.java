@@ -31,7 +31,7 @@ public class UserEntity implements Serializable
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "admin_user" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "user" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
 	private String email;
