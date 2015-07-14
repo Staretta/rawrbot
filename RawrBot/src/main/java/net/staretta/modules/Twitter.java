@@ -168,8 +168,30 @@ public class Twitter extends BaseListener
 					if (statusList != null && !statusList.isEmpty())
 					{
 						Status status = statusList.get(0);
-						String message = "Twitter: " + status.getText();
-						event.getChannel().send().message(message);
+						StringBuilder message = new StringBuilder();
+						message.append("Twitter: ");
+						message.append("@" + status.getUser().getScreenName() + " ");
+						message.append(status.getText() + " ");
+						
+						// if (status.getMediaEntities().length > 0)
+						// {
+						// MediaEntity[] mediaEntities = status.getMediaEntities();
+						// for (MediaEntity entity : mediaEntities)
+						// {
+						// message.append(entity.getDisplayURL() + " ");
+						// }
+						// }
+						//
+						// if (status.getURLEntities().length > 0)
+						// {
+						// URLEntity[] urlEntities = status.getURLEntities();
+						// for (URLEntity entity : urlEntities)
+						// {
+						// message.append(entity.getURL() + " ");
+						// }
+						// }
+						
+						event.getChannel().send().message(message.toString());
 					}
 				}
 			}
