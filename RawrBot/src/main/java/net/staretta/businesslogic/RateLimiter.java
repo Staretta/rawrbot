@@ -15,19 +15,19 @@ public class RateLimiter extends ListenerAdapter<PircBotX>
 {
 	private static Logger logger = LoggerFactory.getLogger(RateLimiter.class);
 	private static int timeout = 600000; // Milliseconds
-	private static volatile Map<User, List> userRequests = new HashMap<User, List>();
-
+	private static volatile Map<User, List<Long>> userRequests = new HashMap<User, List<Long>>();
+	
 	// userRequests is our hashmap of users and how many times they do a command.
 	// Basically something like { username : [ millisec1, millisec2 ] } Where User is the key, and the list is the
 	// list that contains the millisecond when they entered the command.
 	// User is a user object representation of a specific user on the server. It should be the same across all channels
 	// on a server.
-
+	
 	public static void addRequest(User user)
 	{
 		addRequest(user, 1);
 	}
-
+	
 	public static void addRequest(User user, int request)
 	{
 		// If the hashmap contains the username as a key
@@ -37,12 +37,12 @@ public class RateLimiter extends ListenerAdapter<PircBotX>
 			{
 				// Make a list, and put that user's requests into the list.
 				List<Long> timeList = userRequests.get(user);
-
+				
 				for (int x = 0; x < request; x++)
 				{
 					timeList.add(System.currentTimeMillis());
 				}
-
+				
 				userRequests.put(user, timeList);
 			}
 		}
@@ -50,26 +50,26 @@ public class RateLimiter extends ListenerAdapter<PircBotX>
 		{
 			// If the user is not in the hashmap, then add them to the hashmap along with the current time
 			List<Long> timeList = new ArrayList<Long>();
-
+			
 			for (int x = 0; x < request; x++)
 			{
 				timeList.add(System.currentTimeMillis());
 			}
-
+			
 			userRequests.put(user, timeList);
 		}
 	}
-
+	
 	public static boolean isRateLimited(User user)
 	{
 		return isRateLimited(user, 5);
 	}
-
+	
 	public static boolean isRateLimited(User user, int maxRequests)
 	{
 		// Cleanup the request queue for the user, if it can be cleaned up.
 		cleanupRequest(user);
-
+		
 		// If the hashmap contains the nickname
 		if (userRequests.containsKey(user))
 		{
@@ -77,7 +77,7 @@ public class RateLimiter extends ListenerAdapter<PircBotX>
 			{
 				// Make a list, and put that user's requests into the list.
 				List<Long> timeList = userRequests.get(user);
-
+				
 				if (timeList.size() < maxRequests)
 				{
 					addRequest(user);
@@ -97,18 +97,18 @@ public class RateLimiter extends ListenerAdapter<PircBotX>
 			return false;
 		}
 	}
-
+	
 	private static void cleanupRequest(User user)
 	{
 		if (userRequests.containsKey(user))
 		{
-
+			
 			synchronized (RateLimiter.class)
 			{
 				// Make a list, and put that user's requests into the list.
 				List<Long> timeList = userRequests.get(user);
 				int listSize = timeList.size();
-
+				
 				// We need to try and see if any of the times listed in the list can be removed, and then put it into
 				// the hashmap if we removed anything from the list.
 				for (int i = timeList.size() - 1; i >= 0; i--)
