@@ -7,7 +7,6 @@ import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.RawrService;
-import net.staretta.businesslogic.util.Colors;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -31,7 +30,7 @@ public class Rawr extends BaseListener
 		moduleInfo.setVersion("v1.4");
 		moduleInfo.addCommand("!rawr", "!rawr: Rawr. :3");
 		moduleInfo.addCommand("!meow", "!meow : Meow! :3");
-		moduleInfo.addCommand("!nyan", "!nyan : Nyan! :3");
+		// moduleInfo.addCommand("!nyan", "!nyan : Nyan! :3");
 		moduleInfo.addCommand("!woosh", "!woosh : Woosh! :3");
 		return moduleInfo;
 	}
@@ -64,28 +63,28 @@ public class Rawr extends BaseListener
 				event.getChannel().send().message(meow);
 			}
 		} // Check if message starts with !nyan, and if they are rate limited
-		else if (isCommand(event.getMessage(), "!nyan") && !RateLimiter.isRateLimited(event.getUser()))
-		{
-			// We want nyan to be weighted more than any other command. So we add more requests to their queue.
-			RateLimiter.addRequest(event.getUser(), 4);
-			
-			// String[] nyan = {
-			// "...,__,......,__,.....____________",
-			// "`�.,�,.�*�`�.,�,.�*�..|::::::/\\:_|/\\",
-			// "`�.,�,.�*�`�.,�,.�*�.<|:::::(  o wo )",
-			// "-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
-			String line1 = Colors.add(Colors.RED) + "...,__,......,__,....." + Colors.add(Colors.MAGENTA) + "____________";
-			String line2 = Colors.add(Colors.OLIVE) + "`�.,�,.�*�`�.,�,.�*�.." + Colors.add(Colors.MAGENTA) + "|::::::"
-					+ Colors.add(Colors.LIGHT_GRAY) + "/\\" + Colors.add(Colors.MAGENTA) + ":" + Colors.add(Colors.LIGHT_GRAY) + "_"
-					+ Colors.add(Colors.MAGENTA) + "|" + Colors.add(Colors.LIGHT_GRAY) + "/\\";
-			String line3 = Colors.add(Colors.BLUE) + "`�.,�,.�*�`�.,�,.�*�." + Colors.add(Colors.LIGHT_GRAY) + "<"
-					+ Colors.add(Colors.MAGENTA) + "|:::::" + Colors.add(Colors.LIGHT_GRAY) + "(  o wo )";
-			String line4 = Colors.add(Colors.PURPLE) + "-.......-\"\"-.......--�" + Colors.add(Colors.LIGHT_GRAY) + "\"u\"''''u''''u\"";
-			String[] nyan = { line1, line2, line3, line4 };
-			
-			for (String line : nyan)
-				event.getChannel().send().message(line);
-		}
+			// else if (isCommand(event.getMessage(), "!nyan") && !RateLimiter.isRateLimited(event.getUser()))
+			// {
+			// // We want nyan to be weighted more than any other command. So we add more requests to their queue.
+			// RateLimiter.addRequest(event.getUser(), 4);
+			//
+			// // String[] nyan = {
+			// // "...,__,......,__,.....____________",
+			// // "`�.,�,.�*�`�.,�,.�*�..|::::::/\\:_|/\\",
+			// // "`�.,�,.�*�`�.,�,.�*�.<|:::::(  o wo )",
+			// // "-.......-\"\"-.......--\"\"u\"''''u''''u\"" };
+			// String line1 = Colors.add(Colors.RED) + "...,__,......,__,....." + Colors.add(Colors.MAGENTA) + "____________";
+			// String line2 = Colors.add(Colors.OLIVE) + "`�.,�,.�*�`�.,�,.�*�.." + Colors.add(Colors.MAGENTA) + "|::::::"
+			// + Colors.add(Colors.LIGHT_GRAY) + "/\\" + Colors.add(Colors.MAGENTA) + ":" + Colors.add(Colors.LIGHT_GRAY) + "_"
+			// + Colors.add(Colors.MAGENTA) + "|" + Colors.add(Colors.LIGHT_GRAY) + "/\\";
+			// String line3 = Colors.add(Colors.BLUE) + "`�.,�,.�*�`�.,�,.�*�." + Colors.add(Colors.LIGHT_GRAY) + "<"
+			// + Colors.add(Colors.MAGENTA) + "|:::::" + Colors.add(Colors.LIGHT_GRAY) + "(  o wo )";
+			// String line4 = Colors.add(Colors.PURPLE) + "-.......-\"\"-.......--�" + Colors.add(Colors.LIGHT_GRAY) + "\"u\"''''u''''u\"";
+			// String[] nyan = { line1, line2, line3, line4 };
+			//
+			// for (String line : nyan)
+			// event.getChannel().send().message(line);
+			// }
 		else if (isCommand(event.getMessage(), "!woosh") && !RateLimiter.isRateLimited(event.getUser()))
 		{
 			Random random = new Random();
