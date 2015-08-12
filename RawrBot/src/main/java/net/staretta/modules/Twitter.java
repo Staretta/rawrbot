@@ -72,13 +72,16 @@ public class Twitter extends BaseListener
 	private void init(String server) throws NullPointerException
 	{
 		GlobalConfigEntity config = serverService.getGlobalConfig(server);
-		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true);
-		cb.setOAuthConsumerKey(config.getTwitterConsumerKey());
-		cb.setOAuthConsumerSecret(config.getTwitterConsumerSecret());
-		cb.setOAuthAccessToken(config.getTwitterAccessToken());
-		cb.setOAuthAccessTokenSecret(config.getTwitterAccessSecret());
-		twitterFactory = new TwitterFactory(cb.build());
+		if (config != null && !config.getTwitterConsumerKey().isEmpty())
+		{
+			ConfigurationBuilder cb = new ConfigurationBuilder();
+			cb.setDebugEnabled(true);
+			cb.setOAuthConsumerKey(config.getTwitterConsumerKey());
+			cb.setOAuthConsumerSecret(config.getTwitterConsumerSecret());
+			cb.setOAuthAccessToken(config.getTwitterAccessToken());
+			cb.setOAuthAccessTokenSecret(config.getTwitterAccessSecret());
+			twitterFactory = new TwitterFactory(cb.build());
+		}
 	}
 	
 	private String stripUrls(String message)
