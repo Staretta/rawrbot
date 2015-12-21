@@ -107,7 +107,7 @@ public class MessageLog extends BaseListener
 	}
 	
 	@Override
-	public void onKick(KickEvent event) throws Exception
+	public void onKick(KickEvent<PircBotX> event) throws Exception
 	{
 		if (!event.getRecipient().getNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
 		{
@@ -131,7 +131,7 @@ public class MessageLog extends BaseListener
 	}
 	
 	@Override
-	public void onTopic(TopicEvent event) throws Exception
+	public void onTopic(TopicEvent<PircBotX> event) throws Exception
 	{
 		// Do stuff here?
 	}

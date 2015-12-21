@@ -55,7 +55,7 @@ public class Admin extends AdminListener
 	public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		String m = event.getMessage();
-		List<String> params = Arrays.asList(m.split("\\s"));
+		// List<String> params = Arrays.asList(m.split("\\s"));
 		// Check and see if all they entered was !admin, and if so, spit out the admin commands.
 		if (m.trim().equalsIgnoreCase("!admin"))
 		{

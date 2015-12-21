@@ -98,6 +98,7 @@ public class MiscUtil
 	 *            Time since person was last seen in seconds.
 	 * @return a formatted string like this: "N days" or "N minutes" or "N hours"
 	 */
+	@SuppressWarnings("unused")
 	public static String timeFormat(int oldTime)
 	{
 		// Make a pretty string (like this: "N days" or "N minutes" or "N hours", etc.)
@@ -135,6 +136,7 @@ public class MiscUtil
 	 *            Time since the bot/system has been started in seconds.
 	 * @return a formatted string like this: "N days, N hours, N minutes, N seconds"
 	 */
+	@SuppressWarnings("unused")
 	public static String uptimeFormat(long total_seconds)
 	{
 		// Helper variables.

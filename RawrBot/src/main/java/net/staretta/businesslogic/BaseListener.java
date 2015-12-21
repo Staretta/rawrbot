@@ -123,14 +123,19 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public boolean isOption(String message, String... option)
 	{
 		if (isOption(message, 1, option))
+		{
 			return true;
+		}
 		return false;
 	}
 	
 	public boolean isHelp(String message)
 	{
-		if (message.toLowerCase().endsWith("-h") || message.toLowerCase().endsWith("-help") || message.toLowerCase().endsWith("--help"))
+		message = message.trim().toLowerCase();
+		if (message.endsWith("-h") || message.endsWith("-help") || message.endsWith("--help"))
+		{
 			return true;
+		}
 		return false;
 	}
 	
