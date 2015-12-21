@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.staretta.businesslogic.entity.AliasEntity;
+import net.staretta.businesslogic.entity.UserAliasEntity;
 import net.staretta.businesslogic.entity.UserEntity;
 
 import org.hibernate.Query;
@@ -56,9 +56,8 @@ public class UserService extends BaseService
 		
 		session.save(userEntity);
 		
-		AliasEntity aliasEntity = new AliasEntity();
+		UserAliasEntity aliasEntity = new UserAliasEntity();
 		aliasEntity.setNickname(user.getNick());
-		aliasEntity.setServer(user.getBot().getConfiguration().getServerHostname());
 		aliasEntity.setUser(userEntity);
 		
 		session.save(aliasEntity);
@@ -66,21 +65,23 @@ public class UserService extends BaseService
 		sendEmailVerification(emailService, user, email, userEntity.getVerificationCode());
 	}
 	
-	public AliasEntity getAlias(User user)
+	public UserAliasEntity getUserAlias(User user)
 	{
-		String queryString = "from UserEntity as alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
+		String queryString = "from UserAliasEntity alias left join fetch alias.user user "
+				+ "where lower(alias.nickname) = lower(:nickname) and user.server = :server";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("nickname", user.getNick());
 		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
 		
-		return (AliasEntity) query.uniqueResult();
+		return (UserAliasEntity) query.uniqueResult();
 	}
 	
 	public UserEntity getUser(User user)
 	{
-		String queryString = "select user from UserEntity alias where lower(alias.nickname) = lower(:nickname) and alias.server = :server";
+		String queryString = "from UserEntity user left join fetch user.alias "
+				+ "where lower(user.username) = lower(:username) and user.server = :server";
 		Query query = getSession().createQuery(queryString);
-		query.setParameter("nickname", user.getNick());
+		query.setParameter("username", user.getLogin());
 		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
 		return (UserEntity) query.uniqueResult();
 	}
@@ -113,11 +114,14 @@ public class UserService extends BaseService
 	public void sendEmailVerification(EmailService emailService, User user, String email, String verificationCode)
 	{
 		String subject = "RawrBot User Registration";
-		String body = user.getNick()
-				+ ", \n\nIn order to complete your registration, you must send the following \ncommand on IRC. \n/msg "
-				+ user.getBot().getNick() + " !admin verify " + verificationCode + "\n\nThank you for registering your nickname with "
-				+ user.getBot().getNick() + "\n\nThis email was sent due to a command from " + user.getNick() + "[" + user.getLogin() + "@"
-				+ user.getHostmask() + "] \n\nIf you have any questions, please contact rawrbot@staretta.com";
+		// @formatter:off
+		String body = user.getNick()+ ", \n\n"
+				+ "In order to complete your registration, you must send the following command on IRC.\n"
+				+ "/msg " + user.getBot().getNick() + " !admin verify " + verificationCode + "\n\n"
+				+ "Thank you for registering your nickname with " + user.getBot().getNick() + "\n\n"
+				+ "This email was sent due to a command from " + user.getNick() + "[" + user.getLogin() + "@" + user.getHostmask() + "] \n\n"
+				+ "If you have any questions, please contact rawrbot@staretta.com";
+		// @formatter:on
 		emailService.sendMail(email, "rawrbot@staretta.com", subject, body);
 	}
 	
@@ -128,7 +132,7 @@ public class UserService extends BaseService
 		if (userEntity != null && userEntity.getVerificationCode().equals(verificationCode))
 		{
 			userEntity.setVerified(true);
-			getSession().saveOrUpdate(userEntity);
+			saveOrUpdate(userEntity);
 			return true;
 		}
 		return false;
@@ -220,7 +224,7 @@ public class UserService extends BaseService
 		if (userEntity != null)
 		{
 			userEntity.setLastLogin(new Date());
-			getSession().saveOrUpdate(userEntity);
+			saveOrUpdate(userEntity);
 		}
 	}
 }

@@ -1,23 +1,16 @@
 package net.staretta.businesslogic.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -47,14 +40,12 @@ public class UserEntity implements Serializable
 	private Date registerDate;
 	// Used to see how long they've been idle, and if they need to re sign in.
 	private Date lastLogin;
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "user_channels", joinColumns = @JoinColumn(name = "id"))
-	@Column(name = "user_channels")
-	private Set<String> channels = new HashSet<String>();
+	@OneToMany(mappedBy = "user")
+	private Set<UserChannelEntity> channels = new HashSet<UserChannelEntity>();
 	@Enumerated(EnumType.STRING)
 	private Role role = Role.User;
 	@OneToMany(mappedBy = "user")
-	private List<AliasEntity> alias = new ArrayList<AliasEntity>();
+	private Set<UserAliasEntity> alias = new HashSet<UserAliasEntity>();
 	
 	public UserEntity()
 	{
@@ -172,19 +163,14 @@ public class UserEntity implements Serializable
 		this.role = role;
 	}
 	
-	public Set<String> getChannels()
+	public Set<UserChannelEntity> getChannels()
 	{
 		return channels;
 	}
 	
-	public void addChannel(String channel)
+	public void setChannels(Set<UserChannelEntity> channels)
 	{
-		channels.add(channel);
-	}
-	
-	public void removeChannel(String channel)
-	{
-		channels.remove(channel);
+		this.channels = channels;
 	}
 	
 	public boolean hasChannel(String channel)
@@ -202,7 +188,7 @@ public class UserEntity implements Serializable
 		this.email = email;
 	}
 	
-	public List<AliasEntity> getAlias()
+	public Set<UserAliasEntity> getAlias()
 	{
 		return alias;
 	}

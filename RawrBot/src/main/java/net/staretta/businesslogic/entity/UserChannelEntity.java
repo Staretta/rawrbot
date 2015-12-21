@@ -11,42 +11,42 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_aliases")
-public class AliasEntity implements Serializable
+@Table(name = "user_channels")
+public class UserChannelEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name = "generatorMySeq", sequenceName = "users" + "_seq")
+	@SequenceGenerator(name = "generatorMySeq", sequenceName = "user_channels" + "_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorMySeq")
 	private long id;
-	private String nickname;
-	private String server;
+	private String channel;
 	@ManyToOne
-	private UserEntity user;
+	UserEntity user;
 	
-	public AliasEntity()
+	public UserChannelEntity()
 	{
 	}
 	
-	public String getNickname()
+	public UserChannelEntity(String channel, UserEntity user)
 	{
-		return nickname;
+		this.channel = channel;
+		this.user = user;
 	}
 	
-	public void setNickname(String nickname)
+	public long getId()
 	{
-		this.nickname = nickname;
+		return id;
 	}
 	
-	public String getServer()
+	public String getChannel()
 	{
-		return server;
+		return channel;
 	}
 	
-	public void setServer(String server)
+	public void setChannel(String channel)
 	{
-		this.server = server;
+		this.channel = channel;
 	}
 	
 	public UserEntity getUser()
