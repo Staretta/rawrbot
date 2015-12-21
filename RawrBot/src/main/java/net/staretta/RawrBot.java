@@ -80,7 +80,7 @@ public class RawrBot
 					builder.addAutoJoinChannel(channel.getChannel());
 			}
 			
-			// Find all the modules in net.staretta.modules, and we'll sort out whether they should be used in BaseListener
+			// Find all the modules in net.staretta, and we'll sort out whether they should be used in BaseListener
 			final ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
 			// provider.addIncludeFilter(new RegexPatternTypeFilter(Pattern.compile(".*")));
 			provider.addIncludeFilter(new AssignableTypeFilter(BaseListener.class));

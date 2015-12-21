@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true" monitorInterval="30">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5p %d - %-26.26c{1} - [%t:%x] - %m%n"/>
+		</Console>
+		<RollingFile name="RollingFile" fileName="logs/RawrBot.log"
+				filePattern="logs/RawrBot-%d{yyyy-MM-dd}.log" >
+			<PatternLayout pattern="%-5p %d - %-26.26c{1} - [%t:%x] - %m%n"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+			</Policies>
+		</RollingFile> 
+	</Appenders>
+	<Loggers>
+		<Logger name="com.conglomolabs.wicketblueprint" level="debug" additivity="false">
+			<appender-ref ref="Console" level="debug"/>
+			<appender-ref ref="RollingFile" level="debug"/>
+		</Logger>
+		<Root level="info" additivity="false">
+			<AppenderRef ref="Console" level="info"/>
+			<AppenderRef ref="RollingFile" level="info"/>
+		</Root>
+	</Loggers>
+</Configuration>

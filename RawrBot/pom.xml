@@ -2,129 +2,146 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>net.staretta</groupId>
-    <artifactId>RawrBot</artifactId>
-    <version>1.5</version>
-    <properties>
-		<hibernate.version>4.3.10.Final</hibernate.version>
-		<spring.version>4.1.6.RELEASE</spring.version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.staretta</groupId>
+	<artifactId>RawrBot</artifactId>
+	<version>1.5.1</version>
+	<properties>
+		<hibernate.version>4.3.11.Final</hibernate.version>
+		<spring.version>4.2.4.RELEASE</spring.version>
+		<log4j.version>2.4</log4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<wtp.version>none</wtp.version><!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-    <dependencies>
-<!-- PIRCBOTX DEPENDENCY - 2.0 -->
-        <dependency>
-                <groupId>org.pircbotx</groupId>
-                <artifactId>pircbotx</artifactId>
-                <version>2.0.1</version>
-        </dependency>
-        <!-- 
-        <dependency>
-                <groupId>org.pircbotx</groupId>
-                <artifactId>pircbotx</artifactId>
-                <version>2.1-SNAPSHOT</version>
-        </dependency>
-                -->
-<!-- LOGGING DEPENDENCIES - LOG4J 1.2 -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-<!-- GOOGLE API DEPENDENCY -->
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.17.0-rc</version>
-        </dependency>
-<!-- GOOGLE YOUTUBE API DEPENDENCY -->
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-youtube</artifactId>
-            <version>v3-rev79-1.17.0-rc</version>
-        </dependency>
-<!-- GOOGLE JACKSON DEPENDENCY -->
-        <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client-jackson2</artifactId>
-            <version>1.17.0-rc</version>
-        </dependency>
-<!-- JODA TIME DEPENDENCY -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.3</version>
-        </dependency>
-<!-- JACKSON JSON -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.5.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.5.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.5.4</version>
-        </dependency>
-<!-- HIBERNATE ORM -->
+	<dependencies>
+		<!-- PIRCBOTX DEPENDENCY - 2.0 -->
+		<dependency>
+			<groupId>org.pircbotx</groupId>
+			<artifactId>pircbotx</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.pircbotx</groupId>
+			<artifactId>pircbotx</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
+		-->
+		<!-- LOGGING DEPENDENCIES - LOG4J 1.2 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency> -->
+		<!-- LOG4J2 with updated slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<!-- GOOGLE API DEPENDENCY -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.17.0-rc</version>
+		</dependency>
+		<!-- GOOGLE YOUTUBE API DEPENDENCY -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-youtube</artifactId>
+			<version>v3-rev79-1.17.0-rc</version>
+		</dependency>
+		<!-- GOOGLE JACKSON DEPENDENCY -->
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson2</artifactId>
+			<version>1.17.0-rc</version>
+		</dependency>
+		<!-- JODA TIME DEPENDENCY -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<!-- JACKSON JSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+		<!-- HIBERNATE ORM -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.zaxxer</groupId>
-		    <artifactId>HikariCP</artifactId>
-		    <version>2.3.8</version>
-		    <scope>compile</scope>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.3.8</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.20.0-GA</version>
 		</dependency>
-<!-- POSTGRESQL JDBC -->
+		<!-- POSTGRESQL JDBC -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.3-1101-jdbc41</version>
 		</dependency>
-<!-- SPRING INTEGRATION -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+		<!-- SPRING INTEGRATION -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-<!-- jopt-simple - option parser -->
+		<!-- jopt-simple - option parser -->
 		<dependency>
 			<groupId>net.sf.jopt-simple</groupId>
 			<artifactId>jopt-simple</artifactId>
 			<version>4.8</version>
 		</dependency>
-<!-- jasypt / Password Encryption -->
+		<!-- jasypt / Password Encryption -->
 		<dependency>
 			<groupId>org.jasypt</groupId>
 			<artifactId>jasypt</artifactId>
@@ -137,19 +154,19 @@
 			<version>1.9.2</version>
 			<scope>compile</scope>
 		</dependency>
-<!-- Passay / Password Validation -->
+		<!-- Passay / Password Validation -->
 		<dependency>
 			<groupId>org.passay</groupId>
 			<artifactId>passay</artifactId>
 			<version>1.0</version>
 		</dependency>
-<!-- Mail -->
+		<!-- Mail -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-<!-- Twitter4J -->
+		<!-- Twitter4J -->
 		<dependency>
 			<groupId>org.twitter4j</groupId>
 			<artifactId>twitter4j-core</artifactId>
@@ -157,20 +174,20 @@
 		</dependency>
 	</dependencies>
 	<repositories>
-        <repository>
-                <id>sonatype-nexus-snapshots</id>
-                <name>Sonatype Nexus Snapshots</name>
-                <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                <releases>
-                        <enabled>false</enabled>
-                </releases>
-                <snapshots>
-                        <enabled>true</enabled>
-                </snapshots>
-        </repository>
-    </repositories>
-    <build>
-        <resources>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<build>
+		<resources>
 			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/resources</directory>
@@ -185,18 +202,18 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
 							<!-- Using an Exclude filter to get the package to build correctly, as suggested by http://stackoverflow.com/a/999522 -->
 							<filters>
 								<filter>
@@ -208,44 +225,44 @@
 									</excludes>
 								</filter>
 							</filters>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>net.staretta.RawrBot</mainClass>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.handlers</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.schemas</resource>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>net.staretta.RawrBot</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>net.staretta.RawrBot</mainClass>
+								</transformer>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.handlers</resource>
+								</transformer>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.schemas</resource>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>net.staretta.RawrBot</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -294,6 +311,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-        </plugins>
-    </build>
+		</plugins>
+	</build>
 </project>
