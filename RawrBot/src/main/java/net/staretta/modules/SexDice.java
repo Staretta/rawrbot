@@ -1,8 +1,5 @@
 package net.staretta.modules;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
@@ -61,22 +58,5 @@ public class SexDice extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
-		if (isCommand(event.getMessage(), "!sexdice"))
-		{
-			ArrayList<String> params = new ArrayList<String>(Arrays.asList(event.getMessage().trim().split("\\s")));
-			if (params.size() >= 3 && event.getUser().getNick().equals("Staretta"))
-			{
-				StringBuilder sb = new StringBuilder();
-				for (int i = 2; i < params.size(); i++)
-					sb.append(params.get(i) + " ");
-				if (params.get(1).equals("-addAction") || params.get(1).equals("-aA"))
-					service.addAction(sb.toString().trim());
-				else if (params.get(1).equals("-addBodypart") || params.get(1).equals("-aB"))
-					service.addBodypart(sb.toString().trim());
-				else if (params.get(1).equals("-addLocation") || params.get(1).equals("-aL"))
-					service.addLocation(sb.toString().trim());
-				event.getUser().send().message("Successfully added sexdice.");
-			}
-		}
 	}
 }
