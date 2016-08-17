@@ -1,6 +1,7 @@
 package net.staretta.modules.admin;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.Option;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.entity.UserEntity.Role;
@@ -24,7 +25,7 @@ public class EightballAdmin extends AdminListener
 	{
 		AdminInfo adminInfo = new AdminInfo();
 		adminInfo.setAdminVersion("v0.1");
-		adminInfo.addOption("eightball");
+		adminInfo.addOption(new Option(""));
 		return adminInfo;
 	}
 	

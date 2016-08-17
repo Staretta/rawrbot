@@ -2,6 +2,7 @@ package net.staretta.modules;
 
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.services.SexDiceService;
@@ -26,8 +27,8 @@ public class SexDice extends BaseListener
 		moduleInfo.setName("SexDice");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.1");
-		moduleInfo.addCommand("!sexdice", "!sexdice: Displays an action and a location for various erotic fantasies. "
-				+ "You can also specify an !action !bodypart or !location seperately.");
+		moduleInfo.addCommand(new Command("!sexdice", "!sexdice: Displays an action and a location for various erotic fantasies. "
+				+ "You can also specify an !action !bodypart or !location seperately."));
 		return moduleInfo;
 	}
 	

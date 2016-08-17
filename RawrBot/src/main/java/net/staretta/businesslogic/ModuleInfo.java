@@ -1,8 +1,7 @@
 package net.staretta.businesslogic;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class ModuleInfo
 {
@@ -11,34 +10,23 @@ public class ModuleInfo
 	private String authorEmail = "";
 	private String moduleUrl = "";
 	private String moduleVersion = "";
-	private HashMap<String, List<String>> commandList = new HashMap<String, List<String>>();
+	private ArrayList<Command> commandList = new ArrayList<Command>();
 	
 	public ModuleInfo()
 	{
 		
 	}
 	
-	public void addCommand(String command)
+	public void addCommand(Command command)
 	{
-		this.commandList.put(command, Arrays.asList());
+		this.commandList.add(command);
 	}
 	
-	public void addCommand(String command, String commandHelp)
+	public void addCommand(String command, Pattern regex, String... commandHelp)
 	{
-		this.commandList.put(command, Arrays.asList(commandHelp));
 	}
 	
-	public void addCommand(String command, List<String> commandHelp)
-	{
-		this.commandList.put(command, commandHelp);
-	}
-	
-	public void addCommand(String command, String... commandHelp)
-	{
-		this.commandList.put(command, Arrays.asList(commandHelp));
-	}
-	
-	public HashMap<String, List<String>> getCommands()
+	public ArrayList<Command> getCommands()
 	{
 		return commandList;
 	}

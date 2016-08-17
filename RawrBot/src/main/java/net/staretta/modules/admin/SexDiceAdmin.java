@@ -1,6 +1,7 @@
 package net.staretta.modules.admin;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.Option;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.entity.UserEntity.Role;
@@ -24,7 +25,7 @@ public class SexDiceAdmin extends AdminListener
 	{
 		AdminInfo adminInfo = new AdminInfo();
 		adminInfo.setAdminVersion("v0.1");
-		adminInfo.addOption("eightball");
+		adminInfo.addOption(new Option("sexdice"));
 		return adminInfo;
 	}
 	
@@ -41,17 +42,17 @@ public class SexDiceAdmin extends AdminListener
 				if (isOption(m, 2, "-addAction", "-aA"))
 				{
 					service.addAction(StringUtils.join(params, " ", 3, params.length));
-					event.getUser().send().message("Successfully added sexdice.");
-				}
-				else if (isOption(m, 2, "-addLocation", "-aL"))
-				{
-					service.addBodypart(StringUtils.join(params, " ", 3, params.length));
-					event.getUser().send().message("Successfully added sexdice.");
+					event.getUser().send().message("Successfully added action.");
 				}
 				else if (isOption(m, 2, "-addBodypart", "-aB"))
 				{
+					service.addBodypart(StringUtils.join(params, " ", 3, params.length));
+					event.getUser().send().message("Successfully added bodypart.");
+				}
+				else if (isOption(m, 2, "-addLocation", "-aL"))
+				{
 					service.addLocation(StringUtils.join(params, " ", 3, params.length));
-					event.getUser().send().message("Successfully added sexdice.");
+					event.getUser().send().message("Successfully added location.");
 				}
 			}
 		}

@@ -1,12 +1,13 @@
 package net.staretta.modules.admin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import net.staretta.RawrBot;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.Option;
 import net.staretta.businesslogic.admin.AdminInfo;
 import net.staretta.businesslogic.admin.AdminListener;
 import net.staretta.businesslogic.entity.UserEntity.Role;
@@ -35,11 +36,11 @@ public class Admin extends AdminListener
 	{
 		AdminInfo adminInfo = new AdminInfo();
 		adminInfo.setAdminVersion("v0.1");
-		adminInfo.addOption("register");
-		adminInfo.addOption("identify");
-		adminInfo.addOption("email");
-		adminInfo.addOption("password");
-		adminInfo.addOption("verify");
+		adminInfo.addOption(new Option("register"));
+		adminInfo.addOption(new Option("identify"));
+		adminInfo.addOption(new Option("email"));
+		adminInfo.addOption(new Option("password"));
+		adminInfo.addOption(new Option("verify"));
 		return adminInfo;
 	}
 	
@@ -47,7 +48,7 @@ public class Admin extends AdminListener
 	protected ModuleInfo setModuleInfo()
 	{
 		ModuleInfo moduleInfo = new ModuleInfo();
-		moduleInfo.addCommand("!admin");
+		moduleInfo.addCommand(new Command("!admin"));
 		return moduleInfo;
 	}
 	
@@ -55,7 +56,6 @@ public class Admin extends AdminListener
 	public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
 		String m = event.getMessage();
-		// List<String> params = Arrays.asList(m.split("\\s"));
 		// Check and see if all they entered was !admin, and if so, spit out the admin commands.
 		if (m.trim().equalsIgnoreCase("!admin"))
 		{
@@ -66,12 +66,12 @@ public class Admin extends AdminListener
 				if (AdminListener.class.isAssignableFrom(mod.getClass()))
 				{
 					AdminListener listener = (AdminListener) mod;
-					HashMap<String, List<String>> commandList = listener.getAdminInfo().getCommands();
-					for (Entry<String, List<String>> command : commandList.entrySet())
+					ArrayList<Option> optionList = listener.getAdminInfo().getOptions();
+					for (Option option : optionList)
 					{
-						if (!command.getKey().isEmpty())
+						if (!option.getOption().isEmpty())
 						{
-							commands.append(command.getKey() + " ");
+							commands.append(option.getOption() + " ");
 						}
 					}
 				}

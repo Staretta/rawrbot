@@ -1,6 +1,7 @@
 package net.staretta.modules;
 
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 
@@ -18,7 +19,7 @@ public class Tea extends BaseListener
 		moduleInfo.setName("Tea");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
-		moduleInfo.addCommand("!tea", "!tea [user] : Gives you, or the user, some tea. [Command idea by GothicEmily]");
+		moduleInfo.addCommand(new Command("!tea", "!tea [user] : Gives you, or the user, some tea. [Command idea by GothicEmily]"));
 		return moduleInfo;
 	}
 	

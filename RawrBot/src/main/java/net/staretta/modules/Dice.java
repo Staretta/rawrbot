@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 
@@ -33,8 +34,10 @@ public class Dice extends BaseListener
 		moduleInfo.setName("Dice");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
-		moduleInfo.addCommand("!dice", "!dice [dice notation] : Throws some dice and displays the result. " + "Example: 1d20+10 or 3d6-2");
-		moduleInfo.addCommand("!roll", "!roll [dice notation] : Throws some dice and displays the result. " + "Example: 1d20+10 or 3d6-2");
+		moduleInfo.addCommand(new Command("!dice", "!dice [dice notation] : Throws some dice and displays the result. "
+				+ "Example: 1d20+10 or 3d6-2"));
+		moduleInfo.addCommand(new Command("!roll", "!roll [dice notation] : Throws some dice and displays the result. "
+				+ "Example: 1d20+10 or 3d6-2"));
 		return moduleInfo;
 	}
 	

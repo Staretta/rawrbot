@@ -3,6 +3,7 @@ package net.staretta.modules;
 import java.util.ArrayList;
 
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 
 import org.pircbotx.PircBotX;
@@ -18,7 +19,7 @@ public class About extends BaseListener
 		moduleInfo.setName("About");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
-		moduleInfo.addCommand("!about", "!about : About the bot");
+		moduleInfo.addCommand(new Command("!about", "!about : About the bot"));
 		return moduleInfo;
 	}
 	
@@ -29,7 +30,7 @@ public class About extends BaseListener
 		{
 			ArrayList<String> about = new ArrayList<String>();
 			about.add(event.getBot().getNick() + " was created by Staretta. Programmed in Java, using the PircBotX Library. ");
-			about.add("Want a new feature? Message Staretta on IRC or send her an email at requests@staretta.net");
+			about.add("Want a new feature? Message Staretta on IRC or send her an email at requests@staretta.com");
 			for (String message : about)
 				event.getChannel().send().message(message);
 		}
@@ -42,7 +43,7 @@ public class About extends BaseListener
 		{
 			ArrayList<String> about = new ArrayList<String>();
 			about.add(event.getBot().getNick() + " was created by Staretta. Programmed in Java, using the PircBotX Library. ");
-			about.add("Want a new feature? Message Staretta on IRC or send her an email at requests@staretta.net");
+			about.add("Want a new feature? Message Staretta on IRC or send her an email at requests@staretta.com");
 			for (String message : about)
 				event.getUser().send().message(message);
 		}

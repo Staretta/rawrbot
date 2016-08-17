@@ -13,7 +13,7 @@
 		</RollingFile> 
 	</Appenders>
 	<Loggers>
-		<Logger name="com.conglomolabs.wicketblueprint" level="debug" additivity="false">
+		<Logger name="net.staretta" level="debug" additivity="false">
 			<appender-ref ref="Console" level="debug"/>
 			<appender-ref ref="RollingFile" level="debug"/>
 		</Logger>

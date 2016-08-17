@@ -1,8 +1,6 @@
 package net.staretta.businesslogic;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import java.util.ArrayList;
 
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.services.ServerService;
@@ -40,18 +38,21 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		HashMap<String, List<String>> commandList = moduleInfo.getCommands();
+		ArrayList<Command> commands = moduleInfo.getCommands();
 		
-		if (settingsService.hasChannelModule(event.getBot().getConfiguration().getServerHostname(), event.getChannel().getName(),
-				moduleInfo.getName())) // TODO: MOVE THIS INTO A GLOBAL CONCURRENT HASHMAP, AND ADD A RELOAD COMMAND TO REFRESH THE MAP.
+		String hostname = event.getBot().getConfiguration().getServerHostname();
+		String channel = event.getChannel().getName();
+		
+		// TODO: MOVE THIS INTO A GLOBAL CONCURRENT HASHMAP, AND ADD A RELOAD COMMAND TO REFRESH THE MAP.
+		if (commands != null && settingsService.hasChannelModule(hostname, channel, moduleInfo.getName()))
 		{
-			for (Entry<String, List<String>> command : commandList.entrySet())
+			for (Command command : commands)
 			{
-				if (isCommand(event.getMessage(), command.getKey()) && isHelp(s))
+				if (isCommand(event.getMessage(), command.getCommand()) && isHelp(s))
 				{
-					if (command.getValue().size() > 0)
+					if (command.getCommandHelp().size() > 0)
 					{
-						for (String message : command.getValue())
+						for (String message : command.getCommandHelp())
 						{
 							event.getChannel().send().message(message);
 						}
@@ -69,14 +70,14 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
-		HashMap<String, List<String>> commandList = moduleInfo.getCommands();
-		for (Entry<String, List<String>> command : commandList.entrySet())
+		ArrayList<Command> commands = moduleInfo.getCommands();
+		for (Command command : commands)
 		{
-			if (isCommand(event.getMessage(), command.getKey()) && isHelp(s))
+			if (isCommand(event.getMessage(), command.getCommand()) && isHelp(s))
 			{
-				if (command.getValue().size() > 0)
+				if (command.getCommandHelp().size() > 0)
 				{
-					for (String message : command.getValue())
+					for (String message : command.getCommandHelp())
 					{
 						event.getUser().send().message(message);
 					}

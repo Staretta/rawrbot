@@ -1,12 +1,13 @@
 package net.staretta.businesslogic.admin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.Option;
 import net.staretta.businesslogic.services.UserService;
 
 import org.pircbotx.PircBotX;
@@ -22,14 +23,6 @@ public abstract class AdminListener extends BaseListener
 	{
 		adminInfo = setAdminInfo();
 		userService = RawrBot.getAppCtx().getBean(UserService.class);
-		
-		// optionParser.acceptsAll(Arrays.asList("i", "identify"));
-		// optionParser.acceptsAll(Arrays.asList("r", "register"));
-		// optionParser.acceptsAll(Arrays.asList("p", "pass", "password")).requiredIf("identify", "register").requiresArgument();
-		// optionParser.acceptsAll(Arrays.asList("e", "email")).requiredIf("register").requiresArgument();
-		// optionParser.acceptsAll(Arrays.asList("a", "alias")).withRequiredArg();
-		// optionParser.acceptsAll(Arrays.asList("h", "host", "hostmask")).withRequiredArg();
-		// optionParser.acceptsAll(Arrays.asList("v", "verify")).requiresArgument();
 	}
 	
 	public abstract AdminInfo setAdminInfo();
@@ -55,14 +48,20 @@ public abstract class AdminListener extends BaseListener
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
+		// We check to see if we have an !admin command
 		String m = event.getMessage();
 		if (isCommand(m, "!admin"))
 		{
+			// Break apart their message, and get a list of options available for !admin command. Then check to see if their option is in
+			// our list.
 			List<String> params = Arrays.asList(m.trim().split("\\s"));
-			HashMap<String, List<String>> commandList = adminInfo.getCommands();
-			if (params.size() > 1 && (commandList.containsKey(params.get(1).toLowerCase()) && isHelp(m)))
+			ArrayList<Option> optionList = adminInfo.getOptions();
+			if (params.size() > 1 && (optionList.contains(params.get(1).toLowerCase()) && isHelp(m)))
 			{
-				for (String message : commandList.get(params.get(1)))
+				// Grab the option help information from the list, and send it to the user.
+				ArrayList<String> options = optionList.stream().filter(o -> o.getOption().equalsIgnoreCase(params.get(1))).findFirst()
+						.get().getOptionHelp();
+				for (String message : options)
 				{
 					event.getUser().send().message(message);
 				}

@@ -1,6 +1,7 @@
 package net.staretta.modules;
 
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.util.Json;
@@ -20,10 +21,10 @@ public class Quote extends BaseListener
 		moduleInfo.setName("Quote");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.2");
-		moduleInfo.addCommand("!quote", "!quote : Says a random quote from the iheartquotes.com Database.");
+		moduleInfo.addCommand(new Command("!quote", "!quote : Says a random quote from the iheartquotes.com Database."));
 		return moduleInfo;
 	}
-
+	
 	@Override
 	public void OnMessage(MessageEvent<PircBotX> event)
 	{
@@ -31,12 +32,12 @@ public class Quote extends BaseListener
 		{
 			Object[] quote = null;
 			quote = getQuote();
-
+			
 			if (quote != null)
 				event.getChannel().send().message(quote[0].toString());
 		}
 	}
-
+	
 	@Override
 	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
 	{
@@ -44,12 +45,12 @@ public class Quote extends BaseListener
 		{
 			Object[] quote = null;
 			quote = getQuote();
-
+			
 			if (quote != null)
 				event.getUser().send().message(quote[0].toString());
 		}
 	}
-
+	
 	private Object[] getQuote()
 	{
 		// grabs JSONobject and stores it into json for us to read from

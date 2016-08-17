@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.entity.TellEntity;
 import net.staretta.businesslogic.services.TellService;
@@ -45,27 +46,27 @@ public class Tell extends BaseListener
 	@Override
 	protected ModuleInfo setModuleInfo()
 	{
+		// @formatter:off
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setName("Tell");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.1");
-		moduleInfo.addCommand("!tell", "!tell <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames,"
-				+ " the message when they say something in channel. If they are offline,"
-				+ " they will be told the message when they join channel.");
-		moduleInfo
-				.addCommand(
-						"!told",
-						
-						"!told [Nickname] : Displays messages sent to a nickname, or all nicknames, and if a nickname has received the messages. "
-								+ "The reply will always be sent as a Private Message.",
-						"!told [-n|-nick <Nickname>] [-d|-date <mm-dd-yy|mm-dd-yy,mm-dd-yy>] [-l|-limit <Number>] : Displays messages based on optional filters. "
-								+ "Nickname will filter results based on the person you sent a message to. Date will filter based on a single day, or a range of days. "
-								+ "Limit, will display results up to the limit.",
-						"Examples: \"!told -n Staretta -d 12-12-12 -l 20\" or \"!told -n Staretta -d 12-12-12,1-12-13 -l 50\"");
-		moduleInfo.addCommand("!note",
-				"!note <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
-						+ "If they are offline, they will be told the message when they join channel.");
+		moduleInfo.addCommand(new Command("!tell", 
+			  "!tell <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames,"
+			+ " the message when they say something in channel. If they are offline,"
+			+ " they will be told the message when they join channel."));
+		moduleInfo.addCommand(new Command("!told",						
+			  "!told [Nickname] : Displays messages sent to a nickname, or all nicknames, and if a nickname has received the messages. "
+			+ "The reply will always be sent as a Private Message.",
+			  "!told [-n|-nick <Nickname>] [-d|-date <mm-dd-yy|mm-dd-yy,mm-dd-yy>] [-l|-limit <Number>] : Displays messages based on optional filters. "
+			+ "Nickname will filter results based on the person you sent a message to. Date will filter based on a single day, or a range of days. "
+			+ "Limit, will display results up to the limit.",
+			  "Examples: \"!told -n Staretta -d 12-12-12 -l 20\" or \"!told -n Staretta -d 12-12-12,1-12-13 -l 50\""));
+		moduleInfo.addCommand(new Command("!note",
+			  "!note <Nickname>|<Nickname,Nickname> <Message> : Tells the Nickname, or Nicknames, the message when they say something in channel. "
+			+ "If they are offline, they will be told the message when they join channel."));
 		return moduleInfo;
+		// @formatter:on
 	}
 	
 	@Override
@@ -189,15 +190,15 @@ public class Tell extends BaseListener
 			}
 			else
 			{
-				List<String> messages;
+				Optional<Command> command;
 				if (isCommand(event.getMessage(), "!tell"))
-					messages = getModuleInfo().getCommands().get("!tell");
+					command = getModuleInfo().getCommands().stream().filter(c -> c.getCommand().equals("!tell")).findFirst();
 				else
-					messages = getModuleInfo().getCommands().get("!note");
+					command = getModuleInfo().getCommands().stream().filter(c -> c.getCommand().equals("!note")).findFirst();
 				
-				for (String message : messages)
+				for (String message : command.get().getCommandHelp())
 				{
-					event.getChannel().send().message(message);
+					event.getUser().send().message(message);
 				}
 			}
 		}
@@ -308,13 +309,13 @@ public class Tell extends BaseListener
 			}
 			else
 			{
-				List<String> messages;
+				Optional<Command> command;
 				if (isCommand(event.getMessage(), "!tell"))
-					messages = getModuleInfo().getCommands().get("!tell");
+					command = getModuleInfo().getCommands().stream().filter(c -> c.getCommand().equals("!tell")).findFirst();
 				else
-					messages = getModuleInfo().getCommands().get("!note");
+					command = getModuleInfo().getCommands().stream().filter(c -> c.getCommand().equals("!note")).findFirst();
 				
-				for (String message : messages)
+				for (String message : command.get().getCommandHelp())
 				{
 					event.getUser().send().message(message);
 				}

@@ -1,12 +1,11 @@
 package net.staretta.modules;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 
@@ -25,8 +24,8 @@ public class Help extends BaseListener
 		ModuleInfo moduleInfo = new ModuleInfo();
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v2.1");
-		moduleInfo.addCommand("!help");
-		moduleInfo.addCommand("!commands");
+		moduleInfo.addCommand(new Command("!help"));
+		moduleInfo.addCommand(new Command("!commands"));
 		moduleInfo.setName("Help");
 		return moduleInfo;
 	}
@@ -88,11 +87,11 @@ public class Help extends BaseListener
 			{
 				BaseListener listener = (BaseListener) mod;
 				
-				HashMap<String, List<String>> commandList = listener.getModuleInfo().getCommands();
-				for (Entry<String, List<String>> commandInfo : commandList.entrySet())
+				ArrayList<Command> commandList = listener.getModuleInfo().getCommands();
+				for (Command commandInfo : commandList)
 				{
-					if (!commandInfo.getKey().isEmpty())
-						commands += commandInfo.getKey() + " ";
+					if (!commandInfo.getCommand().isEmpty())
+						commands += commandInfo.getCommand() + " ";
 				}
 			}
 		}

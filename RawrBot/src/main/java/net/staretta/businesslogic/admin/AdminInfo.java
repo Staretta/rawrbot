@@ -1,39 +1,28 @@
 package net.staretta.businesslogic.admin;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 
 import net.staretta.businesslogic.ModuleInfo;
+import net.staretta.businesslogic.Option;
 
 public class AdminInfo extends ModuleInfo
 {
 	private String adminVersion = "";
-	private HashMap<String, List<String>> adminOptionList = new HashMap<String, List<String>>();
+	private ArrayList<Option> adminOptionList = new ArrayList<Option>();
 	
 	public AdminInfo()
 	{
 		
 	}
 	
-	public HashMap<String, List<String>> getCommands()
+	public ArrayList<Option> getOptions()
 	{
 		return adminOptionList;
 	}
 	
-	public void addOption(String option)
+	public void addOption(Option option)
 	{
-		this.adminOptionList.put(option, Arrays.asList());
-	}
-	
-	public void addOption(String option, String optionHelp)
-	{
-		this.adminOptionList.put(option, Arrays.asList(optionHelp));
-	}
-	
-	public void addOption(String option, List<String> optionHelp)
-	{
-		this.adminOptionList.put(option, optionHelp);
+		this.adminOptionList.add(option);
 	}
 	
 	public String getAdminVersion()

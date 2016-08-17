@@ -5,6 +5,7 @@ import java.util.Date;
 
 import net.staretta.RawrBot;
 import net.staretta.businesslogic.BaseListener;
+import net.staretta.businesslogic.Command;
 import net.staretta.businesslogic.ModuleInfo;
 import net.staretta.businesslogic.RateLimiter;
 import net.staretta.businesslogic.entity.LastSeenEntity;
@@ -34,10 +35,10 @@ public class LastSeen extends BaseListener
 		moduleInfo.setName("LastSeen");
 		moduleInfo.setAuthor("Staretta");
 		moduleInfo.setVersion("v1.0");
-		moduleInfo.addCommand("!seen",
-				"!seen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen.");
-		moduleInfo.addCommand("!lastseen",
-				"!lastseen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen.");
+		moduleInfo.addCommand(new Command("!seen",
+				"!seen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen."));
+		moduleInfo.addCommand(new Command("!lastseen",
+				"!lastseen <Nickname> : Displays the last thing a user said, based on their nickname, and when the user was last seen."));
 		return moduleInfo;
 	}
 	
