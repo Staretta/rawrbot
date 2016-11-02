@@ -62,8 +62,7 @@ public class RawrBot
 				.setAutoReconnect(true)
 				.setCapEnabled(true)
 				.setIdentServerEnabled(false)
-				.setServerHostname(server.getServer())
-				.setServerPort(server.getPort())
+				.addServer(server.getServer(), server.getPort())
 				.setNickservPassword(server.getPassword())
 				.setAutoReconnect(true);
 			// @formatter:on
@@ -126,7 +125,7 @@ public class RawrBot
 			logger.info("Bot Monitor Check");
 			for (PircBotX bot : bots)
 			{
-				String server = bot.getServerHostname();
+				String server = bot.getConfiguration()/;
 				String nickname = bot.getNick();
 				logger.info("Bot Monitor Check -> Checking Bot: " + nickname + "@" + server);
 				if (!bot.isConnected() || bot.getState().equals(PircBotX.State.DISCONNECTED))
