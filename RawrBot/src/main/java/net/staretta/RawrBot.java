@@ -59,7 +59,6 @@ public class RawrBot
 				.setLogin(server.getUsername())
 				.setRealName(server.getVersion())
 				.setAutoNickChange(true)
-				.setAutoReconnect(true)
 				.setCapEnabled(true)
 				.setIdentServerEnabled(false)
 				.addServer(server.getServer(), server.getPort())
