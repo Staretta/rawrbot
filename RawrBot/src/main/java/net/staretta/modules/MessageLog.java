@@ -56,94 +56,94 @@ public class MessageLog extends BaseListener
 	}
 	
 	@Override
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception
+	public void onMessage(MessageEvent event) throws Exception
 	{
-		service.addLog(event.getUser(), event.getMessage(), event.getChannel().getName(), event.getBot().getConfiguration()
+		service.addLog(event.getUser(), event.getMessage(), event.getChannel().getName(), event.getBot()
 				.getServerHostname(), getUserLevel(event.getChannel(), event.getUser()), MessageType.MESSAGE);
 	}
 	
 	@Override
-	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	public void onAction(ActionEvent event) throws Exception
 	{
-		service.addLog(event.getUser(), event.getMessage(), event.getChannel().getName(), event.getBot().getConfiguration()
+		service.addLog(event.getUser(), event.getMessage(), event.getChannel().getName(), event.getBot()
 				.getServerHostname(), getUserLevel(event.getChannel(), event.getUser()), MessageType.ACTION);
 	}
 	
 	@Override
-	public void onJoin(JoinEvent<PircBotX> event) throws Exception
+	public void onJoin(JoinEvent event) throws Exception
 	{
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has joined " + event.getChannel().getName();
-			service.addLog(event.getUser(), message, event.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+			service.addLog(event.getUser(), message, event.getChannel().getName(), event.getBot().getServerHostname(),
 					getUserLevel(event.getChannel(), event.getUser()), MessageType.JOIN);
 		}
 	}
 	
 	@Override
-	public void onPart(PartEvent<PircBotX> event) throws Exception
+	public void onPart(PartEvent event) throws Exception
 	{
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has left " + event.getChannel().getName() + ". (" + event.getReason() + ")";
-			service.addLog(event.getUser(), message, event.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+			service.addLog(event.getUser(), message, event.getChannel().getName(), event.getBot().getServerHostname(),
 					Role.USER, MessageType.PART);
 		}
 	}
 	
 	@Override
-	public void onQuit(QuitEvent<PircBotX> event) throws Exception
+	public void onQuit(QuitEvent event) throws Exception
 	{
 		if (!event.getUser().getNick().equalsIgnoreCase(event.getBot().getNick()))
 		{
 			String message = event.getUser().getNick() + " (" + event.getUser().getLogin() + "@" + event.getUser().getHostmask()
 					+ ") has quit. " + " (" + event.getReason() + ")";
 			// Using SERVER as channel name because this is a server wide event and not a channel specific event.
-			service.addLog(event.getUser(), message, "SERVER", event.getBot().getConfiguration().getServerHostname(), Role.USER,
+			service.addLog(event.getUser(), message, "SERVER", event.getBot().getServerHostname(), Role.USER,
 					MessageType.QUIT);
 		}
 	}
 	
 	@Override
-	public void onKick(KickEvent<PircBotX> event) throws Exception
+	public void onKick(KickEvent event) throws Exception
 	{
 		if (!event.getRecipient().getNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
 		{
 			String message = event.getUser().getNick() + " kicked " + event.getRecipient().getNick() + " from "
 					+ event.getChannel().getName();
-			service.addLog(event.getUser(), message, event.getChannel().getName(), event.getBot().getConfiguration().getServerHostname(),
+			service.addLog(event.getUser(), message, event.getChannel().getName(), event.getBot().getServerHostname(),
 					Role.USER, MessageType.KICK);
 		}
 	}
 	
 	@Override
-	public void onNickChange(NickChangeEvent<PircBotX> event) throws Exception
+	public void onNickChange(NickChangeEvent event) throws Exception
 	{
 		if (!event.getOldNick().equalsIgnoreCase(event.getBot().getConfiguration().getName()))
 		{
 			String message = event.getOldNick() + " changed nickname to " + event.getNewNick();
 			// Using SERVER as channel name because this is a server wide event and not a channel specific event.
-			service.addLog(event.getUser(), message, "SERVER", event.getBot().getConfiguration().getServerHostname(), Role.USER,
+			service.addLog(event.getUser(), message, "SERVER", event.getBot().getServerHostname(), Role.USER,
 					MessageType.NICK);
 		}
 	}
 	
 	@Override
-	public void onTopic(TopicEvent<PircBotX> event) throws Exception
+	public void onTopic(TopicEvent event) throws Exception
 	{
 		// Do stuff here?
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		// We don't care about Capital OnMessage, only want to use lowercase onMessage.
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		// We don't care about Capital OnPrivateMessage, only want to use lowercase onPrivateMessage.
 	}

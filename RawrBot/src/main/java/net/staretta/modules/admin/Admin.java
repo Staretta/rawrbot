@@ -53,15 +53,15 @@ public class Admin extends AdminListener
 	}
 	
 	@Override
-	public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnAdminPrivateMessage(PrivateMessageEvent event)
 	{
 		String m = event.getMessage();
 		// Check and see if all they entered was !admin, and if so, spit out the admin commands.
 		if (m.trim().equalsIgnoreCase("!admin"))
 		{
-			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+			ImmutableSet<Listener> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
 			StringBuilder commands = new StringBuilder();
-			for (Listener<PircBotX> mod : listeners)
+			for (Listener mod : listeners)
 			{
 				if (AdminListener.class.isAssignableFrom(mod.getClass()))
 				{
@@ -106,7 +106,7 @@ public class Admin extends AdminListener
 		}
 	}
 	
-	private void register(PrivateMessageEvent<PircBotX> event)
+	private void register(PrivateMessageEvent event)
 	{
 		List<String> params = Arrays.asList(event.getMessage().split("\\s"));
 		// Check the size, verify that the user entered a valid email address, and the password isn't unreasonably small or large.
@@ -144,7 +144,7 @@ public class Admin extends AdminListener
 		}
 	}
 	
-	private void identify(PrivateMessageEvent<PircBotX> event)
+	private void identify(PrivateMessageEvent event)
 	{
 		List<String> params = Arrays.asList(event.getMessage().split("\\s"));
 		// !admin identify password
@@ -186,7 +186,7 @@ public class Admin extends AdminListener
 		}
 	}
 	
-	private void password(PrivateMessageEvent<PircBotX> event)
+	private void password(PrivateMessageEvent event)
 	{
 		List<String> params = Arrays.asList(event.getMessage().split("\\s"));
 		if (params.size() == 3)
@@ -195,7 +195,7 @@ public class Admin extends AdminListener
 		}
 	}
 	
-	private void email(PrivateMessageEvent<PircBotX> event)
+	private void email(PrivateMessageEvent event)
 	{
 		List<String> params = Arrays.asList(event.getMessage().split("\\s"));
 		if (params.size() == 3)
@@ -204,7 +204,7 @@ public class Admin extends AdminListener
 		}
 	}
 	
-	private void channel(PrivateMessageEvent<PircBotX> event)
+	private void channel(PrivateMessageEvent event)
 	{
 		String m = event.getMessage();
 		List<String> params = Arrays.asList(m.split("\\s"));
@@ -281,7 +281,7 @@ public class Admin extends AdminListener
 		}
 	}
 	
-	private void verify(PrivateMessageEvent<PircBotX> event)
+	private void verify(PrivateMessageEvent event)
 	{
 		List<String> params = Arrays.asList(event.getMessage().split("\\s"));
 		// !admin verify <verifcation code>

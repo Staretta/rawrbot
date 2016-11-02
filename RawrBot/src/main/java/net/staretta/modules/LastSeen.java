@@ -43,11 +43,11 @@ public class LastSeen extends BaseListener
 	}
 	
 	@Override
-	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	public void onAction(ActionEvent event) throws Exception
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick())) // Need to make sure not our bot.
 		{
-			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getServerHostname());
 			
 			if (seen != null)
 			{
@@ -60,18 +60,18 @@ public class LastSeen extends BaseListener
 			}
 			else
 			{
-				service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getConfiguration().getServerHostname(), event
+				service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getServerHostname(), event
 						.getChannel().getName(), MessageType.MESSAGE);
 			}
 		}
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick())) // Need to make sure not our bot.
 		{
-			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+			LastSeenEntity seen = service.getLastSeen(event.getUser().getNick(), event.getBot().getServerHostname());
 			
 			if (seen != null)
 			{
@@ -84,7 +84,7 @@ public class LastSeen extends BaseListener
 			}
 			else
 			{
-				service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getConfiguration().getServerHostname(), event
+				service.addLastSeen(event.getUser(), event.getMessage(), event.getBot().getServerHostname(), event
 						.getChannel().getName(), MessageType.MESSAGE);
 			}
 			
@@ -94,7 +94,7 @@ public class LastSeen extends BaseListener
 				String[] params = removeCommands(new String[] { "!seen", "!lastseen" }, event.getMessage()).split("\\s");
 				if (params.length > 1)
 				{
-					LastSeenEntity lastSeen = service.getLastSeen(params[1], event.getBot().getConfiguration().getServerHostname());
+					LastSeenEntity lastSeen = service.getLastSeen(params[1], event.getBot().getServerHostname());
 					if (lastSeen != null)
 					{
 						String message = params[1] + " last seen " + new SimpleDateFormat("MM/dd/yy HH:mm:ss z").format(lastSeen.getDate());
@@ -110,14 +110,14 @@ public class LastSeen extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (isCommand(event.getMessage(), "!seen") || isCommand(event.getMessage(), "!lastseen"))
 		{
 			String[] params = removeCommands(new String[] { "!seen", "!lastseen" }, event.getMessage()).split("\\s");
 			if (params.length > 1)
 			{
-				LastSeenEntity lastSeen = service.getLastSeen(params[1], event.getBot().getConfiguration().getServerHostname());
+				LastSeenEntity lastSeen = service.getLastSeen(params[1], event.getBot().getServerHostname());
 				if (lastSeen != null)
 				{
 					String message = params[1] + " last seen " + new SimpleDateFormat("MM/dd/yy HH:mm:ss z").format(lastSeen.getDate());

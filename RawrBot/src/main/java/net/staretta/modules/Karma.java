@@ -32,7 +32,7 @@ public class Karma extends BaseListener
 	}
 
 	@Override
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception
+	public void onMessage(MessageEvent event) throws Exception
 	{
 		super.onMessage(event);
 
@@ -42,13 +42,13 @@ public class Karma extends BaseListener
 	}
 
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		// check is user is checking themselves, and if they have no karma, display, Don't be so hard on yourself.
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		// Do nothing
 	}

@@ -42,7 +42,7 @@ public class Dice extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		String userMessage = event.getMessage().trim().toLowerCase();
 		if ((isCommand(event.getMessage(), "!dice") || isCommand(event.getMessage(), "!roll"))
@@ -199,7 +199,7 @@ public class Dice extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 	}
 	

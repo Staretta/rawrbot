@@ -49,12 +49,12 @@ public class RawrBot
 		EmailService emailService = getAppCtx().getBean(EmailService.class);
 		emailService.setGlobalCredentials(getGlobalEmailCredentials(serverService));
 		
-		MultiBotManager<PircBotX> manager = new MultiBotManager<PircBotX>();
+		MultiBotManager manager = new MultiBotManager();
 		for (ServerEntity server : serverSettings)
 		{
 			logger.info("Building bot for server: " + server.getServer());
 			// @formatter:off
-			Builder<PircBotX> builder = new Configuration.Builder<PircBotX>()
+			Builder builder = new Configuration.Builder()
 				.setName(server.getNickname())
 				.setLogin(server.getUsername())
 				.setRealName(server.getVersion())
@@ -90,7 +90,7 @@ public class RawrBot
 			{
 				try
 				{
-					builder.addListener((Listener<PircBotX>) Class.forName(module.getBeanClassName()).newInstance());
+					builder.addListener((Listener) Class.forName(module.getBeanClassName()).newInstance());
 					logger.info("Added module: " + module.getBeanClassName());
 				}
 				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
@@ -99,7 +99,7 @@ public class RawrBot
 				}
 			}
 			
-			Configuration<PircBotX> config = builder.buildConfiguration();
+			Configuration config = builder.buildConfiguration();
 			manager.addBot(config);
 			logger.info("IRC bot built and added to manager: " + server.getServer());
 		}
@@ -126,7 +126,7 @@ public class RawrBot
 			logger.info("Bot Monitor Check");
 			for (PircBotX bot : bots)
 			{
-				String server = bot.getConfiguration().getServerHostname();
+				String server = bot.getServerHostname();
 				String nickname = bot.getNick();
 				logger.info("Bot Monitor Check -> Checking Bot: " + nickname + "@" + server);
 				if (!bot.isConnected() || bot.getState().equals(PircBotX.State.DISCONNECTED))

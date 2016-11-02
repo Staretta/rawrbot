@@ -30,7 +30,7 @@ public class SexDiceAdmin extends AdminListener
 	}
 	
 	@Override
-	public void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnAdminPrivateMessage(PrivateMessageEvent event)
 	{
 		// If it's our command, do stuff! And if the user is logged in, and they are a superadmin, then do the good stuff.
 		String m = event.getMessage();

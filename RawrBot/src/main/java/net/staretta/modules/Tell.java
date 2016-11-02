@@ -70,12 +70,12 @@ public class Tell extends BaseListener
 	}
 	
 	@Override
-	public void onJoin(JoinEvent<PircBotX> event) throws Exception
+	public void onJoin(JoinEvent event) throws Exception
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
 			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+					.getTells(event.getUser().getNick(), event.getBot().getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -97,12 +97,12 @@ public class Tell extends BaseListener
 	}
 	
 	@Override
-	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	public void onAction(ActionEvent event) throws Exception
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
 			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+					.getTells(event.getUser().getNick(), event.getBot().getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -124,13 +124,13 @@ public class Tell extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
 			// Check to see if the user has anything we need to tell them
 			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+					.getTells(event.getUser().getNick(), event.getBot().getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -180,7 +180,7 @@ public class Tell extends BaseListener
 					// APPARENTLY WE NEED TO CHECK IF THE NICKNAME IS THE BOT, AND DISCARD IT. BECAUSE USERS.
 					if (!nick.toLowerCase().equals(event.getBot().getNick().toLowerCase()))
 					{
-						if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration().getServerHostname(), event
+						if (service.addTell(event.getUser(), nick, message, event.getBot().getServerHostname(), event
 								.getChannel().getName()))
 						{
 							event.getChannel().send().message(nick + " will be told: " + message);
@@ -213,7 +213,7 @@ public class Tell extends BaseListener
 			try
 			{
 				options = parser.parse(params);
-				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getServerHostname());
 			}
 			catch (NullPointerException | OptionException e)
 			{
@@ -247,13 +247,13 @@ public class Tell extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (!event.getUser().getNick().equals(event.getBot().getNick()))
 		{
 			// Check to see if the user has anything we need to tell them
 			ArrayList<TellEntity> tells = service
-					.getTells(event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+					.getTells(event.getUser().getNick(), event.getBot().getServerHostname());
 			if (tells != null)
 			{
 				for (TellEntity tell : tells)
@@ -300,7 +300,7 @@ public class Tell extends BaseListener
 					// APPARENTLY WE NEED TO CHECK IF THE NICKNAME IS THE BOT, AND DISCARD IT. BECAUSE USERS.
 					if (!nick.toLowerCase().equals(event.getBot().getNick().toLowerCase()))
 					{
-						if (service.addTell(event.getUser(), nick, message, event.getBot().getConfiguration().getServerHostname(), ""))
+						if (service.addTell(event.getUser(), nick, message, event.getBot().getServerHostname(), ""))
 						{
 							event.getUser().send().message(nick + " will be told: " + message);
 						}
@@ -331,7 +331,7 @@ public class Tell extends BaseListener
 			try
 			{
 				options = parser.parse(params);
-				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getConfiguration().getServerHostname());
+				tolds = getTolds(params, options, tolds, event.getUser().getNick(), event.getBot().getServerHostname());
 			}
 			catch (NullPointerException | OptionException e)
 			{

@@ -40,13 +40,13 @@ public abstract class AdminListener extends BaseListener
 	};
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		// We don't care about MessageEvents. We only care about PrivateMessageEvents
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		// We check to see if we have an !admin command
 		String m = event.getMessage();
@@ -73,7 +73,7 @@ public abstract class AdminListener extends BaseListener
 		}
 	}
 	
-	public abstract void OnAdminPrivateMessage(PrivateMessageEvent<PircBotX> event);
+	public abstract void OnAdminPrivateMessage(PrivateMessageEvent event);
 	
 	public UserService getUserService()
 	{

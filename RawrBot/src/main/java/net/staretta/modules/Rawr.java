@@ -38,7 +38,7 @@ public class Rawr extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if (isCommand(event.getMessage(), "!rawr") && !RateLimiter.isRateLimited(event.getUser()))
 		{
@@ -100,7 +100,7 @@ public class Rawr extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		
 	}

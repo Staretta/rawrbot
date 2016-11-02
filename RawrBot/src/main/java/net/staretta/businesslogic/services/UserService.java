@@ -47,7 +47,7 @@ public class UserService extends BaseService
 		userEntity.setEmail(email);
 		userEntity.setHostmask(user.getHostmask());
 		userEntity.setUsername(user.getLogin());
-		userEntity.setServer(user.getBot().getConfiguration().getServerHostname());
+		userEntity.setServer(user.getBot().getServerHostname());
 		userEntity.setIdentified(user.isVerified()); // TODO: Fix this at some point to query nickserv instead of whois, as whois is rate
 														// limited. Not sure I want to do this?
 		PasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
@@ -71,7 +71,7 @@ public class UserService extends BaseService
 				+ "where lower(alias.nickname) = lower(:nickname) and user.server = :server";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("nickname", user.getNick());
-		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
+		query.setParameter("server", user.getBot().getServerHostname());
 		
 		return (UserAliasEntity) query.uniqueResult();
 	}
@@ -82,7 +82,7 @@ public class UserService extends BaseService
 				+ "where lower(user.username) = lower(:username) and user.server = :server";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("username", user.getLogin());
-		query.setParameter("server", user.getBot().getConfiguration().getServerHostname());
+		query.setParameter("server", user.getBot().getServerHostname());
 		return (UserEntity) query.uniqueResult();
 	}
 	

@@ -92,7 +92,7 @@ public class Twitter extends BaseListener
 	}
 	
 	@Override
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception
+	public void onMessage(MessageEvent event) throws Exception
 	{
 		String m = event.getMessage();
 		if (isTwitterUrl(m))
@@ -101,7 +101,7 @@ public class Twitter extends BaseListener
 			{
 				if (twitterFactory == null)
 				{
-					init(event.getBot().getConfiguration().getServerHostname());
+					init(event.getBot().getServerHostname());
 				}
 				
 				if (twitterFactory != null)
@@ -151,7 +151,7 @@ public class Twitter extends BaseListener
 	}
 	
 	@Override
-	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	public void onAction(ActionEvent event) throws Exception
 	{
 		String m = event.getMessage();
 		if (isTwitterUrl(m))
@@ -160,7 +160,7 @@ public class Twitter extends BaseListener
 			{
 				if (twitterFactory == null)
 				{
-					init(event.getBot().getConfiguration().getServerHostname());
+					init(event.getBot().getServerHostname());
 				}
 				
 				if (twitterFactory != null)
@@ -206,13 +206,13 @@ public class Twitter extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		// IGNORE
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		// IGNORE
 	}

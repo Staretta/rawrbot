@@ -24,7 +24,7 @@ public class Tea extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if (isCommand(event.getMessage(), "!tea") && !RateLimiter.isRateLimited(event.getUser()))
 		{
@@ -49,7 +49,7 @@ public class Tea extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 	}
 }

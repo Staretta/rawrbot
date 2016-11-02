@@ -163,7 +163,7 @@ public class Youtube extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		// If message is a youtube url and we have a youtube api key in the properties file.
 		if (isYouTubeURL(event.getMessage()))
@@ -171,7 +171,7 @@ public class Youtube extends BaseListener
 			// if we don't have an API key set, then try and get it from the db.
 			if (apiKey.isEmpty())
 			{
-				init(event.getBot().getConfiguration().getServerHostname());
+				init(event.getBot().getServerHostname());
 			}
 			
 			if (!apiKey.isEmpty())
@@ -190,7 +190,7 @@ public class Youtube extends BaseListener
 	}
 	
 	@Override
-	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	public void onAction(ActionEvent event) throws Exception
 	{
 		// If message is a youtube url.
 		if (isYouTubeURL(event.getMessage()))
@@ -198,7 +198,7 @@ public class Youtube extends BaseListener
 			// if we don't have an API key set, then try and get it from the db.
 			if (apiKey.isEmpty())
 			{
-				init(event.getBot().getConfiguration().getServerHostname());
+				init(event.getBot().getServerHostname());
 			}
 			
 			if (!apiKey.isEmpty())
@@ -217,7 +217,7 @@ public class Youtube extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 	}
 	

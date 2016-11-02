@@ -26,7 +26,7 @@ public class Quote extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if (isCommand(event.getMessage(), "!quote") && !RateLimiter.isRateLimited(event.getUser()))
 		{
@@ -39,7 +39,7 @@ public class Quote extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (isCommand(event.getMessage(), "!quote"))
 		{

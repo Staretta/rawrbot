@@ -132,7 +132,7 @@ public class Vimeo extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		// If regex matches link in message, then message channel
 		if (isVimeoURL(event.getMessage()))
@@ -146,7 +146,7 @@ public class Vimeo extends BaseListener
 	}
 	
 	@Override
-	public void onAction(ActionEvent<PircBotX> event) throws Exception
+	public void onAction(ActionEvent event) throws Exception
 	{
 		// If regex matches link in message, then message channel
 		if (isVimeoURL(event.getMessage()))
@@ -160,7 +160,7 @@ public class Vimeo extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 	}
 }

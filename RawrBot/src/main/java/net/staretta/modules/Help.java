@@ -31,13 +31,13 @@ public class Help extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if ((isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
 				&& !RateLimiter.isRateLimited(event.getUser()))
 		{
 			// Get a list of modules available to the channel.
-			Set<String> modules = settingsService.getChannelModules(event.getBot().getConfiguration().getServerHostname(), event
+			Set<String> modules = settingsService.getChannelModules(event.getBot().getServerHostname(), event
 					.getChannel().getName());
 			
 			if (modules == null)
@@ -46,11 +46,11 @@ public class Help extends BaseListener
 			}
 			
 			// Create a temporary list to store the listeners.
-			List<Listener<PircBotX>> temp = new ArrayList<Listener<PircBotX>>();
+			List<Listener> temp = new ArrayList<Listener>();
 			
 			// Loop through the available modules currently in use by the server and if they match the modules allowed
 			// for the channel, then add the listener to the temporary list.
-			for (Listener<PircBotX> listener : event.getBot().getConfiguration().getListenerManager().getListeners())
+			for (Listener listener : event.getBot().getConfiguration().getListenerManager().getListeners())
 			{
 				String[] name = listener.getClass().getName().split("\\.");
 				
@@ -68,20 +68,20 @@ public class Help extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if (isCommand(event.getMessage(), "!commands") || isCommand(event.getMessage(), "!help"))
 		{
-			ImmutableSet<Listener<PircBotX>> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
+			ImmutableSet<Listener> listeners = event.getBot().getConfiguration().getListenerManager().getListeners();
 			for (String message : helpCommand(listeners))
 				event.getUser().send().message(message);
 		}
 	}
 	
-	private String[] helpCommand(ImmutableSet<Listener<PircBotX>> modules)
+	private String[] helpCommand(ImmutableSet<Listener> modules)
 	{
 		String commands = "";
-		for (Listener<PircBotX> mod : modules)
+		for (Listener mod : modules)
 		{
 			if (BaseListener.class.isAssignableFrom(mod.getClass()))
 			{

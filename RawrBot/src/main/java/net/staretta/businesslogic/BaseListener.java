@@ -12,7 +12,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class BaseListener extends ListenerAdapter<PircBotX>
+public abstract class BaseListener extends ListenerAdapter
 {
 	private ModuleInfo moduleInfo;
 	
@@ -35,12 +35,12 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 	}
 	
 	@Override
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception
+	public void onMessage(MessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		ArrayList<Command> commands = moduleInfo.getCommands();
 		
-		String hostname = event.getBot().getConfiguration().getServerHostname();
+		String hostname = event.getBot().getServerHostname();
 		String channel = event.getChannel().getName();
 		
 		// TODO: MOVE THIS INTO A GLOBAL CONCURRENT HASHMAP, AND ADD A RELOAD COMMAND TO REFRESH THE MAP.
@@ -64,10 +64,10 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		}
 	}
 	
-	public abstract void OnMessage(MessageEvent<PircBotX> event);
+	public abstract void OnMessage(MessageEvent event);
 	
 	@Override
-	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception
 	{
 		String s = event.getMessage().trim().toLowerCase();
 		ArrayList<Command> commands = moduleInfo.getCommands();
@@ -88,7 +88,7 @@ public abstract class BaseListener extends ListenerAdapter<PircBotX>
 		OnPrivateMessage(event);
 	}
 	
-	public abstract void OnPrivateMessage(PrivateMessageEvent<PircBotX> event);
+	public abstract void OnPrivateMessage(PrivateMessageEvent event);
 	
 	public boolean isCommand(String message, String command)
 	{

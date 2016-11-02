@@ -37,7 +37,7 @@ public class Eightball extends BaseListener
 	}
 	
 	@Override
-	public void OnMessage(MessageEvent<PircBotX> event)
+	public void OnMessage(MessageEvent event)
 	{
 		if ((isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball") || isCommand(event.getMessage(),
 				"!8-ball")) && event.getMessage().trim().toLowerCase().endsWith("?") && !RateLimiter.isRateLimited(event.getUser()))
@@ -48,7 +48,7 @@ public class Eightball extends BaseListener
 	}
 	
 	@Override
-	public void OnPrivateMessage(PrivateMessageEvent<PircBotX> event)
+	public void OnPrivateMessage(PrivateMessageEvent event)
 	{
 		if ((isCommand(event.getMessage(), "!8ball") || isCommand(event.getMessage(), "!eightball") || isCommand(event.getMessage(),
 				"!8-ball")) && event.getMessage().trim().toLowerCase().endsWith("?"))
