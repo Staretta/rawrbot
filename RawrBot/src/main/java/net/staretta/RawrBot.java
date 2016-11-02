@@ -64,7 +64,8 @@ public class RawrBot
 				.setIdentServerEnabled(false)
 				.addServer(server.getServer(), server.getPort())
 				.setNickservPassword(server.getPassword())
-				.setAutoReconnect(true);
+				.setAutoReconnect(true)
+				.setAutoReconnectAttempts(Integer.MAX_VALUE);
 			// @formatter:on
 			
 			// We have to trust all certificates because some IRC servers are stupid and use unsigned certs.
