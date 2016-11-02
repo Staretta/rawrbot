@@ -125,7 +125,7 @@ public class RawrBot
 			logger.info("Bot Monitor Check");
 			for (PircBotX bot : bots)
 			{
-				String server = bot.getConfiguration()/;
+				String server = bot.getServerHostname();
 				String nickname = bot.getNick();
 				logger.info("Bot Monitor Check -> Checking Bot: " + nickname + "@" + server);
 				if (!bot.isConnected() || bot.getState().equals(PircBotX.State.DISCONNECTED))
