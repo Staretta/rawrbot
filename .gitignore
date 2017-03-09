@@ -6,3 +6,6 @@ RawrBot/bin/*
 .e4css/*
 .metadata/*
 /RawrBot/src/main/resources/META-INF/persistence.xml
+.idea/*
+logs/*
+*.iml
